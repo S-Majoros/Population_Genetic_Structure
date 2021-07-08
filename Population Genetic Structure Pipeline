@@ -1,0 +1,358 @@
+#Determining realized dispersal rates and comparing rates across taxa with different biological traits
+#Pipeline developed for chapter 1 of masters thesis
+#Pipeline is designed to determine realized dispersal rates for a variety of taxa, but the pipeline will be tested on Diptera species from various Arctic regions. 
+
+#1.Loading Packages and Setting up Variables----
+
+#Install and load needed packages 
+#install.packages("readr")
+library(readr)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("stringr")
+library(stringr)
+#install.packages("foreach")
+library(foreach)
+#install.packages("coil")
+library(coil)
+#BiocManager::install("Biostrings", "muscle")
+library(muscle)
+#install.packages("phylotools")
+library(phylotools)
+
+#Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
+model <- "TN93"
+#Set additional clustering threshold. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. 
+clustering_threshold <- 0.04 
+#Set clustering method.UPGMA was chosen as the clustering method for my analysis. This method is fast, efficient, and commonly used. In this method, each distance contributes equally to the final result, and the averages are weighed by the number of taxa in the cluster. 
+clustering_method <- "UPGMA"
+
+#Set up taxa. 
+taxa <- "Diptera"
+#Set up reference sequence. This Diptera sequence was retrieved from BOLD (Record ID: ACGAZ1590-12, BIN:AAA1222). The BIN was chosen because it met the following criteria; from the order Diptera, contained at least 10 CO1-5P sequences, had at least one specimen photograph that matched the higher taxonomy and did not have taxonomic conflicts at family level or above. The reference sequence was chosen because it is 658 base pairs long, has 2 trace file chromatograms, and no missing information or stop codons. 
+reference_sequence <- "AACTTTATATTTTATTTTTGGAGCTTGATCTAGAATAATTGGAACTTCTTTAAGAATATTAATTCGAATTGAATTAGGTCATCCAGGTTCCTTAATTGGAAATGACCAAATTTATAATGTAATTGTAACAGCTCATGCATTTATTATAATTTTTTTTATAGTAATACCAATTATAATTGGAGGATTTGGAAATTGATTAGTTCCTTTAATATTAGGAGCACCAGATATAGCTTTTCCTCGAATGAATAATATAAGTTTTTGACTTCTTCCTCCTGCTTTAATACTTTTATTAACAAGTAGAATAGTAGAAAGTGGAGCTGGAACAGGATGAACAGTTTATCCTCCTTTATCATCTATTATTGCTCATGGAGGAGCATCTGTTGACTTAGCTATTTTTTCTCTTCATTTAGCAGGAATTTCTTCTATTTTAGGAGCTGTAAATTTTATTACAACTGTAATTAATATACGATCTATTGGTATTACCTTTGATCGAATACCTTTATTTGTTTGATCAGTTGCTATTACAGCCTTATTACTTTTATTATCTTTACCAGTTTTAGCTGGAGCAATTACAATATTATTAACAGATCGAAATTTAAATACATCATTTTTTGATCCTGCTGGAGGAGGAGATCCTATTTTATACCAACATTTATTT"
+
+#2.Extract Data from Databases-----
+
+#Call data from BOLD. Currently just calling Diptera (fly) data from Greenland.Data was retrieved on June 24th 2021. 
+#dfTaxa <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?taxon=Diptera&geo=Finland&format=tsv")
+#Save data to a tsv file 
+#write_tsv(dfTaxa, "FinlandData")
+#Read in the data
+dfData <- read_tsv("GreenlandData")
+
+#Read in data from GBIF. Finland data retrieved from GBIF.org (23 June 2021) GBIF Occurrence Download https://doi.org/10.15468/dl.n8f7aq
+dfGeoData <- read_tsv("GreenlandGeo.csv")
+
+#3. Filter Data----
+
+#Filter the data 
+dfData <- dfData %>%
+  #Filter out records without bin_uri
+  filter(str_detect(bin_uri, ":")) %>%
+  #Filter out records without a sequence 
+  filter(str_detect(nucleotides, "[ACTG]")) %>%
+  #Filter for records with a COI-5P sequence
+  filter(markercode == "COI-5P") %>%
+  #Filter out sequences with fewer than 500 base pairs 
+  filter(nchar(gsub("-", "", nucleotides)) > 499) %>%
+  #Filter out records without a species name
+  filter(!is.na(species_name))
+
+#Filter out high gap/N content. A threshold of 1% was chosen because species often differ by more than 2% divergence. By filtering out records with > 1% N and gap content, we are likely to get a high-quality data set, given typical patterns of variability in COI in animals. 
+startNGap <- sapply(regmatches(dfData$nucleotides, gregexpr("^[-N]", dfData$nucleotides)), length)
+startNGap <- foreach(i=1:nrow(dfData)) %do% 
+  if (startNGap[[i]]>0) { 
+    split <- strsplit(dfData$nucleotides[i], "^[-N]+") 
+    dfData$nucleotides[i] <- split[[1]][2]
+  }
+endNGap <- sapply(regmatches(dfData$nucleotides, gregexpr("[-N]$", dfData$nucleotides)), length)
+endNGap <- foreach(i=1:nrow(dfData)) %do%
+  if (endNGap[[i]]>0) {
+    split <- strsplit(dfData$nucleotides[i], "[-N]+$")
+    dfData$nucleotides[i] <- split[[1]][1]
+  }
+internalNGap <- sapply(regmatches(dfData$nucleotides, gregexpr("[-N]", dfData$nucleotides)), length)
+internalNGap <- foreach(i=1:nrow(dfData)) %do%
+  which((internalNGap[[i]]/nchar(dfData$nucleotides[i]) > 0.01))
+nGapCheck <- sapply(internalNGap, function(x)length(x))
+nGapCheck <- which(nGapCheck>0)
+dfData <- dfData[-nGapCheck, ]
+
+#Remove redundant "BOLD" section from each row in the BIN column 
+dfData$bin_uri <- substr(dfData$bin_uri, 6, 13)
+
+#Filter out sequences without coordinates 
+containLatLon <- grep ("[0-9]", dfData$lat)
+dfData <- dfData[containLatLon, ]
+
+#Check for stop codons and indels
+#Save sequences to a list 
+sequences <- as.list(dfData$nucleotides)
+#Look up translation table for your taxa
+translation_table <- which_trans_table(taxa)
+#Check for insertions and deletions
+coi5p_object <- lapply(sequences, function(x){
+  coi5p_pipe(x, trans_table = translation_table)
+})
+
+#Run some checks to ensure data is filtered properly
+#Find dimensions of dataset
+dim(dfData)
+#Check that only CO1 is included 
+unique(dfData$markercode)
+#Check that there are no NAs
+sum(is.na(dfData$bin_uri))
+sum(is.na(dfData$species_name))
+sum(is.na(dfData$nucleotides))
+sum(is.na(dfData$lat))
+#Find summary of seqeunce lengths 
+summary(str_count(dfData$nucleotides))
+#Find length of DNA sequences in the dataset 
+Sequence_lengths <- str_count(dfData$nucleotides)
+#Make a histogram to show the distributions of sequence lengths 
+hist(Sequence_lengths, main = paste("Distribution of Sequence Lengths"), xlab = "Sequence Length")
+
+#Filter the GBIF data
+#Remove occurrences without a species ID
+dfGeoData <- dfGeoData %>%
+  filter(!is.na(species))
+
+#Run some checks
+#Find dimensions of dataset 
+dim(dfGeoData)
+#Check that there are no NAs
+sum(is.na(dfGeoData$species))
+
+#Reduce datasets to only needed columns 
+dfData <- (dfData[, c("processid", "bin_uri", "species_name", "nucleotides", "lat", "lon")])
+dfGeoData <- (dfGeoData[, c("gbifID", "species","decimalLatitude", "decimalLongitude")])
+
+#Remove unneeded variables 
+rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequence_lengths)
+
+#4.Organizing Data by Clusters----
+
+#If BOLD BINs are being used, the following steps are not needed.
+#Place data into clusters using an additional distance threshold. 
+#First, prepare the sequences for the alginment 
+#Ensure data is set to dataframe format  
+dfData <- as.data.frame(dfData)
+#Check the class of the object
+class(dfData)
+#Convert to DNAStringSet format 
+dfData$nucleotides <- DNAStringSet(dfData$nucleotides)
+#Name the stringset 
+names(dfData$nucleotides) <- dfData$processid
+#Check that the names are assigned properly
+names(df$nucleotides)
+
+#Align the sequences. The following parameters were chosen in order to conduct an efficient and accurate alignment. By setting diags to true, the speed of the alignment is increased. The gapopen is set to -3000 in order to reduce the gaps present in the alingment. 
+dfData_alignment <- muscle(dfData$nucleotides, diags=TRUE, gapopen=-3000)
+
+#Save alignment to file so it can be viewed in programs such as MEGA. 
+writeXStringSet(dfData_alignment, file = "Finland_Alignment", format = "fasta")
+
+#View Alignment in browser
+BrowseSeqs(dfData)
+
+#Convert to dnaBin format 
+dnaBIN <- as.DNAbin(dfData_alignment)
+#Check that the class is correct
+class(dnaBin)
+
+#Create a distance matrix.
+distanceMatrix <- dist.dna(dnaBin.COI, model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+
+#Cluster the sequences. 
+Data_clustered <- IdClusters(distanceMatrix,
+                           method = clustering_method,
+                           cutoff = clustering_threshold,
+                           showPlot = TRUE,
+                           type = "both",
+                           verbose = TRUE)
+#Plot a Dendrogram and check for any outliers
+plot(Data_clustered)
+#See how many clusters were created
+length(Datea_clustered)
+
+#Remove any unneeded variables 
+rm()
+
+#5.Group by Regions----
+
+#6.Multiple Sequence Alignment----
+
+#Alignment code was adapted from my previous work which was origionally adapted from Orton et al.(2019) and May et al.(2020). Code from both of these papers is avaliable at https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R and https://github.com/jmay29/phylo/blob/master/refSeqTrim.R 
+#Align sequences 
+RefSeqTrim <- function(x) {
+  #Create data frame for reference sequence 
+  #This reference sequence was taken from BOLD for Diptera (Record ID: ACGAZ1590-12, BIN:AAA1222).
+  dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence)
+  colnames(dfRefSeq)[2] <- "nucleotides"
+  #Convert to datatable
+  dfRefSeq <- setDT(dfRefSeq)
+  dfRefSeq[, "nucleotides":=as.character(nucleotides)]
+  #Trim sequences to 620bp
+  dfRefSeq[, nucleotides:=substr(nucleotides, 20, nchar(nucleotides)-19)]
+  #Check sequence length
+  dfRefSeq[, seqLength:=nchar(nucleotides)]
+  #Ensure sequences are of character type
+  alignmentSeqs <- as.character(x$nucleotides)
+  #Name according to bin_uri
+  names(alignmentSeqs) <- x$bin_uri
+  alignmentref <- as.character(dfRefSeq$nucleotides[1])
+  #Name reference sequence 
+  names(alignmentref) <- "Reference"
+  #Put sequences together
+  alignmentSeqsPlusRef <- append(alignmentref, alignmentSeqs)
+  #Convert to DNAStringSet 
+  DNAStringSet2 <- DNAStringSet(alignmentSeqsPlusRef)
+  #Run alignment 
+  alignment2 <- muscle::muscle(DNAStringSet2, diags=TRUE, gapopen=-3000)
+  #Check alignment 
+  classFileNames <- foreach(i=1:nrow(dfRefSeq)) %do% 
+    paste("alignmentUntrimmed", dfRefSeq$taxa[i], ".fas", sep="")
+  alignmentUntrimmed <- DNAStringSet(alignment2)
+  writeXStringSet(alignmentUntrimmed, file=classFileNames[[1]],
+                  format = "fasta", width=1500)
+  #Find stop and start positions in reference 
+  refSeqPos <- which(alignment2@unmasked@ranges@NAMES=="Reference")
+  refSeqPos <- alignment2@unmasked[refSeqPos]
+  refSeqPosStart <- regexpr("[ACTG]", refSeqPos)
+  refSeqPosStart <- as.numeric(refSeqPosStart)
+  refSeqPosEnd <- nchar(dfRefSeq$nucleotides[1]) + refSeqPosStart
+  refSeqPosEnd <- as.numeric(refSeqPosEnd)
+  #Trim sequence
+  alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd)
+  #Convert to DNAStringSet
+  DNAStringSet3 <- DNAStringSet(alignment2Trimmed)
+  #Check alignment 
+  classFileNames <- foreach(i=1:nrow(dfRefSeq)) %do% 
+    paste("alignmentTrimmed", dfRefSeq$taxa[i], ".fas", sep="")
+  writeXStringSet(DNAStringSet3, file=classFileNames[[1]],
+                  format = "fasta", width=1500)
+  #Remove reference sequence 
+  refSeqRm <- which(DNAStringSet3@ranges@NAMES=="Reference")
+  dnaStringSet3 <- subset(DNAStringSet3[-refSeqRm])
+  alignmentOrder <- DNAStringSet3@ranges@NAMES
+  #Reorder based on alignment
+  x <- x[match(alignmentOrder, x$bin_uri), ]
+  #Replace old sequences with new ones 
+  trimmedSeqs <- as.character(DNAStringSet3)
+  x$nucleotides <- trimmedSeqs
+  #Return dataframe with new sequences 
+  return(x)
+}
+
+#Trim sequences to reference sequence 
+dfData_Trimmed <- RefSeqTrim(dfData)
+#Remove NAs 
+dfData_Trimmed <- dfData_Trimmed[-c(1), ]
+
+#Create final alignment of sequences 
+#Create RefSeq data frame
+dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence)
+
+#name nucleotide column and set as character 
+colnames(dfRefSeq)[2] <- "nucleotides"
+dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides) 
+#Trim references to standard 620
+dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19) 
+#Check sequence length
+dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
+
+#Extract sequences and bin_uri
+bin_uri <- dfData_Trimmed$bin_uri
+Sequences <- dfData_Trimmed$nucleotides
+SequenceNames <- bin_uri
+
+#Take reference sequences
+alignmentref <- as.character(dfRefSeq$nucleotides)
+dfRefSeq$reference <- "reference"
+#Name reference as a reference
+alignmentRefNames <- dfRefSeq$reference
+#Merge reference with other sequences
+alignmentSequencesPlusRef <- append(Sequences, alignmentref)
+
+#Merge names together
+alignmentNames <- append(SequenceNames, alignmentRefNames)
+
+#Convert sequences to DNAStringSet format 
+dnaStringSet3 <- DNAStringSet(alignmentSequencesPlusRef)
+
+#Name each sequence 
+names(dnaStringSet3) <- c(alignmentNames) 
+
+#Multiple sequence alignment 
+alignmentFinal <- muscle(dnaStringSet3, diags=TRUE, gapopen=-3000)
+
+#Convert to dnaStringSet format
+dnaStringSet4 <- DNAStringSet(alignmentFinal)
+
+#Save alignment to fasta file. View in another program such as Mega. 
+FastaFileName <- paste(taxa, ".fas", sep="")
+alignmentFinalFasta <- DNAStringSet(alignmentFinal)
+writeXStringSet(alignmentFinalFasta, file=FastaFileName, format="fasta", width=1500)
+
+#View Alignment in browser
+BrowseSeqs(alignmentFinal)
+
+#Convert DNAStringSet to dataframes
+Data_Aligned <- data.frame(seq=as.character(dnaStringSet4), names=names(dnaStringSet4))
+#Rename names column
+Data_Aligned$bin_uri <- Data_Aligned$names
+Data_Aligned <- Data_Aligned[, c("bin_uri", "seq")]
+#Remove reference sequences
+reference_filter <- which(!Data_Aligned$bin_uri == "reference")
+Data_Aligned <- Data_Aligned[reference_filter, ]
+
+#Merge with the full data.
+Data_Full <- merge(Data, Data_Aligned, by = "bin_uri")
+
+#Remove reference sequence
+rm.sequence.fasta(FastaFileName, FastaFileName, to.rm = "reference")
+
+#Remove unneeded variables 
+rm()
+
+#7.F-Statistics and Multi-allelic Measures----
+
+#Read in fasta file
+seq_multiFas <- read.multiFASTA(FastaFileName)
+
+#Plot the alignment
+plot(seq_multiFas, cex = 0.2)
+#Remove .fas from locus name
+(setLocusNames(seq_multiFas) <- gsub(".fas", "", getLocusNames(seq_multiFas)))
+
+#Convert to genind object
+seq_genind <- multidna2genind(seq_multiFas, mlst = TRUE)
+#Look at summary of object 
+summary(seq_genind)
+
+#Create dataframe for labels for the genind object
+Names <- data.frame(Species = seqs_multiFas@labels, order = 1:length(seqs_multiFas@labels))
+
+#Create dataframe containing only the record id and population 
+dfData_Reduced <- dfData[,c("record_id", "Population")]
+#Merge the two dataframes by record id
+dfData_Reduced <- merge(dfData_Reduced, Names)
+#Ensure dataframe is in the same order as the alignment
+dfData_Reduced <- dfData_Reduced[order(Data_Reduced$order), ]
+
+#Create dataframe for populations
+dfPopulations <- data.frame(Populations = dfData_Reduced$Population)
+
+#Assign populations to genind object
+strata(seqs.gid) <- dfPopulations
+#Specify that we want to compare the populations we inputted
+setPop(seqs.gid) <- ~dfPopulations
+
+#8.Analysis of Molecular Variance (AMOVA)----
+
+#9.Mismatch Distributions----
+
+#10.Analysis of Variance (ANOVA)----
+
+#11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
