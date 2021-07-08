@@ -19,6 +19,8 @@ library(coil)
 library(muscle)
 #install.packages("phylotools")
 library(phylotools)
+#install.packages("rlist")
+library(rlist)
 
 #Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
 model <- "TN93"
@@ -86,15 +88,30 @@ dfData$bin_uri <- substr(dfData$bin_uri, 6, 13)
 containLatLon <- grep ("[0-9]", dfData$lat)
 dfData <- dfData[containLatLon, ]
 
-#Check for stop codons and indels
+#Check for stop codons and indels.
 #Save sequences to a list 
 sequences <- as.list(dfData$nucleotides)
+#Save record IDs as list 
+processID <- as.list(dfData$processid)
 #Look up translation table for your taxa
 translation_table <- which_trans_table(taxa)
 #Check for insertions and deletions
-coi5p_object <- lapply(sequences, function(x){
-  coi5p_pipe(x, trans_table = translation_table)
+coi5p_object <- lapply(1:length(sequences), function(i){
+  coi5p_pipe(sequences[[i]], trans_table = translation_table, name = processID[[i]])
 })
+#See which sequences have indels and stop codons and remove these from the list 
+indels <- list.exclude(coi5p_object, indel_likely == "TRUE")
+stop_codon <- list.exclude(coi5p_object, stop_codons == "TRUE")
+#Create a list of processids for remaining sequences
+Ids_Filtered_Indels <- lapply(1:length(indels), function(i){
+  indels[[i]]$name
+})
+Ids_Filtered_Stop <- lapply(1:length(indels), function(i){
+  indels[[i]]$name
+})
+#Remove sequences with indels and stop codons from dataset
+dfData <- dfData[dfData$processid %in% Ids_Filtered_Indels, ]
+dfData <- dfData[dfData$processid %in% Ids_Filtered_Stop, ]
 
 #Run some checks to ensure data is filtered properly
 #Find dimensions of dataset
@@ -129,7 +146,7 @@ dfData <- (dfData[, c("processid", "bin_uri", "species_name", "nucleotides", "la
 dfGeoData <- (dfGeoData[, c("gbifID", "species","decimalLatitude", "decimalLongitude")])
 
 #Remove unneeded variables 
-rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequence_lengths)
+rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequence_lengths, coi5p_object, Ids_Filtered_Indels, Ids_Filtered_Stop, indels, processID, sequences, stop_codon, translation_table)
 
 #4.Organizing Data by Clusters----
 
