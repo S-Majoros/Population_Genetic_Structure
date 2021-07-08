@@ -347,6 +347,8 @@ plot(seq_multiFas, cex = 0.2)
 
 #Convert to genind object
 seq_genind <- multidna2genind(seq_multiFas, mlst = TRUE)
+#Check class of object
+class(seq_genind)
 #Look at summary of object 
 summary(seq_genind)
 
@@ -365,6 +367,8 @@ dfPopulations <- data.frame(Populations = dfData_Reduced$Population)
 
 #Assign populations to genind object
 strata(seqs.gid) <- dfPopulations
+#Check to make sure populations are assigned properly 
+seq_genind$populations
 #Specify that we want to compare the populations we inputted
 setPop(seqs.gid) <- ~dfPopulations
 
