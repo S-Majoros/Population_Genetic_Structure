@@ -218,8 +218,8 @@ RefSeqTrim <- function(x) {
   dfRefSeq[, seqLength:=nchar(nucleotides)]
   #Ensure sequences are of character type
   alignmentSeqs <- as.character(x$nucleotides)
-  #Name according to bin_uri
-  names(alignmentSeqs) <- x$bin_uri
+  #Name according to process id
+  names(alignmentSeqs) <- x$processid
   alignmentref <- as.character(dfRefSeq$nucleotides[1])
   #Name reference sequence 
   names(alignmentref) <- "Reference"
@@ -256,7 +256,7 @@ RefSeqTrim <- function(x) {
   dnaStringSet3 <- subset(DNAStringSet3[-refSeqRm])
   alignmentOrder <- DNAStringSet3@ranges@NAMES
   #Reorder based on alignment
-  x <- x[match(alignmentOrder, x$bin_uri), ]
+  x <- x[match(alignmentOrder, x$processid), ]
   #Replace old sequences with new ones 
   trimmedSeqs <- as.character(DNAStringSet3)
   x$nucleotides <- trimmedSeqs
@@ -281,10 +281,10 @@ dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleoti
 #Check sequence length
 dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
 
-#Extract sequences and bin_uri
-bin_uri <- dfData_Trimmed$bin_uri
+#Extract sequences and process id
+processID <- dfData_Trimmed$processid
 Sequences <- dfData_Trimmed$nucleotides
-SequenceNames <- bin_uri
+SequenceNames <- processID
 
 #Take reference sequences
 alignmentref <- as.character(dfRefSeq$nucleotides)
@@ -310,7 +310,7 @@ alignmentFinal <- muscle(dnaStringSet3, diags=TRUE, gapopen=-3000)
 dnaStringSet4 <- DNAStringSet(alignmentFinal)
 
 #Save alignment to fasta file. View in another program such as Mega. 
-FastaFileName <- paste(taxa, ".fas", sep="")
+FastaFileName <- paste(taxa, region, ".fas", sep="")
 alignmentFinalFasta <- DNAStringSet(alignmentFinal)
 writeXStringSet(alignmentFinalFasta, file=FastaFileName, format="fasta", width=1500)
 
@@ -320,14 +320,14 @@ BrowseSeqs(alignmentFinal)
 #Convert DNAStringSet to dataframes
 Data_Aligned <- data.frame(seq=as.character(dnaStringSet4), names=names(dnaStringSet4))
 #Rename names column
-Data_Aligned$bin_uri <- Data_Aligned$names
-Data_Aligned <- Data_Aligned[, c("bin_uri", "seq")]
+Data_Aligned$processid <- Data_Aligned$names
+Data_Aligned <- Data_Aligned[, c("processid", "seq")]
 #Remove reference sequences
-reference_filter <- which(!Data_Aligned$bin_uri == "reference")
+reference_filter <- which(!Data_Aligned$processid == "reference")
 Data_Aligned <- Data_Aligned[reference_filter, ]
 
 #Merge with the full data.
-Data_Full <- merge(Data, Data_Aligned, by = "bin_uri")
+Data_Full <- merge(Data, Data_Aligned, by = "processid")
 
 #Remove reference sequence
 rm.sequence.fasta(FastaFileName, FastaFileName, to.rm = "reference")
