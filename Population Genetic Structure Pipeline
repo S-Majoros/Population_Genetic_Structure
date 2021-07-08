@@ -15,8 +15,10 @@ library(stringr)
 library(foreach)
 #install.packages("coil")
 library(coil)
-#BiocManager::install("Biostrings", "muscle")
+#BiocManager::install("Biostrings", "muscle", "DECIPHER")
+library(Biostrings)
 library(muscle)
+library(DECIPHER)
 #install.packages("phylotools")
 library(phylotools)
 #install.packages("rlist")
@@ -167,16 +169,20 @@ names(dfData$nucleotides) <- dfData$processid
 names(dfData$nucleotides)
 
 #Align the sequences. The following parameters were chosen in order to conduct an efficient and accurate alignment. By setting diags to true, the speed of the alignment is increased. The gapopen is set to -3000 in order to reduce the gaps present in the alingment. 
-dfData_alignment <- muscle::muscle(dfData$nucleotides, diags=TRUE, gapopen=-3000)
+Data_alignment <- muscle::muscle(dfData$nucleotides, diags=TRUE, gapopen=-3000)
+#Convert to DNAStringSet format
+Data_alignment <- DNAStringSet(Data_alignment)
+#Check class of alignment 
+class(Data_alignment)
 
 #Save alignment to file so it can be viewed in programs such as MEGA. 
-writeXStringSet(dfData_alignment, file = region + "_Alignment", format = "fasta")
+writeXStringSet(Data_alignment, file = region + "_Alignment", format = "fasta")
 
 #View Alignment in browser
-BrowseSeqs(dfData_alignment)
+BrowseSeqs(Data_alignment)
 
 #Convert to dnaBin format 
-dnaBIN <- as.DNAbin(dfData_alignment)
+dnaBIN <- as.DNAbin(Data_alignment)
 #Check that the class is correct
 class(dnaBin)
 
@@ -391,6 +397,9 @@ plot(HedrickPairwise)
 rm()
 
 #8.Analysis of Molecular Variance (AMOVA)----
+
+#Calculate pairwise genetic distances 
+pairwise_dist <- dist.multidna(seq_multiFas, pool = TRUE)
 
 #9.Mismatch Distributions----
 
