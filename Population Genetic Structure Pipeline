@@ -162,10 +162,10 @@ dfData$nucleotides <- DNAStringSet(dfData$nucleotides)
 #Name the stringset 
 names(dfData$nucleotides) <- dfData$processid
 #Check that the names are assigned properly
-names(df$nucleotides)
+names(dfData$nucleotides)
 
 #Align the sequences. The following parameters were chosen in order to conduct an efficient and accurate alignment. By setting diags to true, the speed of the alignment is increased. The gapopen is set to -3000 in order to reduce the gaps present in the alingment. 
-dfData_alignment <- muscle(dfData$nucleotides, diags=TRUE, gapopen=-3000)
+dfData_alignment <- muscle::muscle(dfData$nucleotides, diags=TRUE, gapopen=-3000)
 
 #Save alignment to file so it can be viewed in programs such as MEGA. 
 writeXStringSet(dfData_alignment, file = "Finland_Alignment", format = "fasta")
