@@ -31,6 +31,8 @@ clustering_method <- "UPGMA"
 
 #Set up taxa. 
 taxa <- "Diptera"
+#Set up study region 
+region <- "Greenland"
 #Set up reference sequence. This Diptera sequence was retrieved from BOLD (Record ID: ACGAZ1590-12, BIN:AAA1222). The BIN was chosen because it met the following criteria; from the order Diptera, contained at least 10 CO1-5P sequences, had at least one specimen photograph that matched the higher taxonomy and did not have taxonomic conflicts at family level or above. The reference sequence was chosen because it is 658 base pairs long, has 2 trace file chromatograms, and no missing information or stop codons. 
 reference_sequence <- "AACTTTATATTTTATTTTTGGAGCTTGATCTAGAATAATTGGAACTTCTTTAAGAATATTAATTCGAATTGAATTAGGTCATCCAGGTTCCTTAATTGGAAATGACCAAATTTATAATGTAATTGTAACAGCTCATGCATTTATTATAATTTTTTTTATAGTAATACCAATTATAATTGGAGGATTTGGAAATTGATTAGTTCCTTTAATATTAGGAGCACCAGATATAGCTTTTCCTCGAATGAATAATATAAGTTTTTGACTTCTTCCTCCTGCTTTAATACTTTTATTAACAAGTAGAATAGTAGAAAGTGGAGCTGGAACAGGATGAACAGTTTATCCTCCTTTATCATCTATTATTGCTCATGGAGGAGCATCTGTTGACTTAGCTATTTTTTCTCTTCATTTAGCAGGAATTTCTTCTATTTTAGGAGCTGTAAATTTTATTACAACTGTAATTAATATACGATCTATTGGTATTACCTTTGATCGAATACCTTTATTTGTTTGATCAGTTGCTATTACAGCCTTATTACTTTTATTATCTTTACCAGTTTTAGCTGGAGCAATTACAATATTATTAACAGATCGAAATTTAAATACATCATTTTTTGATCCTGCTGGAGGAGGAGATCCTATTTTATACCAACATTTATTT"
 
@@ -168,10 +170,10 @@ names(dfData$nucleotides)
 dfData_alignment <- muscle::muscle(dfData$nucleotides, diags=TRUE, gapopen=-3000)
 
 #Save alignment to file so it can be viewed in programs such as MEGA. 
-writeXStringSet(dfData_alignment, file = "Finland_Alignment", format = "fasta")
+writeXStringSet(dfData_alignment, file = region + "_Alignment", format = "fasta")
 
 #View Alignment in browser
-BrowseSeqs(dfData)
+BrowseSeqs(dfData_alignment)
 
 #Convert to dnaBin format 
 dnaBIN <- as.DNAbin(dfData_alignment)
@@ -179,7 +181,7 @@ dnaBIN <- as.DNAbin(dfData_alignment)
 class(dnaBin)
 
 #Create a distance matrix.
-distanceMatrix <- dist.dna(dnaBin.COI, model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+distanceMatrix <- dist.dna(dnaBIN, model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
 
 #Cluster the sequences. 
 Data_clustered <- IdClusters(distanceMatrix,
