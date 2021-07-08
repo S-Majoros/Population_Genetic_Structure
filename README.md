@@ -1,2 +1,2 @@
 # Population_Genetic_Structure
-R code for determining population genetic structure for various animal taxa and comparing structures across species with different biological traits. 
+R code for determining population genetic structure for various animal taxa and comparing structures across species with different biological traits. This script includes steps for reading in and filtering data, organizing data into clusters, grouping by region, running a multiple seqeunce alignment, calculating F-statisitcs and multi-allelic measures, calculating analysis of molecular variance, calaculating mismatch distributions, calculating analysis of variance, and calculating phylogenetic generalized least squares analyses. 
