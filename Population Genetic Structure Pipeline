@@ -299,6 +299,9 @@ length(unique(dfData$cell))
 #Count how many BINs are included in the dataset
 length(unique(dfData$bin_uri))
 
+#Split dataframe based on Bin_uri so each BIN can be analyzed individually
+BIN_List <- split(dfData, f = dfData$bin_uri)
+
 #Remove unneeded variables 
 rm(BINs_per_Region, Chao_Results1, Chao_Results2, dfRegions, Grid, R_Curve1, R_Curve2, regions_per_BIN, BIN_Filter, Region_Filter)
 
