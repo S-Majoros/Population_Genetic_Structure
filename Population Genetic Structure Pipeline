@@ -416,26 +416,23 @@ FastaFileName <- paste(taxa, region, ".fas", sep="")
 alignmentFinalFasta <- DNAStringSet(alignmentFinal)
 writeXStringSet(alignmentFinalFasta, file=FastaFileName, format="fasta", width=1500)
 
-#View Alignment in browser
-BrowseSeqs(alignmentFinal)
-
 #Convert DNAStringSet to dataframes
-Data_Aligned <- data.frame(seq=as.character(dnaStringSet4), names=names(dnaStringSet4))
+dfData_Aligned <- data.frame(seq=as.character(dnaStringSet4), names=names(dnaStringSet4))
 #Rename names column
-Data_Aligned$processid <- Data_Aligned$names
-Data_Aligned <- Data_Aligned[, c("processid", "seq")]
+dfData_Aligned$processid <- dfData_Aligned$names
+dfData_Aligned <- dfData_Aligned[, c("processid", "seq")]
 #Remove reference sequences
-reference_filter <- which(!Data_Aligned$processid == "reference")
-Data_Aligned <- Data_Aligned[reference_filter, ]
+reference_filter <- which(!dfData_Aligned$processid == "reference")
+dfData_Aligned <- dfData_Aligned[reference_filter, ]
 
 #Merge with the full data.
-Data_Full <- merge(Data, Data_Aligned, by = "processid")
+dfData_Full <- merge(Data, dfData_Aligned, by = "processid")
 
 #Remove reference sequence
 rm.sequence.fasta(FastaFileName, FastaFileName, to.rm = "reference")
 
 #Remove unneeded variables 
-rm()
+rm(alignmentFinal, alignmentFinalFasta, dfData_Aligned, dfData_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, AlignmentName, alignmentNames, alignmentRefNames, alignmentSequencesPlusRef, FastaFileName, processID, reference_filter, SequenceNames, Sequences)
 
 #7.F-Statistics and Multi-allelic Measures----
 
