@@ -351,11 +351,6 @@ RefSeqTrim <- function(x) {
   alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd)
   #Convert to DNAStringSet
   DNAStringSet3 <- DNAStringSet(alignment2Trimmed)
-  #Check alignment 
-  classFileNames <- foreach(i=1:nrow(dfRefSeq)) %do% 
-    paste("alignmentTrimmed", dfRefSeq$taxa[i], ".fas", sep="")
-  writeXStringSet(DNAStringSet3, file=classFileNames[[1]],
-                  format = "fasta", width=1500)
   #Remove reference sequence 
   refSeqRm <- which(DNAStringSet3@ranges@NAMES=="Reference")
   dnaStringSet3 <- subset(DNAStringSet3[-refSeqRm])
@@ -370,9 +365,13 @@ RefSeqTrim <- function(x) {
 }
 
 #Trim sequences to reference sequence 
-dfData_Trimmed <- RefSeqTrim(dfData)
+Data_Trimmed <- lapply(1:length(BIN_List), function(i){
+  RefSeqTrim(BIN_List[[i]])
+})
 #Remove NAs 
-dfData_Trimmed <- dfData_Trimmed[-c(1), ]
+Data_Trimmed <- lapply(1:length(Data_Trimmed), function(i){
+  Data_Trimmed[[i]][-c(1), ]
+})
 
 #Create final alignment of sequences 
 #Create RefSeq data frame
@@ -386,9 +385,13 @@ dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleoti
 #Check sequence length
 dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
 
-#Extract sequences and process id
-processID <- dfData_Trimmed$processid
-Sequences <- dfData_Trimmed$nucleotides
+#Extract sequences and process ID
+processID <- lapply(1:length(Data_Trimmed), function(i){
+  Data_Trimmed[[i]]$processid
+})
+Sequences <- lapply(1:length(Data_Trimmed), function(i){
+  Data_Trimmed[[i]]$nucleotides
+})
 SequenceNames <- processID
 
 #Take reference sequences
@@ -397,13 +400,19 @@ dfRefSeq$reference <- "reference"
 #Name reference as a reference
 alignmentRefNames <- dfRefSeq$reference
 #Merge reference with other sequences
-alignmentSequencesPlusRef <- append(Sequences, alignmentref)
+AlignmentSequencePlusRef <-lapply(1:length(Sequences), function(i){
+  append(Sequences[[i]], alignmentref)
+})
 
 #Merge names together
-alignmentNames <- append(SequenceNames, alignmentRefNames)
+AlignmentNames <-lapply(1:length(SequenceNames), function(i){
+  append(SequenceNames[[i]], alignmentref)
+})
 
 #Convert sequences to DNAStringSet format 
-dnaStringSet3 <- DNAStringSet(alignmentSequencesPlusRef)
+dnaStringSet3 <-lapply(1:length(AlignmentSequencePlusRef), function(i){
+  DNAStringSet(AlignmentSequencePlusRef[[i]])
+})
 
 #Name each sequence 
 names(dnaStringSet3) <- c(alignmentNames) 
