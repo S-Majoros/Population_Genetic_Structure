@@ -432,7 +432,7 @@ dfData_Full <- merge(Data, dfData_Aligned, by = "processid")
 rm.sequence.fasta(FastaFileName, FastaFileName, to.rm = "reference")
 
 #Remove unneeded variables 
-rm(alignmentFinal, alignmentFinalFasta, dfData_Aligned, dfData_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, AlignmentName, alignmentNames, alignmentRefNames, alignmentSequencesPlusRef, FastaFileName, processID, reference_filter, SequenceNames, Sequences)
+rm(alignmentFinal, alignmentFinalFasta, dfData_Aligned, dfData_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, AlignmentName, alignmentNames, alignmentRefNames, alignmentSequencesPlusRef, processID, reference_filter, SequenceNames, Sequences)
 
 #7.F-Statistics and Multi-allelic Measures----
 
