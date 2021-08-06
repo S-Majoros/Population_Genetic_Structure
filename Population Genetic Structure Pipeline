@@ -450,20 +450,33 @@ Data_Aligned <- lapply(1:length(dnaStringSet4), function(i){
   data.frame(seq=as.character(dnaStringSet4[[i]]), names=names(dnaStringSet4[[i]]))
 })
 #Rename names column
-dfData_Aligned$processid <- dfData_Aligned$names
-dfData_Aligned <- dfData_Aligned[, c("processid", "seq")]
+for(i in 1:length(Data_Aligned)){
+  Data_Aligned[[i]]$processid <- Data_Aligned[[i]]$names 
+}
+Data_Aligned <- lapply(1:length(Data_Aligned), function(i){
+  Data_Aligned[[i]][, c("processid", "seq")]
+})
 #Remove reference sequences
-reference_filter <- which(!dfData_Aligned$processid == "reference")
-dfData_Aligned <- dfData_Aligned[reference_filter, ]
+Reference_Filter <- lapply(1:length(Data_Aligned), function(i){
+  which(!Data_Aligned[[i]]$processid == "reference")
+})
+for(i in 1:length(Reference_Filter)){
+  Data_Aligned[[i]][Reference_Filter[[i]], ]
+}
 
 #Merge with the full data.
-dfData_Full <- merge(Data, dfData_Aligned, by = "processid")
+dfData_Full <- merge(dfData, dfData_Aligned, by = "processid")
+Data_Full <- lapply(1:length(Data_Aligned), function(i){
+  merge(BIN_List[[i]], Data_Aligned[[i]], by = "processid")
+})
 
 #Remove reference sequence
-rm.sequence.fasta(FastaFileName, FastaFileName, to.rm = "reference")
+for(i in 1:length(FastaFileNames)){
+  rm.sequence.fasta(FastaFileNames[[i]], FastaFileNames[[i]], to.rm = "reference")
+}
 
 #Remove unneeded variables 
-rm(alignmentFinal, alignmentFinalFasta, dfData_Aligned, dfData_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, AlignmentName, alignmentNames, alignmentRefNames, alignmentSequencesPlusRef, processID, reference_filter, SequenceNames, Sequences)
+rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef, BINs, Data_Aligned,Data_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, processID, Reference_Filter, SequenceNames, Sequences, alignmentRefNames, alignmentref)
 
 #7.F-Statistics and Multi-allelic Measures----
 
