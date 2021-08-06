@@ -480,30 +480,50 @@ rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef
 
 #7.F-Statistics and Multi-allelic Measures----
 
-#Read in fasta file
-seq_multiFas <- read.multiFASTA(FastaFileName)
+#Read in fasta files
+seq_multiFas <- lapply(1:length(FastaFileNames), function(i){
+  read.multiFASTA(FastaFileNames[[i]])
+})
 
-#Plot the alignment
-plot(seq_multiFas, cex = 0.2)
+#Plot the alignments
+for(i in 1:length(seq_multiFas)){
+  plot(seq_multiFas[[i]], cex = 0.2)
+}
+
 #Remove .fas from locus name
-(setLocusNames(seq_multiFas) <- gsub(".fas", "", getLocusNames(seq_multiFas)))
+for(i in 1:length(seq_multiFas)){
+  (setLocusNames(seq_multiFas[[i]]) <- gsub(".fas", "", getLocusNames(seq_multiFas[[i]])))
+}
 
 #Convert to genind object
-seq_genind <- multidna2genind(seq_multiFas, mlst = TRUE)
+seq_genind <- lapply(1:length(seq_multiFas), function(i){
+  multidna2genind(seq_multiFas[[i]], mlst = TRUE)
+})
 #Check class of object
-class(seq_genind)
+class(seq_genind[[1]])
 #Look at summary of object 
-summary(seq_genind)
+summary(seq_genind[[1]])
 
-#Create dataframe for labels for the genind object
+#Create dataframe for labels for the genind object. Running into errors with this. 
 Names <- data.frame(Species = seqs_multiFas@labels, order = 1:length(seqs_multiFas@labels))
+Names <- lapply(1:length(seq_multiFas), function(i){
+  data.frame(processid = seq_multiFas[[i]]@labels, order = 1:length(seq_multiFas[[i]]@labels))
+})
 
 #Create dataframe containing only the record id and population 
-dfData_Reduced <- dfData[,c("record_id", "Population")]
+Data_Reduced <- lapply(1:length(Data_Full), function(i){
+  Data_Full[[i]][,c("processid", "cell")]
+})
+
 #Merge the two dataframes by record id
-dfData_Reduced <- merge(dfData_Reduced, Names)
+Data_Reduced <- lapply(1:length(Data_Reduced), function(i){
+  merge(Data_Reduced[[i]], Names[[i]])
+})
+
 #Ensure dataframe is in the same order as the alignment
-dfData_Reduced <- dfData_Reduced[order(Data_Reduced$order), ]
+Data_Reduced <- lapply(1:length(Data_Reduced), function(i){
+  Data_Reduced[[i]][order(Data_Reduced[[i]]$order), ]
+})
 
 #Create dataframe for populations
 dfPopulations <- data.frame(Populations = dfData_Reduced$Population)
