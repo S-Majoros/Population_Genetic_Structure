@@ -406,7 +406,7 @@ AlignmentSequencePlusRef <-lapply(1:length(Sequences), function(i){
 
 #Merge names together
 AlignmentNames <-lapply(1:length(SequenceNames), function(i){
-  append(SequenceNames[[i]], alignmentref)
+  append(SequenceNames[[i]], alignmentrefNames)
 })
 
 #Convert sequences to DNAStringSet format 
@@ -525,33 +525,53 @@ Data_Reduced <- lapply(1:length(Data_Reduced), function(i){
   Data_Reduced[[i]][order(Data_Reduced[[i]]$order), ]
 })
 
-#Create dataframe for populations
-dfPopulations <- data.frame(Populations = dfData_Reduced$Population)
+#Create dataframe for regions/cells
+Populations <- lapply(1:length(Data_Reduced), function(i){
+  data.frame(Populations = Data_Reduced[[i]]$cell)
+})
 
 #Assign populations to genind object
-strata(seqs.gid) <- dfPopulations
+for(i in 1:length(seq_genind)){
+  strata(seq_genind[[i]]) <- Populations[[i]]
+}
 #Check to make sure populations are assigned properly 
-seq_genind$populations
+seq_genind[[1]]$strata
 #Specify that we want to compare the populations we inputted
-setPop(seqs.gid) <- ~dfPopulations
+for(i in 1:length(seq_genind)){
+  setPop(seq_genind[[i]]) <- ~Populations
+}
 
 #Calculate population genetic differentiation. This function finds the expected heterozygosity if there is random mating within sub-populations, the expected heterozygosity if there were random mating across the global population, Nei's Gst, Hedrick's Gst and Jost's D.
-diff_stats(seqs.gid)
+stat_summaries <- lapply(1:length(seq_genind), function(i){
+  diff_stats(seq_genind[[i]])
+})
 
 #Calculate Jost's D
-DPairwise <- as.matrix(pairwise_D(seqs.gid))
+DPairwise <- lapply(1:length(seq_genind), function(i){
+  as.matrix(pairwise_D(seq_genind[[i]]))
+})
 #Calculate pairwise FST
-NeiPairwise <- as.matrix(pairwise_Gst_Nei(seqs.gid))
+NeiPairwise <- lapply(1:length(seq_genind), function(i){
+  as.matrix(pairwise_Gst_Nei(seq_genind[[i]]))
+})
 #Calculate GST
-HedrickPairwise <-as.matrix(pairwise_Gst_Hedrick(seqs.gid))
+HedrickPairwise <- lapply(1:length(seq_genind), function(i){
+  as.matrix(pairwise_Gst_Hedrick(seq_genind[[i]]))
+})
 
 #Plotting the fst matrix
-plot(DPairwise)
-plot(NeiPairwise)
-plot(HedrickPairwise)
+for(i in 1:length(DPairwise)){
+  plot(DPairwise[[i]])
+}
+for(i in 1:length(NeiPairwise)){
+  plot(NeiPairwise[[i]])
+}
+for(i in 1:length(HedrickPairwise)){
+  plot(HedrickPairwise[[i]])
+}
 
 #Remove uneeded variables
-rm()
+rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
 
 #8.Analysis of Molecular Variance (AMOVA)----
 
