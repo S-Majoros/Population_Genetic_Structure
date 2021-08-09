@@ -571,7 +571,7 @@ for(i in 1:length(HedrickPairwise)){
 }
 
 #Remove uneeded variables
-rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
+rm(Data_Reduced, FastaFileNames, Names, Populations)
 
 #8.Analysis of Molecular Variance (AMOVA)----
 
