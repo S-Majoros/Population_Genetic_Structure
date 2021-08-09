@@ -41,6 +41,8 @@ library(DECIPHER)
 library(plot.matrix)
 #install.packages("poppr")
 library(poppr)
+#install.packages("pegas")
+library(pegas)
 
 #Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
 model <- "TN93"
@@ -588,17 +590,22 @@ AMOVA <- lapply(1:length(seq_genind), function(i){
 
 #Put sequences into DNABin format
 #First convert sequences to a DNAStringSet format
-Data_StringSet <- DNAStringSet(dfData_Full$seq)
-names(Data_StringSet) <- dfData_Full$bin_uri
-Data_DNABin <- as.DNAbin(Data_StringSet)
+Data_StringSet <- lapply(1:length(Data_Full), function(i){
+  DNAStringSet(Data_Full[[i]]$seq)
+})
+for(i in 1:length(Data_Full)){
+  names(Data_StringSet[[i]]) <- Data_Full[[i]]$processid
+}
+Data_DNABin <- lapply(1:length(Data_StringSet), function(i){
+  as.DNAbin(Data_StringSet[[i]])
+})
 #Check that the format is correct
-class(Data_DNABin)
+class(Data_DNABin[[1]])
 
 #Calculate mismatch distribution for the sequences and plot a histogram 
-MD <- MMD(Data_DNABin, xlab = "Pairwise Distance")
-
-#Remove unneeded variables
-rm()
+MD <- lapply(1:length(Data_DNABin), function(i){
+  MMD(Data_DNABin[[i]], xlab = "Pairwise Distance")
+})
 
 #10.Analysis of Variance (ANOVA)----
 
