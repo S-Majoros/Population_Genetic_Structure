@@ -37,6 +37,10 @@ library(stringr)
 library(Biostrings)
 library(muscle)
 library(DECIPHER)
+#install.packages("plot.matrix")
+library(plot.matrix)
+#install.packages("poppr")
+library(poppr)
 
 #Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
 model <- "TN93"
@@ -575,14 +579,10 @@ rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
 
 #8.Analysis of Molecular Variance (AMOVA)----
 
-#Calculate pairwise genetic distances 
-pairwise_dist <- dist.multidna(seq_multiFas, pool = TRUE)
-
 #Calculate Analysis of Molecular Variance 
-amova(pairwise_dist ~ dfpopulations, data = strata(seq_genind), nperm = 100)
-
-#Remove unneeded variables 
-rm()
+AMOVA <- lapply(1:length(seq_genind), function(i){
+  poppr.amova(seq_genind[[i]], ~Populations)
+})
 
 #9.Mismatch Distributions----
 
