@@ -609,43 +609,40 @@ MD <- lapply(1:length(Data_DNABin), function(i){
 
 #10.Analysis of Variance (ANOVA)----
 
-#Read in csv file containing trait information and FST values
+#Read in csv file containing trait information and FST values. Commented out flight ability for now because all species looked at in this dataset have a flying life stage. 
 Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data.csv")
 #Run ANOVAs for all traits compared to FST
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_FST <- aov(FST ~ larval_diet, data = Trait_Data)
 ANOVA_Habitat_FST <- aov(FST ~ habitat, data = Trait_Data)
-ANOVA_Flight_FST <- aov(FST ~ flight_ability, data = Trait_Data)
+#ANOVA_Flight_FST <- aov(FST ~ flight_ability, data = Trait_Data)
 #Get ANOVA summary 
 summary(ANOVA_Habitat_FST)
 summary(ANOVA_Feeding_Adult_FST)
 summary(ANOVA_Feeding_Larval_FST)
-summary(ANOVA_Flight_FST)
+#summary(ANOVA_Flight_FST)
 
 #Run ANOVAs for all traits compared to GST
 ANOVA_Feeding_Adult_GST <- aov(GST ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_GST <- aov(GST ~ larval_diet, data = Trait_Data)
 ANOVA_Habitat_GST <- aov(GST ~ habitat, data = Trait_Data)
-ANOVA_Flight_GST <- aov(GST ~ flight_ability, data = Trait_Data)
+#ANOVA_Flight_GST <- aov(GST ~ flight_ability, data = Trait_Data)
 #Get ANOVA summary 
 summary(ANOVA_Habitat_GST)
 summary(ANOVA_Feeding_Adult_GST)
 summary(ANOVA_Feeding_Larval_GST)
-summary(ANOVA_Flight_GST)
+#summary(ANOVA_Flight_GST)
 
 #Run ANOVAs for all traits compared to JD
 ANOVA_Feeding_Adult_JD <- aov(JD ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_JD <- aov(JD ~ larval_diet, data = Trait_Data)
 ANOVA_Habitat_JD <- aov(JD ~ habitat, data = Trait_Data)
-ANOVA_Flight_JD <- aov(JD ~ flight_ability, data = Trait_Data)
+#ANOVA_Flight_JD <- aov(JD ~ flight_ability, data = Trait_Data)
 #Get ANOVA summary 
 summary(ANOVA_Habitat_JD)
 summary(ANOVA_Feeding_Adult_JD)
 summary(ANOVA_Feeding_Larval_JD)
-summary(ANOVA_Flight_JD)
-
-#Remove unneeded variables 
-rm()
+#summary(ANOVA_Flight_JD)
 
 #11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
 
