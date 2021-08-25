@@ -722,16 +722,18 @@ plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 
 #Reduce dfData_Full to needed columns
 dfData_Full <- (dfData_Full[, c("processid", "species_name", "lat", "lon")])
-dfGeoData <- (dfGeoData[, c("gbifID", "species","decimalLatitude", "decimalLongitude")])
-#Rename the columns so that they are consistent across both dataframes 
-dfData_Full <- rename(dfData_Full, ID = processid)
-dfGeoData <- dfGeoData %>% 
-  rename(
-    ID = gbifID,
-    species_name = species,
-    lat = decimalLatitude,
-    lon = decimalLongitude
-  )
+
+#Rename the columns so that they are consistent across both dataframes {
+names(dfData)[names(dfData) == "processid"] <- "ID"
+names(dfGeoData)[names(dfGeoData) == "gbifID"] <- "ID"
+names(dfGeoData)[names(dfGeoData) == "species"] <- "species_name"
+names(dfGeoData)[names(dfGeoData) == "decimalLatitude"] <- "lat"
+names(dfGeoData)[names(dfGeoData) == "decimalLongitude"] <- "lon"
+
+#Reduce dfGeoData to only species found in dfData
+Data_Filter <- which(dfGeoData$species_name %in% dfData$species_name)
+dfGeoData <- dfGeoData[Data_Filter, ]
+
 #Combine dataframes
 dfRange_Data <- rbind(dfData_Full, dfGeoData)
 
@@ -759,11 +761,11 @@ Width <- lapply(1:length(MaxLon), function(i){
 })
 #Find area for each species distribution
 Species_Range <- lapply(1:length(Length), function(i){
-  Length*Width 
+  Length[[i]]*Width[[i]] 
 })
 
 #Remove unneeded variables
-rm()
+rm(Data_Filter, MaxLat, MinLat, MaxLon, MinLon)
 
 #13. Relationship between F-Statistics, Range size and Traits----
 
