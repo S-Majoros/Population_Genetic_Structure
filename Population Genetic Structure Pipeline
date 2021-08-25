@@ -23,6 +23,8 @@ library(devtools)
 library(dggridR)
 #install.packages("tidyr")
 library(tidyr)
+#install.packages("tidyverse")
+library(tidyverse)
 #install.packages("iNEXT")
 library(iNEXT)
 #install.packages("phylotools")
@@ -33,16 +35,22 @@ library(readr)
 library(rlist)
 #install.packages("stringr")
 library(stringr)
-#BiocManager::install(c("Biostrings", "muscle", "DECIPHER"))
-library(Biostrings)
-library(muscle)
-library(DECIPHER)
+#install.packages("mmod")
+library(mmod)
+#install.packages("picante")
+library(picante)
 #install.packages("plot.matrix")
 library(plot.matrix)
 #install.packages("poppr")
 library(poppr)
 #install.packages("pegas")
 library(pegas)
+#install.packages("phytools")
+library(phytools)
+#BiocManager::install(c("Biostrings", "muscle", "DECIPHER"))
+library(Biostrings)
+library(muscle)
+library(DECIPHER)
 
 #Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
 model <- "TN93"
@@ -647,7 +655,7 @@ summary(ANOVA_Feeding_Larval_JD)
 #11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite
-PGLStree <- read.nexus("Diptera_Tree")
+PGLStree <- read.nexus("GreenlandDipteraTreeBIN_Aug25")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
 PGLStree <- force.ultrametric(PGLStree, method="extend")
@@ -655,63 +663,60 @@ PGLStree <- force.ultrametric(PGLStree, method="extend")
 #Run PGLS for FST
 #Set the row names to species names 
 Trait_Data <- Trait_Data %>%
-  column_to_rownames(var = 'species_name')
+  column_to_rownames(var = 'BIN')
 #Make sure tree and dataframe are in the same order
 Trait_Data <- Trait_Data[match(PGLStree$tip.label, rownames(Trait_Data)), ]
 #Run PGLS analysis 
 pglsModel_Habitat_FST <- gls(FST ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Adult_Diet_FST <- gls(FST ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Larval_Diet_FST <- gls(FST ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
-pglsModel_Flight_FST <- gls(FST ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+#pglsModel_Flight_FST <- gls(FST ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 #Get PGLS summary 
 summary(pglsModel_Habitat_FST)
 summary(pglsModel_Adult_Diet_FST)
 summary(pglsModel_Larval_Diet_FST)
-summary(pglsModel_Flight_FST)
+#summary(pglsModel_Flight_FST)
 
 #Create boxplots for traits vs. population genetic structure metrics 
 plot_Habitat_FST<- boxplot(Trait_Data$FST ~ Trait_Data$habitat)
 plot_Adult_Diet_FST <- boxplot(Trait_Data$FST ~ Trait_Data$adult_diet)
 plot_Larval_Diet_FST <- boxplot(Trait_Data$FST ~ Trait_Data$larval_diet)
-plot_Flight_FST <- boxplot(Trait_Data$FST ~ Trait_Data$flight_ability)
+#plot_Flight_FST <- boxplot(Trait_Data$FST ~ Trait_Data$flight_ability)
 
 #Run PGLS for GST
 pglsModel_Habitat_GST <- gls(GST ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Adult_Diet_GST <- gls(GST ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Larval_Diet_GST <- gls(GST ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
-pglsModel_Flight_GST <- gls(GST ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+#pglsModel_Flight_GST <- gls(GST ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 #Get PGLS summary 
 summary(pglsModel_Habitat_GST)
 summary(pglsModel_Adult_Diet_GST)
 summary(pglsModel_Larval_Diet_GST)
-summary(pglsModel_Flight_GST)
+#summary(pglsModel_Flight_GST)
 
 #Create boxplots for traits vs. population genetic structure metrics 
 plot_Habitat_GST<- boxplot(Trait_Data$GST ~ Trait_Data$habitat)
 plot_Adult_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$adult_diet)
 plot_Larval_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$larval_diet)
-plot_Flight_GST <- boxplot(Trait_Data$GST ~ Trait_Data$flight_ability)
+#plot_Flight_GST <- boxplot(Trait_Data$GST ~ Trait_Data$flight_ability)
 
 #Run PGLS for JD
 #Run PGLS analysis 
 pglsModel_Habitat_JD <- gls(JD ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Adult_Diet_JD <- gls(JD ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Larval_Diet_JD <- gls(JD ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
-pglsModel_Flight_JD <- gls(JD ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+#pglsModel_Flight_JD <- gls(JD ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 #Get PGLS summary 
 summary(pglsModel_Habitat_JD)
 summary(pglsModel_Adult_Diet_JD)
 summary(pglsModel_Larval_Diet_JD)
-summary(pglsModel_Flight_JD)
+#summary(pglsModel_Flight_JD)
 
 #Create boxplots for traits vs. population genetic structure metrics 
 plot_Habitat_JD<- boxplot(Trait_Data$JD ~ Trait_Data$habitat)
 plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
-plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
-
-#Remove unneeded variables 
-rm()
+#plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
 
 #12.Determining Range Size----
 
