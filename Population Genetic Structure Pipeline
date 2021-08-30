@@ -237,6 +237,13 @@ dfClusters$processid <- row.names(dfClusters)
 #Add clusters column to origional dataframe
 dfData_Clustered <- merge(dfClusters, dfData_stringset, by = "processid")
 
+#Rename the dfData_Clustered in order to run the rest of the pipeline
+dfData <- dfData_Clustered
+#Reduce dataframe to needed columns 
+dfData <- (dfData[, c("processid", "cluster", "species_name", "nucleotides", "lat", "lon")])
+#Rename cluster to bin_uri just for simplicity 
+names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
+
 #Remove any unneeded variables 
 rm(Data_alignment, Data_clustered, dfClusters, dfData_alignment, distanceMatrix, dnaBIN, dfData_stringset)
 
