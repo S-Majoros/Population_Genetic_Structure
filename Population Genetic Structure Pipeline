@@ -662,16 +662,19 @@ summary(ANOVA_Feeding_Larval_JD)
 
 #11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
 
-#Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite
+#Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
 PGLStree <- read.nexus("GreenlandDipteraTreeBIN_Aug25")
+#PGLStree <- read.nexus("DipteraClusteredTree")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
 PGLStree <- force.ultrametric(PGLStree, method="extend")
 
 #Run PGLS for FST
-#Set the row names to species names 
+#Set the row names to BINS. If using clustered data, use the commented code and set row names to species names, as the tip labels of the tree cannot be numeric.  
 Trait_Data <- Trait_Data %>%
   column_to_rownames(var = 'BIN')
+#Trait_Data <- Trait_Data %>%
+#  column_to_rownames(var = 'Species')
 #Make sure tree and dataframe are in the same order
 Trait_Data <- Trait_Data[match(PGLStree$tip.label, rownames(Trait_Data)), ]
 #Run PGLS analysis 
