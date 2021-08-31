@@ -624,8 +624,9 @@ MD <- lapply(1:length(Data_DNABin), function(i){
 
 #10.Analysis of Variance (ANOVA)----
 
-#Read in csv file containing trait information and FST values. Commented out flight ability for now because all species looked at in this dataset have a flying life stage. 
+#Read in csv file containing trait information and FST values. Commented out flight ability for now because all species looked at in this dataset have a flying life stage. If using clustered data, read in the second commented out dataframe.
 Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data.csv")
+#Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data_Clustered.csv")
 #Run ANOVAs for all traits compared to FST
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_FST <- aov(FST ~ larval_diet, data = Trait_Data)
