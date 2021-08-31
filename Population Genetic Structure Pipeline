@@ -780,8 +780,9 @@ rm(Data_Filter, MaxLat, MinLat, MaxLon, MinLon)
 
 #13. Relationship between F-Statistics, Range size and Traits----
 
-#Read in range size data
+#Read in range size data. If using clustered data, read in the second file. 
 Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data.csv")
+#Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data_Clustered.csv")
 
 #Run an ANOVA and PGLS to compare range size to traits and population genetic structure 
 #Run ANOVA comparing range size to population genetic stucture metrics 
@@ -804,7 +805,7 @@ summary(ANOVA_Range_Adult)
 summary(ANOVA_Range_Larval)
 #summary(ANOVA_Range_Flight)
 
-#Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS.
+#Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS. If using clustered data, just use species tree from earlier.
 PGLStree <- read.nexus("DipteraSpeciesTree_Aug26")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
