@@ -660,6 +660,46 @@ summary(ANOVA_Feeding_Adult_JD)
 summary(ANOVA_Feeding_Larval_JD)
 #summary(ANOVA_Flight_JD)
 
+#Plot results as violin plots
+#FST and adult diet
+p <- ggplot(Trait_Data, aes(x=Trait_Data$adult_diet, y=Trait_Data$FST, fill=Trait_Data$adult_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#FST and larval diet
+p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$FST, fill=Trait_Data$larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#FST and habitat
+p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$FST, fill=Trait_Data$habitat)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+
+#GST and adult diet
+p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$GST, fill=Trait_Data$larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#GST and larval diet
+p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$GST, fill=Trait_Data$larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#GST and habitat
+p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$GST, fill=Trait_Data$habitat)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+
+#Jost's D and adult diet
+p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$JD, fill=Trait_Data$larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#Jost's D and larval diet
+p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$JD, fill=Trait_Data$larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#Jost's D and habitat
+p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$JD, fill=Trait_Data$habitat)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+
 #11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
