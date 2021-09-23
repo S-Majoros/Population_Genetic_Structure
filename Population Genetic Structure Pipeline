@@ -132,7 +132,7 @@ processID <- as.list(dfData$processid)
 translation_table <- which_trans_table(taxa)
 #Check for insertions and deletions
 coi5p_object <- lapply(1:length(sequences), function(i){
-  coi5p_pipe(sequences[[i]], trans_table = translation_table, name = processID[[i]])
+  coi5p_pipe(sequences[[i]], trans_table = translation_table, name = processID[[i]], triple_translate = TRUE)
 })
 #See which sequences have indels and stop codons and remove these from the list 
 indels <- list.exclude(coi5p_object, indel_likely == "TRUE")
