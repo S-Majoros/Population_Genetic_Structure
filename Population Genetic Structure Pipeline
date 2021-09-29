@@ -348,7 +348,7 @@ dfGrid <- merge(dfGrid, SampleCounts, by.x="cell", by.y="cell")
 #Load map data
 countries <- map_data("world")
 
-#Plot polygons on a flat map
+#Plot polygons on a flat map. coord_fixed will need to be adjusted to focus in on your area of interest and scale_fill_viridis_c will need to be adjusted to reflect your sample size. 
 Map <- ggplot() + 
   geom_polygon(data=countries, aes(x=long, y=lat, group=group), fill= "white", color="black") +
   geom_polygon(data=dfGrid, aes(x=long, y=lat, group=group, fill=count), alpha=0.4) +
