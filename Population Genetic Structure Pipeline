@@ -245,7 +245,7 @@ dfData <- (dfData[, c("processid", "cluster", "species_name", "nucleotides", "la
 names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
 
 #Remove any unneeded variables 
-rm(Data_alignment, Data_clustered, dfClusters, dfData_alignment, distanceMatrix, dnaBIN, dfData_stringset)
+rm(Data_alignment, Data_clustered, dfClusters,, distanceMatrix, dnaBIN, dfData_stringset)
 
 #5.Group by Regions----
 
@@ -275,6 +275,18 @@ BIN_Filter <- which(dfData$bin_uri %in% regions_per_BIN$bin_uri)
 #Apply filter 
 dfData <- dfData[BIN_Filter, ]
 
+#Filter out regions with less than 10 records
+#Create datatable showing number of records per region 
+Records_per_Region <- dfData[ , .(number_of_records = length(unique(processid))), by = cell]
+#Convert to to dataframe
+Records_per_Region <- as.data.frame(Records_per_Region)
+#Filter down to regions that have 10 or more records
+Records_per_Region <- filter(Records_per_Region, Records_per_Region$number_of_records > 9)
+#Create filter reduce main dataframe to only regions found in Records_per_Region
+Record_Filter <- which(dfData$cell %in% Records_per_Region$cell)
+#Apply filter 
+dfData <- dfData[Record_Filter, ]
+
 #Filter out regions with less than 10 BINs
 #Create datatable showing number of bins per region 
 BINs_per_Region <- dfData[ , .(number_of_bins = length(unique(bin_uri))), by = cell]
@@ -286,6 +298,9 @@ BINs_per_Region <- filter(BINs_per_Region, BINs_per_Region$number_of_bins > 9)
 Region_Filter <- which(dfData$cell %in% BINs_per_Region$cell)
 #Apply filter 
 dfData <- dfData[Region_Filter, ]
+
+#Remove columns with NAs
+dfRegions <- na.omit(dfRegions)
 
 #Calculate the species abundance for each polygon using the Chao estimator
 #Code was based on https://rstudio-pubs-static.s3.amazonaws.com/210859_a0c6a2a199124917a0a0e7d81d34c8dd.html 
@@ -320,11 +335,44 @@ length(unique(dfData$cell))
 #Count how many BINs are included in the dataset
 length(unique(dfData$bin_uri))
 
+#Get the center coordinates of the cells
+SampleCenters  <- dgSEQNUM_to_GEO(Grid, dfData$cell)
+
+#Get the number of samples in each cell
+SampleCounts   <- dfData %>% group_by(cell) %>% summarise(count=n())
+
+#Get the grid cell boundaries
+dfGrid  <- dgcellstogrid(Grid, SampleCounts$cell, frame=TRUE, wrapcells=TRUE)
+dfGrid <- merge(dfGrid, SampleCounts, by.x="cell", by.y="cell")
+
+#Load map data
+countries <- map_data("world")
+
+#Plot polygons on a flat map
+Map <- ggplot() + 
+  geom_polygon(data=countries, aes(x=long, y=lat, group=group), fill= "white", color="black") +
+  geom_polygon(data=dfGrid, aes(x=long, y=lat, group=group, fill=count), alpha=0.4) +
+  coord_fixed(xlim = c(-22, -18),  ylim = c(70, 80))+
+  geom_path(data=dfGrid, aes(x=long, y=lat, group=group), alpha=0.4, color="white") +
+  geom_point(aes(x=SampleCenters$lon_deg, y=SampleCenters$lat_deg)) +
+  geom_label(aes(x=SampleCenters$lon_deg, y=SampleCenters$lat_deg, label = dfData$cell), size = 3.7, fontface = "bold", label.padding = unit(0.15, "lines")) +
+  scale_fill_viridis_c(limits = c(1500, 8000)) +
+  labs(fill = "Number of\nSpecimens") 
+
+#Plot on a spherical projection
+map_spherical <- Map + 
+  coord_map("ortho", xlim = c(-22, -18), ylim = c(70, 80)) +
+  xlab('')+ylab('')+
+  theme(axis.ticks.x=element_blank())+
+  theme(axis.ticks.y=element_blank())+
+  theme(axis.text.x=element_blank())+
+  theme(axis.text.y=element_blank())
+
 #Split dataframe based on Bin_uri so each BIN can be analyzed individually
 BIN_List <- split(dfData, f = dfData$bin_uri)
 
 #Remove unneeded variables 
-rm(BINs_per_Region, Chao_Results1, Chao_Results2, dfRegions, Grid, R_Curve1, R_Curve2, regions_per_BIN, BIN_Filter, Region_Filter)
+rm(BINs_per_Region, Chao_Results1, Chao_Results2, dfRegions, Grid, R_Curve1, R_Curve2, regions_per_BIN, BIN_Filter, Region_Filter, countries, dfGrid, Records_per_Region, SampleCenters, SampleCounts, Record_Filter)
 
 #6.Multiple Sequence Alignment----
 
