@@ -673,7 +673,7 @@ MD <- lapply(1:length(Data_DNABin), function(i){
 #10.Analysis of Variance (ANOVA)----
 
 #Read in csv file containing trait information and FST values. Commented out flight ability for now because all species looked at in this dataset have a flying life stage. If using clustered data, read in the second commented out dataframe.
-Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data.csv")
+Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data2.csv")
 #Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data_Clustered.csv")
 #Run ANOVAs for all traits compared to FST
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
@@ -723,7 +723,7 @@ p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$FST, fill=Trait_D
 p + scale_color_brewer(palette = "Dark2")
 
 #GST and adult diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$GST, fill=Trait_Data$larval_diet)) + 
+p <- ggplot(Trait_Data, aes(x=Trait_Data$adult_diet, y=Trait_Data$GST, fill=Trait_Data$adult_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #GST and larval diet
@@ -736,7 +736,7 @@ p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$GST, fill=Trait_D
 p + scale_color_brewer(palette = "Dark2")
 
 #Jost's D and adult diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$JD, fill=Trait_Data$larval_diet)) + 
+p <- ggplot(Trait_Data, aes(x=Trait_Data$adult_diet, y=Trait_Data$JD, fill=Trait_Data$adult_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #Jost's D and larval diet
@@ -751,7 +751,7 @@ p + scale_color_brewer(palette = "Dark2")
 #11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
-PGLStree <- read.nexus("GreenlandDipteraTreeBIN_Aug25")
+PGLStree <- read.nexus("GreenlandDipteraTreeBIN_Oct4")
 #PGLStree <- read.nexus("DipteraClusteredTree")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
@@ -892,6 +892,20 @@ summary(ANOVA_Range_Habitat)
 summary(ANOVA_Range_Adult)
 summary(ANOVA_Range_Larval)
 #summary(ANOVA_Range_Flight)
+
+#Plot results as violin plots
+#Range size and adult diet
+p <- ggplot(Range_Data, aes(x=Range_Data$adult_diet, y=Range_Data$range_size, fill=Range_Data$adult_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#Range size and larval diet
+p <- ggplot(Range_Data, aes(x=Range_Data$larval_diet, y=Range_Data$range_size, fill=Range_Data$larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
+#Range size and habitat
+p <- ggplot(Range_Data, aes(x=Range_Data$habitat, y=Range_Data$range_size, fill=Range_Data$habitat)) + 
+  geom_violin(trim=FALSE, legend = NULL)
+p + scale_color_brewer(palette = "Dark2")
 
 #Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS. If using clustered data, just use species tree from earlier.
 PGLStree <- read.nexus("DipteraSpeciesTree_Aug26")
