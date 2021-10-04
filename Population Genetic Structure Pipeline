@@ -928,11 +928,6 @@ summary(pglsModel_Range_FST)
 summary(pglsModel_Range_GST)
 summary(pglsModel_Range_JD)
 
-#Create boxplots for range size vs. population genetic structure metrics 
-plot_Range_FST<- boxplot(Range_Data$range_size ~ Range_Data$FST)
-plot_Range_GST<- boxplot(Range_Data$range_size ~ Range_Data$GST)
-plot_Range_JD<- boxplot(Range_Data$range_size ~ Range_Data$JD)
-
 #Run PGLS analysis 
 pglsModel_Range_Habitat <- gls(range_size ~ habitat, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
 pglsModel_Range_Adult <- gls(range_size ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
