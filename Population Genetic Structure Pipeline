@@ -628,16 +628,36 @@ HedrickPairwise <- lapply(1:length(seq_genind), function(i){
   as.matrix(pairwise_Gst_Hedrick(seq_genind[[i]]))
 })
 
-#Plotting the fst matrix
-for(i in 1:length(DPairwise)){
-  plot(DPairwise[[i]])
-}
-for(i in 1:length(NeiPairwise)){
-  plot(NeiPairwise[[i]])
-}
-for(i in 1:length(HedrickPairwise)){
-  plot(HedrickPairwise[[i]])
-}
+#Plot FST as a heat map 
+#Format the matrix
+NeiPairwise_melt <- lapply(1:length(NeiPairwise), function(i){
+  melt(DPairwise[[i]])
+})
+#Create the heat map
+FSTHeatMap <- lapply(1:length(NeiPairwise_melt), function(i){
+  ggplot(data = NeiPairwise_melt[[i]], aes(x=Var1, y=Var2, fill=value)) + geom_tile()
+})
+
+#Plot Jost's D as a heat map 
+#Format the matrix
+DPairwise_melt <- lapply(1:length(DPairwise), function(i){
+  melt(DPairwise[[i]])
+})
+#Create the heat map
+JDHeatMap <- lapply(1:length(DPairwise_melt), function(i){
+  ggplot(data = DPairwise_melt[[i]], aes(x=Var1, y=Var2, fill=value)) + geom_tile()
+})
+
+#Plot GST as a heat map 
+#Format the matrix
+HedrickPairwise_melt <- lapply(1:length(HedrickPairwise), function(i){
+  melt(HedrickPairwise[[i]])
+})
+#Create the heat map
+GSTHeatMap <- lapply(1:length(HedrickPairwise_melt), function(i){
+  ggplot(data = HedrickPairwise_melt[[i]], aes(x=Var1, y=Var2, fill=value)) + geom_tile()
+})
+
 
 #Remove uneeded variables
 rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
