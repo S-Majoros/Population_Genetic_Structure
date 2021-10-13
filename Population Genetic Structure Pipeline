@@ -628,36 +628,62 @@ HedrickPairwise <- lapply(1:length(seq_genind), function(i){
   as.matrix(pairwise_Gst_Hedrick(seq_genind[[i]]))
 })
 
-#Plot FST as a heat map 
-#Format the matrix
-NeiPairwise_melt <- lapply(1:length(NeiPairwise), function(i){
-  melt(DPairwise[[i]])
+#Plot Jost's D as a heat map 
+#Set matrices as dataframes 
+DDataframe <- lapply(1:length(DPairwise), function(i){
+  as.data.frame(DPairwise[[i]])
 })
-#Create the heat map
-FSTHeatMap <- lapply(1:length(NeiPairwise_melt), function(i){
-  ggplot(data = NeiPairwise_melt[[i]], aes(x=Var1, y=Var2, fill=value)) + geom_tile()
+#Plot Heat map
+HeatMaps_JD <- lapply(1:length(DDataframe), function(i){
+  DDataframe[[i]] %>% 
+    as.data.frame() %>%
+    rownames_to_column("Populations") %>%
+    pivot_longer(-c(Populations), names_to = "samples", values_to = "JD")%>%
+    mutate(samples= fct_relevel(samples, colnames(DDataframe[[i]]))) %>%
+    mutate(Populations = fct_relevel(Populations, colnames(DDataframe[[i]]))) %>%
+    ggplot(aes(x=samples, y=Populations, fill=JD)) + 
+    geom_raster() +
+    xlab("Populations") +
+    labs(fill = "Jost's D")
 })
 
-#Plot Jost's D as a heat map 
-#Format the matrix
-DPairwise_melt <- lapply(1:length(DPairwise), function(i){
-  melt(DPairwise[[i]])
+#Plot FST as a heat map 
+#Set matrices as dataframes 
+NeiDataframe <- lapply(1:length(NeiPairwise), function(i){
+  as.data.frame(NeiPairwise[[i]])
 })
-#Create the heat map
-JDHeatMap <- lapply(1:length(DPairwise_melt), function(i){
-  ggplot(data = DPairwise_melt[[i]], aes(x=Var1, y=Var2, fill=value)) + geom_tile()
+#Plot Heat map
+HeatMaps_FST <- lapply(1:length(NeiDataframe), function(i){
+  NeiDataframe[[i]] %>% 
+    as.data.frame() %>%
+    rownames_to_column("Populations") %>%
+    pivot_longer(-c(Populations), names_to = "samples", values_to = "FST")%>%
+    mutate(samples= fct_relevel(samples, colnames(NeiDataframe[[i]]))) %>%
+    mutate(Populations = fct_relevel(Populations, colnames(NeiDataframe[[i]]))) %>%
+    ggplot(aes(x=samples, y=Populations, fill=FST)) + 
+    geom_raster() +
+    xlab("Populations") +
+    labs(fill = "FST")
 })
 
 #Plot GST as a heat map 
-#Format the matrix
-HedrickPairwise_melt <- lapply(1:length(HedrickPairwise), function(i){
-  melt(HedrickPairwise[[i]])
+#Set matrices as dataframes 
+HedrickDataframe <- lapply(1:length(HedrickPairwise), function(i){
+  as.data.frame(HedrickPairwise[[i]])
 })
-#Create the heat map
-GSTHeatMap <- lapply(1:length(HedrickPairwise_melt), function(i){
-  ggplot(data = HedrickPairwise_melt[[i]], aes(x=Var1, y=Var2, fill=value)) + geom_tile()
+#Plot Heat map
+HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
+  HedrickDataframe[[i]] %>% 
+    as.data.frame() %>%
+    rownames_to_column("Populations") %>%
+    pivot_longer(-c(Populations), names_to = "samples", values_to = "GST")%>%
+    mutate(samples= fct_relevel(samples, colnames(HedrickDataframe[[i]]))) %>%
+    mutate(Populations = fct_relevel(Populations, colnames(HedrickDataframe[[i]]))) %>%
+    ggplot(aes(x=samples, y=Populations, fill=GST)) + 
+    geom_raster() +
+    xlab("Populations") +
+    labs(fill = "GST")
 })
-
 
 #Remove uneeded variables
 rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
