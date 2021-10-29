@@ -336,6 +336,13 @@ dfData <- dfData %>%
 #Ungroup the data
 dfData <- ungroup(dfData, cell)
 
+#Filter again for BINs that appear in more than one region, just to ensure that only these are included in the analysis
+dfData <- dfData %>%
+  group_by(bin_uri) %>%
+  filter(length(unique(cell)) > 1)
+#Ungroup the data
+dfData <- ungroup(dfData, bin_uri)
+
 #Calculate the abundance based species richness 
 #Create a new dataframe with bin_uri and cells
 dfRegions <- (dfData[, c("bin_uri", "cell")])
