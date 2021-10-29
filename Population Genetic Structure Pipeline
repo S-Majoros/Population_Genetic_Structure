@@ -313,53 +313,30 @@ dfData$cell <- dgGEO_to_SEQNUM(Grid, dfData$lon, dfData$lat)$seqnum
 
 #Change nucleotide column back to a character string 
 dfData$nucleotides <- as.character(dfData$nucleotides)
+
 #Filter out BINs with less than 20 records and BINs that are only found in one region 
 dfData <- dfData %>%
   group_by(bin_uri) %>%
-  filter(n() > 19)
-#Filter out BINs that are only found in one region
-#Convert to datatable 
-dfData <- as.data.table(dfData)
-#create datatable showing number of regions per BIN 
-regions_per_BIN <- dfData[ , .(number_of_regions=length(unique(cell))), by=bin_uri]
-#Convert to to dataframe
-regions_per_BIN <- as.data.frame(regions_per_BIN)
-#Filter down to BINs that are found in at least two regions 
-regions_per_BIN <- filter(regions_per_BIN, regions_per_BIN$number_of_regions > 1)
-#Create filter reduce main dataframe to only BINs found in regions_per_BIN
-BIN_Filter <- which(dfData$bin_uri %in% regions_per_BIN$bin_uri)
-#Apply filter 
-dfData <- dfData[BIN_Filter, ]
+  filter(n() > 19) %>%
+  filter(length(unique(cell)) > 1)
+#Ungroup the data
+dfData <- ungroup(dfData, bin_uri)
 
-#Filter out regions with less than 10 records
-#Create datatable showing number of records per region 
-Records_per_Region <- dfData[ , .(number_of_records = length(unique(processid))), by = cell]
-#Convert to to dataframe
-Records_per_Region <- as.data.frame(Records_per_Region)
-#Filter down to regions that have 10 or more records
-Records_per_Region <- filter(Records_per_Region, Records_per_Region$number_of_records > 9)
-#Create filter reduce main dataframe to only regions found in Records_per_Region
-Record_Filter <- which(dfData$cell %in% Records_per_Region$cell)
-#Apply filter 
-dfData <- dfData[Record_Filter, ]
+#Filter out BINs with less than 10 records per region
+dfData <- dfData %>%
+  group_by(cell, bin_uri) %>%
+  filter(n() > 9)
+#Ungroup the data
+dfData <- ungroup(dfData, cell, bin_uri)
 
 #Filter out regions with less than 10 BINs
-#Create datatable showing number of bins per region 
-BINs_per_Region <- dfData[ , .(number_of_bins = length(unique(bin_uri))), by = cell]
-#Convert to to dataframe
-BINs_per_Region <- as.data.frame(BINs_per_Region)
-#Filter down to regions that have 10 or more BINs
-BINs_per_Region <- filter(BINs_per_Region, BINs_per_Region$number_of_bins > 9)
-#Create filter reduce main dataframe to only regions found in BINs_per_Region
-Region_Filter <- which(dfData$cell %in% BINs_per_Region$cell)
-#Apply filter 
-dfData <- dfData[Region_Filter, ]
+dfData <- dfData %>%
+  group_by(cell) %>%
+  filter(length(unique(bin_uri)) > 9)
+#Ungroup the data
+dfData <- ungroup(dfData, cell)
 
-#Remove columns with NAs
-dfRegions <- na.omit(dfRegions)
-
-#Calculate the species abundance for each polygon using the Chao estimator
-#Code was based on https://rstudio-pubs-static.s3.amazonaws.com/210859_a0c6a2a199124917a0a0e7d81d34c8dd.html 
+#Calculate the abundance based species richness 
 #Create a new dataframe with bin_uri and cells
 dfRegions <- (dfData[, c("bin_uri", "cell")])
 #Add column with the number of each records of each BIN at each site
@@ -370,21 +347,37 @@ dfRegions <- dfRegions %>%
 dfRegions <- filter(unique(dfRegions))
 #Format the table so the regions the columns
 dfRegions <- pivot_wider(dfRegions, names_from = cell, values_from = count)
-#Calculate the Chao Richness for each region
-Chao_Results1 <- ChaoRichness(dfRegions$`7478`)
-Chao_Results2 <- ChaoRichness(dfRegions$`7721`)
-#Plot rarefaction curves 
-R_Curve1 <- iNEXT(dfRegions$`7478`, q=0, datatype="abundance")
-ggiNEXT(R_Curve1,)
-R_Curve2 <- iNEXT(dfRegions$`7721`, q=0, datatype="abundance")
-ggiNEXT(R_Curve2,)
 
-#Filter for regions that have at least 70% of their expected species richness
-#Sampled_Regions <- which(Chao_Results$Observed/Chao_Results$Estimator >= percent_sampled)
-Chao_Results1$Observed/Chao_Results1$Estimator
-Chao_Results2$Observed/Chao_Results2$Estimator
-#Filter down dfData to only those in Sampled_Regions
-#dfData <- dfData[Sampled_Regions$bin_uri, ]
+#Remove columns with NAs
+dfRegions <- na.omit(dfRegions)
+
+#set to dataframe
+dfRegions <- as.data.frame(dfRegions)
+#Set bin_uri to rownames 
+rownames(dfRegions) <- dfRegions[,1]
+#Remove first column 
+dfRegions$bin_uri <- NULL
+
+#Find abundance based richness
+abundance_results <- lapply(dfRegions, estimateR)
+#Find incidence based richness
+incidence_results <- lapply(dfRegions, specpool)
+
+#Plot rarefaction curve
+rarefaction_curve <- rarecurve(dfRegions)
+#Plot species accumulation curve 
+accumulation_curve <- specaccum(dfRegions)
+plot(accumulation_curve)
+
+#Filter for regions that do not meet the assigned expected species richness percentage. 
+Sampled_Regions_Abundance <- list.filter(abundance_results,S.obs/S.chao1 >= percent_sampled_abundance)
+Sampled_Regions_Incidence <- list.filter(abundance_results,S.obs/S.chao1 >= percent_sampled_incidence)
+
+#Filter down to regions found in both lists
+Sampled_Regions <- intersect(names(Sampled_Regions_Abundance), names(Sampled_Regions_Incidence))
+
+#Filter dataset to include only well sampled regions
+dfData <- filter(dfData, dfData$cell %in% Sampled_Regions)
 
 #Count how many regions are included in the dataset
 length(unique(dfData$cell))
@@ -417,18 +410,18 @@ Map <- ggplot() +
 
 #Plot on a spherical projection
 map_spherical <- Map + 
-  coord_map("ortho", xlim = c(-22, -18), ylim = c(70, 80)) +
+  coord_map("ortho", xlim = c(-23, -18), ylim = c(74, 75)) +
   xlab('')+ylab('')+
   theme(axis.ticks.x=element_blank())+
   theme(axis.ticks.y=element_blank())+
   theme(axis.text.x=element_blank())+
   theme(axis.text.y=element_blank())
-
+  
 #Split dataframe based on Bin_uri so each BIN can be analyzed individually
 BIN_List <- split(dfData, f = dfData$bin_uri)
 
 #Remove unneeded variables 
-rm(BINs_per_Region, Chao_Results1, Chao_Results2, dfRegions, Grid, R_Curve1, R_Curve2, regions_per_BIN, BIN_Filter, Region_Filter, countries, dfGrid, Records_per_Region, SampleCenters, SampleCounts, Record_Filter)
+rm(abundance_results,accumulation_curve, dfRegions, Grid, countries, dfGrid, incidence_results, rarefaction_curve, SampleCenters, SampleCounts,Sampled_Regions_Abundance, Sampled_Regions_Incidence)
 
 #6.Multiple Sequence Alignment----
 
