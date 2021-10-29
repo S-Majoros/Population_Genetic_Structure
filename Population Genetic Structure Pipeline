@@ -426,62 +426,6 @@ rm(abundance_results,accumulation_curve, dfRegions, Grid, countries, dfGrid, inc
 #6.Multiple Sequence Alignment----
 
 #Alignment code was adapted from my previous work which was origionally adapted from Orton et al.(2019) and May et al.(2020). Code from both of these papers is avaliable at https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R and https://github.com/jmay29/phylo/blob/master/refSeqTrim.R 
-#Align sequences 
-RefSeqTrim <- function(x) {
-  #Create data frame for reference sequence 
-  #This reference sequence was taken from BOLD for Diptera (Record ID: ACGAZ1590-12, BIN:AAA1222).
-  dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence)
-  colnames(dfRefSeq)[2] <- "nucleotides"
-  #Convert to datatable
-  dfRefSeq <- setDT(dfRefSeq)
-  dfRefSeq[, "nucleotides":=as.character(nucleotides)]
-  #Trim sequences to 620bp
-  dfRefSeq[, nucleotides:=substr(nucleotides, 20, nchar(nucleotides)-19)]
-  #Check sequence length
-  dfRefSeq[, seqLength:=nchar(nucleotides)]
-  #Ensure sequences are of character type
-  alignmentSeqs <- as.character(x$nucleotides)
-  #Name according to process id
-  names(alignmentSeqs) <- x$processid
-  alignmentref <- as.character(dfRefSeq$nucleotides[1])
-  #Name reference sequence 
-  names(alignmentref) <- "Reference"
-  #Put sequences together
-  alignmentSeqsPlusRef <- append(alignmentref, alignmentSeqs)
-  #Convert to DNAStringSet 
-  DNAStringSet2 <- DNAStringSet(alignmentSeqsPlusRef)
-  #Run alignment 
-  alignment2 <- muscle::muscle(DNAStringSet2, diags=TRUE, gapopen=-3000)
-  #Check alignment 
-  classFileNames <- foreach(i=1:nrow(dfRefSeq)) %do% 
-    paste("alignmentUntrimmed", dfRefSeq$taxa[i], ".fas", sep="")
-  alignmentUntrimmed <- DNAStringSet(alignment2)
-  writeXStringSet(alignmentUntrimmed, file=classFileNames[[1]],
-                  format = "fasta", width=1500)
-  #Find stop and start positions in reference 
-  refSeqPos <- which(alignment2@unmasked@ranges@NAMES=="Reference")
-  refSeqPos <- alignment2@unmasked[refSeqPos]
-  refSeqPosStart <- regexpr("[ACTG]", refSeqPos)
-  refSeqPosStart <- as.numeric(refSeqPosStart)
-  refSeqPosEnd <- nchar(dfRefSeq$nucleotides[1]) + refSeqPosStart
-  refSeqPosEnd <- as.numeric(refSeqPosEnd)
-  #Trim sequence
-  alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd)
-  #Convert to DNAStringSet
-  DNAStringSet3 <- DNAStringSet(alignment2Trimmed)
-  #Remove reference sequence 
-  refSeqRm <- which(DNAStringSet3@ranges@NAMES=="Reference")
-  dnaStringSet3 <- subset(DNAStringSet3[-refSeqRm])
-  alignmentOrder <- DNAStringSet3@ranges@NAMES
-  #Reorder based on alignment
-  x <- x[match(alignmentOrder, x$processid), ]
-  #Replace old sequences with new ones 
-  trimmedSeqs <- as.character(DNAStringSet3)
-  x$nucleotides <- trimmedSeqs
-  #Return dataframe with new sequences 
-  return(x)
-}
-
 #Trim sequences to reference sequence 
 Data_Trimmed <- lapply(1:length(BIN_List), function(i){
   RefSeqTrim(BIN_List[[i]])
@@ -537,9 +481,14 @@ for(i in 1:length(dnaStringSet3)){
   names(dnaStringSet3[[i]]) <- AlignmentNames[[i]] 
 }
 
-#Multiple sequence alignment 
+#Remove gaps
+dnaStringSet3 <- lapply(1:length(dnaStringSet3), function(i){
+  RemoveGaps(dnaStringSet3[[i]])
+})
+
+#Run alignment 
 AlignmentFinal <- lapply(1:length(dnaStringSet3), function(i){
-  muscle(dnaStringSet3[[i]], diags=TRUE, gapopen=-3000)
+  AlignSeqs(dnaStringSet3[[i]], iterations = 10, refinements = 10, gapOpening = -3000)
 })
 
 #Convert to dnaStringSet format
