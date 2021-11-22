@@ -188,7 +188,7 @@ rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequenc
 #If BOLD BINs are being used, the following steps are not needed.
 #Place data into clusters using an additional distance threshold. 
 #Split the dataset by family. Running several smaller alignments is much faster than running a large alignment. 
-Alignment_List <- split(dfData, f = dfData$family_name)
+Alignment_List <- split(dfData, f = dfData$genus_name)
 
 #Align and trim sequences with a reference sequence. The following parameters were chosen in order to conduct an accurate alignment. Iterations and refinements were set to 10 so that the tree and guide tree are being realigned multiple times and the best alignment is being kept. gapOpening is set to -3000 in order to reduce the gaps present in the alignment
 RefSeqTrim <- function(x) {
