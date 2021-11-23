@@ -893,33 +893,22 @@ dfRange_Data <- rbind(dfData_Full, dfGeoData)
 
 #Split into list of dataframes by species
 Species_List <- split(dfRange_Data, f = dfRange_Data$species_name)
-#Find max and min latitude and longitude for each species 
-MaxLat <- lapply(1:length(Species_List), function(i){
-  max(Species_List[[i]]$lat)
-})
-MinLat <- lapply(1:length(Species_List), function(i){
-  min(Species_List[[i]]$lat)
-})
-MaxLon <- lapply(1:length(Species_List), function(i){
-  max(Species_List[[i]]$lon)
-})
-MinLon <- lapply(1:length(Species_List), function(i){
-  min(Species_List[[i]]$lon)
-})
-#Find the length and width of each species distribution
-Length <- lapply(1:length(MaxLat), function(i){
-  MaxLat[[i]] - MinLat[[i]]
-})
-Width <- lapply(1:length(MaxLon), function(i){
-  MaxLon[[i]] - MinLon[[i]]
-})
-#Find area for each species distribution
-Species_Range <- lapply(1:length(Length), function(i){
-  Length[[i]]*Width[[i]] 
+
+#Find the range size.Code adapted from https://stackoverflow.com/questions/48383990/convert-sequence-of-longitude-and-latitude-to-polygon-via-sf-in-r
+Area <- lapply(1:length(Species_List), function(i){
+  Species_List[[i]] %>%
+    #Covert coordinates to point geometries
+    st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
+    #Combine points into a multipoint
+    summarise(geometry = st_combine(geometry)) %>%
+    #convert to a polygon
+    st_cast("POLYGON") %>%
+    #Calculate area 
+    st_area()
 })
 
 #Remove unneeded variables
-rm(Data_Filter, MaxLat, MinLat, MaxLon, MinLon)
+rm(Data_Filter)
 
 #13. Relationship between F-Statistics, Range size and Traits----
 
