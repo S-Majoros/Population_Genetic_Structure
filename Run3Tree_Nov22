@@ -1,0 +1,27 @@
+#NEXUS[written Mon Nov 22 16:32:58 EST 2021 by Mesquite  version 3.61 (build 927) at DESKTOP-ISI2L9F/10.0.0.25]
+BEGIN TREES;
+[! Trees from source: 'Current Tree (Tree(s) used from Tree. Last tree used: Default Symmetrical Tree+  [tree: ((((((5,(13,11)),18),17),(14,(16,9))),((((2,20,19),15,10),3,8,7,1),(12,6))),4);] )']
+	TRANSLATE
+		1	AAB0080,
+		2	AAB7912,
+		3	AAC4201,
+		4	AAC8434,
+		5	AAC9614,
+		6	AAD7061,
+		7	AAE8704,
+		8	AAL7378,
+		9	AAL7869,
+		10	AAL9235,
+		11	AAL9801,
+		12	AAM0255,
+		13	AAM9109,
+		14	AAP8779,
+		15	AAU3704,
+		16	AAZ6073,
+		17	AAZ6184,
+		18	ACA8845,
+		19	ACI8602,
+		20	ACM4349;
+	TREE 'Default Symmetrical Tree+' = ((((((5,(13,11)),18),17),(14,(16,9))),((((2,20,19),15,10),3,8,7,1),(12,6))),4);
+END;
+

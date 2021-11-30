@@ -1,0 +1,26 @@
+#NEXUS[written Tue Nov 23 14:54:46 EST 2021 by Mesquite  version 3.61 (build 927) at DESKTOP-ISI2L9F/10.0.0.25]
+BEGIN TREES;
+[! Trees from source: 'Current Tree (Tree(s) used from Tree. Last tree used: Default Symmetrical Tree+  [tree: ((((6,10),(7,12)),((3,(2,4,5)),8)),((9,11,1,18,(19,15,(16,17))),(13,14)));] )']
+	TRANSLATE
+		1	'Corynoneura_arctica',
+		2	'Lycoriella_flavipeda',
+		3	'Lycoriella_riparia',
+		4	'Lycoriella_flavipeda2',
+		5	'Lycoriella_flavipeda3',
+		6	'Drymeia_groenlandica',
+		7	'Megaselia_cirriventris',
+		8	'Camptochaeta_delicata',
+		9	'Paraphaenocladius_impensus',
+		10	'Phytomyza_puccinelliae',
+		11	'Smittia_extrema',
+		12	'Megaselia_cirriventris2',
+		13	'Diamesa_arctica',
+		14	'Diamesa_chorea',
+		15	'Limnophyes_ninae',
+		16	'Limnophyes_brachytomus',
+		17	'Limnophyes_brachytomus2',
+		18	'Cricotopus_patens',
+		19	'Limnophyes_pumilio';
+	TREE 'Default Symmetrical Tree+' = ((((6,10),(7,12)),((3,(2,4,5)),8)),((9,11,1,18,(19,15,(16,17))),(13,14)));
+END;
+
