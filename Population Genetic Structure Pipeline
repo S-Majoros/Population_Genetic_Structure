@@ -58,20 +58,21 @@ library(DECIPHER)
 
 #Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
 model <- "TN93"
-#Set additional clustering threshold. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. 
+#Set additional clustering threshold. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences.  
 clustering_threshold <- 0.04 
 #Set clustering method.UPGMA was chosen as the clustering method for my analysis. This method is fast, efficient, and commonly used. In this method, each distance contributes equally to the final result, and the averages are weighed by the number of taxa in the cluster. 
 clustering_method <- "UPGMA"
-#Set up taxa. 
+#Set up taxa
 taxa <- "Diptera"
 #Set up study region 
-region <- "Greenland"
+#region <- "Greenland"
 #Set up reference sequence. This Diptera sequence was retrieved from BOLD (Record ID: ACGAZ1590-12, BIN:AAA1222). The BIN was chosen because it met the following criteria; from the order Diptera, contained at least 10 CO1-5P sequences, had at least one specimen photograph that matched the higher taxonomy and did not have taxonomic conflicts at family level or above. The reference sequence was chosen because it is 658 base pairs long, has 2 trace file chromatograms, and no missing information or stop codons. 
 reference_sequence <- "AACTTTATATTTTATTTTTGGAGCTTGATCTAGAATAATTGGAACTTCTTTAAGAATATTAATTCGAATTGAATTAGGTCATCCAGGTTCCTTAATTGGAAATGACCAAATTTATAATGTAATTGTAACAGCTCATGCATTTATTATAATTTTTTTTATAGTAATACCAATTATAATTGGAGGATTTGGAAATTGATTAGTTCCTTTAATATTAGGAGCACCAGATATAGCTTTTCCTCGAATGAATAATATAAGTTTTTGACTTCTTCCTCCTGCTTTAATACTTTTATTAACAAGTAGAATAGTAGAAAGTGGAGCTGGAACAGGATGAACAGTTTATCCTCCTTTATCATCTATTATTGCTCATGGAGGAGCATCTGTTGACTTAGCTATTTTTTCTCTTCATTTAGCAGGAATTTCTTCTATTTTAGGAGCTGTAAATTTTATTACAACTGTAATTAATATACGATCTATTGGTATTACCTTTGATCGAATACCTTTATTTGTTTGATCAGTTGCTATTACAGCCTTATTACTTTTATTATCTTTACCAGTTTTAGCTGGAGCAATTACAATATTATTAACAGATCGAAATTTAAATACATCATTTTTTGATCCTGCTGGAGGAGGAGATCCTATTTTATACCAACATTTATTT"
-#Set what size of polygon to be used in the study. A suitable range of sizes is. A size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples
+#Set what size of polygon to be used in the study. A size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples
 Polygon_Length <- 50
-#Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with 70% or more are included.
-percent_sampled <- 0.7
+#Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with an abundance based and incidence based richness of 50% or more are included.
+percent_sampled_abundance <- 0.5
+percent_sampled_incidence <- 0.5
 
 #2.Extract Data from Databases-----
 
@@ -126,6 +127,15 @@ dfData$bin_uri <- substr(dfData$bin_uri, 6, 13)
 #Filter out sequences without coordinates 
 containLatLon <- grep ("[0-9]", dfData$lat)
 dfData <- dfData[containLatLon, ]
+
+#Sequences can only contain a, c, g, t, -, or n. Use the following code to remove any sequences that contain other characters. 
+dfData <- filter(dfData, !grepl("R", dfData$nucleotides)==TRUE)
+dfData <- filter(dfData, !grepl("K", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("M", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("Y", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("S", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("W", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("D", dfData$nucleotides))
 
 #Check for stop codons and indels.
 #Save sequences to a list 
@@ -728,8 +738,8 @@ MD <- lapply(1:length(Data_DNABin), function(i){
 #10.Analysis of Variance (ANOVA)----
 
 #Read in csv file containing trait information and FST values. Commented out flight ability for now because all species looked at in this dataset have a flying life stage. If using clustered data, read in the second commented out dataframe.
-Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data2.csv")
-#Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data_Clustered.csv")
+Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data3.csv")
+#Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data_Clustered3.csv")
 #Run ANOVAs for all traits compared to FST
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_FST <- aov(FST ~ larval_diet, data = Trait_Data)
@@ -806,8 +816,8 @@ p + scale_color_brewer(palette = "Dark2")
 #11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
-PGLStree <- read.nexus("GreenlandDipteraTreeBIN_Oct4")
-#PGLStree <- read.nexus("DipteraClusteredTree")
+PGLStree <- read.nexus("Run3Tree_Nov22")
+#PGLStree <- read.nexus("Run3ClusteredTreeTree_Nov23")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
 PGLStree <- force.ultrametric(PGLStree, method="extend")
@@ -913,8 +923,8 @@ rm(Data_Filter)
 #13. Relationship between F-Statistics, Range size and Traits----
 
 #Read in range size data. If using clustered data, read in the second file. 
-Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data.csv")
-#Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data_Clustered.csv")
+Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data3.csv")
+#Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data_Clustered3.csv")
 
 #Run an ANOVA and PGLS to compare range size to traits and population genetic structure 
 #Run ANOVA comparing range size to population genetic stucture metrics 
@@ -951,8 +961,10 @@ p <- ggplot(Range_Data, aes(x=Range_Data$habitat, y=Range_Data$range_size, fill=
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 
-#Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS. If using clustered data, just use species tree from earlier.
-PGLStree <- read.nexus("DipteraSpeciesTree_Aug26")
+#Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS.
+PGLStree <- read.nexus("Run3SpeciesTree_Nov23")
+#Clustered Tree
+#PGLStree <- read.nexus("Run3ClusteredRangeTree_Nov23")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
 PGLStree <- force.ultrametric(PGLStree, method="extend")
