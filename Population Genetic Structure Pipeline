@@ -29,6 +29,8 @@ library(lwgeom)
 library(mmod)
 #install.packages("pegas")
 library(pegas)
+#install.packages("phangorn")
+library(phangorn)
 #install.packages("phylotools")
 library(phylotools)
 #install.packages("phytools")
@@ -103,6 +105,17 @@ Polygon_Length <- 50
 #Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with an abundance based and incidence based richness of 50% or more are included.
 percent_sampled_abundance <- 0.5
 percent_sampled_incidence <- 0.5
+
+#Set up dataframe with Outgroup sequences. In this study, 3 Trichoptera sequences from BOLD were chosen as the outgroups.
+Outgroups <- data.frame(processid = c("Outgroup1", "Outgroup2", "Outgroup3"),
+                        bin_uri = c("Outgroup1", "Outgroup2", "Outgroup3"),
+                        species_name = c("Outgroup1", "Outgroup2", "Outgroup3"),
+                        nucleotides = c("AACTTTATATTTTATTTTTGGAAGATGAGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATAATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACAGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT","AACTTTATATTTTATTTTTGGAAGATGAGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATAATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACCGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT","AACTTTATATTTTATTTTTGGAAGATGGGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATGATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACAGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT"))
+
+#Set up the model that should be used to select the best model for maximum likelihood tree generation. In our case, BIC was chosen. BIC evaluates models based on posterior probability and maximum likelihood 
+TreeModel <- "BIC"
+#Set up number of intervals of discrete gamma distribution (k-value) for the maximum likelihood tree generation. For our study the value was set to 4. 4 is commonly used in studies and a default for many packages, however it is higher than the default used here. 
+K <- 4 
 
 #2.Extract Data from Databases-----
 
@@ -843,7 +856,183 @@ p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$JD, fill=Trait_Da
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 
-#11.Phylogenetic Generalized Least Squares Analysis (PGLS)----
+#11:Phylogenetic Tree----
+#This section outlines code for creating a phylogenetic tree. This maximum likelihood tree can be used in the PGLS analysis instead of a tree from the literature. 
+
+#Find a centroid sequence for each BIN. A centroid is defined as the sequence with the minimum average distance to all others in its BIN and is a representative sequence for each BIN.
+#Find the number of processids in each bin 
+BIN_Size <- sapply(BIN_List, function(x)length(x$processid))
+#Create new data frame with bin_uri and bin size
+dfData_BINs <- data.frame(BIN_Size)
+dfData_BINs$bin_uri <- c(unique(dfData$bin_uri))
+#Merge dfData and dfData_BINs
+dfBIN_List <- merge(dfData, dfData_BINs, by.x="bin_uri", by.y="bin_uri")
+#Reorder dfData_bins by bin_uri
+dfData_BINs <- dfData_BINs[order(dfData_BINs$bin_uri), ]
+
+#Find BINs with more than one member
+largeBin <- which(dfBIN_List$BIN_Size > 1)   
+#Create dataframe with only BINs with more than one member 
+if (length(largeBin) > 0) {
+  dfCentroid <- dfBIN_List[largeBin, ]
+}
+
+#Subset dfData_BINs down to number of BINs in dfCentroid
+dfData_BINs <- subset(dfData_BINs, dfData_BINs$bin_uri %in% dfCentroid$bin_uri)
+
+#Find number of unique bins in dfCentroid 
+binNumberCentroid <- unique(dfCentroid$bin_uri)   
+binNumberCentroid <- length(binNumberCentroid) 
+
+#Create dataframe with bins with only one sequence 
+dfNonCentroid <- dfBIN_List[-largeBin, ]
+
+#Create list from dfCentroid 
+largeBinList <- lapply(unique(dfCentroid$bin_uri), function(x) dfCentroid[dfCentroid$bin_uri == x, ])
+#Extract process Id from each BIN
+largeBinProcessid <- sapply(largeBinList, function(x) (x$processid))
+
+#Convert sequences to dnaStringSet
+dnaStringSet1 <- sapply(largeBinList, function(x) DNAStringSet(x$nucleotides))  
+#Name dnaStringSet with processids   
+for(i in seq(from=1, to=binNumberCentroid, by=1)) {
+  names(dnaStringSet1[[i]]) <- largeBinProcessid[[i]]
+}
+#Check class of dnaStringSet1
+class(dnaStringSet1[[1]])
+#Check names of stringsets 
+names(dnaStringSet1[[1]])
+
+#Remove gaps
+dnaStringSet1 <- lapply(1:length(dnaStringSet1), function(i){
+  RemoveGaps(dnaStringSet1[[i]])
+})
+
+#Run multiple sequence alignment for sequences in each BIN in dnaStringSet1   
+alignment1 <- foreach(i=1:binNumberCentroid) %do%
+  AlignSeqs(dnaStringSet1[[i]])
+
+#Convert to DNAbin format 
+dnaBINCentroid <- foreach(i=1:binNumberCentroid) %do% as.DNAbin(alignment1[[i]])
+#Check class
+class(dnaBINCentroid[[1]])
+
+#Calculate a pairwise distance matrix for each BIN
+geneticDistanceCentroid <- foreach(i=1:binNumberCentroid) %do%
+  dist.dna(dnaBINCentroid[[i]], model= model, as.matrix = TRUE,
+           pairwise.deletion = TRUE)
+
+#Determine centroid sequence; The sequence with the minimum average distance to all other sequences in the BIN.
+centroidSeq <- foreach(i=1:binNumberCentroid) %do% which.min(rowSums(geneticDistanceCentroid[[i]]))
+centroidSeq <- centroidSeq %>%
+  unlist() %>%
+  names()
+
+#Subset dfCentroid by the processid on the list 
+dfCentroid <- subset(dfCentroid, processid %in% centroidSeq)
+
+#Merge with dfNonCentroid
+dfAllSeq <- rbind(dfCentroid, dfNonCentroid)
+#Merge with the original data set 
+dfAllSeq <- merge(dfAllSeq, dfData, by.x="processid", by.y="processid")
+#Reorganize and clean up 
+dfAllSeq <- (dfAllSeq[, c("processid", "bin_uri.x", "BIN_Size", "family_name.x", "genus_name.x", "species_name.x", "nucleotides.x", "lat.x", "lon.x", "cell.x")])
+colnames(dfAllSeq)[2] <- "bin_uri"
+colnames(dfAllSeq)[4] <- "family_name"
+colnames(dfAllSeq)[5] <- "genus_name"
+colnames(dfAllSeq)[6] <- "species_name"
+colnames(dfAllSeq)[7] <- "nucleotides"
+colnames(dfAllSeq)[8] <- "lat"
+colnames(dfAllSeq)[9] <- "lon"
+colnames(dfAllSeq)[10] <- "cell"
+
+#Reun alignment with centroid sequences, outgroup and a reference
+#Create RefSeq data frame
+dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
+
+#name nucleotide column and set as character 
+colnames(dfRefSeq)[2] <- "nucleotides"
+dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides) 
+#Trim references to standard 620
+dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19) 
+#Check sequence length
+dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
+
+#Add outgroup sequences to the dataframe 
+dfAllSeq <- full_join(dfAllSeq, Outgroups)
+
+#Align and trim sequences 
+dfAligned <- RefSeqTrim(dfAllSeq)
+
+#Remove NAs 
+dfAligned <- dfAligned[-c(1), ]
+
+#Convert sequences to DNAStringSet format 
+dnaStringSet2 <- DNAStringSet(dfAligned$nucleotides)
+#Name the stringset. If you wish to create a tree with species names as tip.labels, set the names to species names. A species tree will be needed if included GBIF data for range size analysis. 
+names(dnaStringSet2) <- dfAligned$bin_uri 
+#Check names are assigned properly 
+names(dnaStringSet2)
+
+#Export alignment to check it in another program such as MEGA. 
+writeXStringSet(dnaStringSet2, file = "CentroidAlignment.fas", format = "fasta")
+
+#Set up the data in the correct format and generate the maximum liklihood tree
+#Read in alignment in phyDat format
+phylo_dat <- read.phyDat("CentroidAlignment.fas", format="fasta", type="DNA")
+#Check format
+class(phylo_dat)
+
+#create a distance matrix
+dm <- dist.ml(phylo_dat)
+
+#creating NJ tree
+tree <- NJ(dm)
+
+#Run a model test to determine which model to use when creating the maximum liklihood tree 
+model_test <- modelTest(phylo_dat)
+
+#create the environment 
+env <- attr(model_test, "env")
+
+#create function to find best model 
+get_best_model = function(model_df){
+  best_model = model_df['Model'][model_df[TreeModel] == min(model_df[TreeModel]) ]
+  return(best_model)
+}
+#Determine best model for the data
+Best_Model <- get_best_model(model_test)
+
+#Get parameters for the model 
+model_fit <- eval(get(Best_Model, env), env)
+
+#Pull out inv value 
+inv_values <- model_fit$inv
+
+#Compute likelihood. 
+ml_out = pml(tree, phylo_dat, k=K, inv = model_fit$inv)
+
+#Drop the suffix from the model name
+Best_Model2 = unlist(strsplit(Best_Model, "\\+"))[[1]]
+
+#Compute likelihood and optimize parameters. For our study, optNni, optGamma and optInv are all set to TRUE.  
+ml_tree = optim.pml(ml_out, optNni = TRUE, optGamma = TRUE, optInv = TRUE, model = Best_Model2)
+
+#Root the tree using the outgroups
+Tree_Rooted <- root(ml_tree$tree, outgroup = Outgroups$processid, resolve.root = TRUE)
+#Plot the tree
+plot(Tree_Rooted)
+
+#Remove the outgroups
+PGLStree <- drop.tip(Tree_Rooted, Outgroups$processid)
+#Plot the tree. This tree can be used in the following steps instead of a tree from the literature. 
+plot(PGLStree)
+
+#Remove unneeded variables
+rm(alignment1, dfBIN_List, dfCentroid, dfAllSeq, dfData_BINs, dfNonCentroid, dfRefSeq, dnaBINCentroid, dnaStringSet1, dnaStringSet2, env, geneticDistanceCentroid, largeBinList, largeBinProcessid, ml_out, ml_tree, model_fit, model_test, phylo_dat, tree, Tree_Rooted, Best_Model, Best_Model2, BIN_Size, binNumberCentroid, centroidSeq, dm, inv_values, largeBin)
+
+
+#12.Phylogenetic Generalized Least Squares Analysis (PGLS)----
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
 PGLStree <- read.nexus("Run3Tree_Nov22")
@@ -912,7 +1101,7 @@ plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 #plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
 
-#12.Determining Range Size----
+#13.Determining Range Size----
 
 #Reduce dfData_Full to needed columns
 dfData_Full <- (dfData_Full[, c("processid", "species_name", "lat", "lon")])
@@ -950,7 +1139,7 @@ Area <- lapply(1:length(Species_List), function(i){
 #Remove unneeded variables
 rm(Data_Filter)
 
-#13. Relationship between F-Statistics, Range size and Traits----
+#14. Relationship between F-Statistics, Range size and Traits----
 
 #Read in range size data. If using clustered data, read in the second file. 
 Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data3.csv")
