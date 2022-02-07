@@ -561,7 +561,7 @@ dnaStringSet3 <- lapply(1:length(dnaStringSet3), function(i){
 
 #Run alignment 
 AlignmentFinal <- lapply(1:length(dnaStringSet3), function(i){
-  AlignSeqs(dnaStringSet3[[i]], iterations = 10, refinements = 10, gapOpening = -3000)
+  AlignSeqs(dnaStringSet3[[i]])
 })
 
 #Convert to dnaStringSet format
