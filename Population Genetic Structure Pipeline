@@ -283,7 +283,7 @@ RefSeqTrim <- function(x) {
   refSeqPosEnd <- nchar(dfRefSeq$nucleotides[1]) + refSeqPosStart
   refSeqPosEnd <- as.numeric(refSeqPosEnd)
   #Trim sequence
-  alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd)
+  alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd -1)
   #Convert to DNAStringSet
   DNAStringSet3 <- DNAStringSet(alignment2Trimmed)
   #Remove reference sequence 
@@ -308,6 +308,15 @@ Data_alignment <- lapply(1:length(Data_alignment), function(i){
   Data_alignment[[i]][-c(1), ]
 })
 
+#check the length of each alignment 
+lengths <- lapply(1:length(Data_alignment), function(i){
+  nchar(Data_alignment[[i]]$nucleotides)
+})
+#See which are 620  
+length620 <- lapply(1:length(Data_alignment), function(i){
+  Data_alignment[[i]][nchar(Data_alignment[[i]]$nucleotides) == 619, ]
+  })
+  
 #Merge Dataframes 
 dfData_alignment <- bind_rows(Data_alignment)
 #Set to dataframe
@@ -358,7 +367,7 @@ dfData <- (dfData[, c("processid", "cluster", "species_name", "nucleotides", "la
 names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
 
 #Remove any unneeded variables 
-rm(Alignment_List, Data_alignment, Data_clustered,Data_stringset, dfData_alignment, dfRefSeq, dfClusters, distanceMatrix, dnaBIN, dfData_stringset)
+rm(Alignment_List, Data_alignment, Data_clustered,Data_stringset, dfData_alignment, dfRefSeq, dfClusters, distanceMatrix, dnaBIN, dfData_stringset, length620, lengths)
 
 #5.Group by Regions----
 
