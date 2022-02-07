@@ -1184,6 +1184,9 @@ dfRange_Data <- rbind(dfData_Full, dfGeoData)
 #Split into list of dataframes by species
 Species_List <- split(dfRange_Data, f = dfRange_Data$species_name)
 
+#set sf use s2 to FALSE
+sf_use_s2(FALSE)
+
 #Find the range size.Code adapted from https://stackoverflow.com/questions/48383990/convert-sequence-of-longitude-and-latitude-to-polygon-via-sf-in-r
 Area <- lapply(1:length(Species_List), function(i){
   Species_List[[i]] %>%
