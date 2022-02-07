@@ -367,7 +367,7 @@ dfData <- (dfData[, c("processid", "cluster", "species_name", "nucleotides", "la
 names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
 
 #Remove any unneeded variables 
-rm(Alignment_List, Data_alignment, Data_clustered,Data_stringset, dfData_alignment, dfRefSeq, dfClusters, distanceMatrix, dnaBIN, dfData_stringset, length620, lengths)
+rm(Alignment_List, Data_alignment, Data_clustered, dfData_alignment, dfClusters, distanceMatrix, dnaBIN, length620, lengths)
 
 #5.Group by Regions----
 
