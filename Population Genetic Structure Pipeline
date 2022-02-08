@@ -942,6 +942,8 @@ dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleoti
 #Check sequence length
 dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
 
+#Ensure bin_uri is a character
+dfAllSeq$bin_uri <- as.character(dfAllSeq$bin_uri)
 #Add outgroup sequences to the dataframe 
 dfAllSeq <- full_join(dfAllSeq, Outgroups)
 
