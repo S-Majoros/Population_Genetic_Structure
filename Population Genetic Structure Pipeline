@@ -243,6 +243,7 @@ rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequenc
 #4.Organizing Data by Clusters----
 
 #If BOLD BINs are being used, the following steps are not needed.
+#If your dataset is very large, your computer may not have the memory to run the following code. Consider sampling down your dataset or running the analysis on a larger server
 #Place data into clusters using an additional distance threshold. 
 #Split the dataset by family. Running several smaller alignments is much faster than running a large alignment. 
 Alignment_List <- split(dfData, f = dfData$genus_name)
