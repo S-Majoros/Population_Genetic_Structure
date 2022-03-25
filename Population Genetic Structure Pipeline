@@ -58,6 +58,8 @@ library(Biostrings)
 library(muscle)
 library(DECIPHER)
 
+#Set number of sequences each genera can have. This will be used to sample down the dataset if it is too large. Here a max of 100 sequences is used.
+maxSize <- 100
 #Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
 model <- "raw"
 #Set additional clustering threshold. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences.  
@@ -248,6 +250,41 @@ rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequenc
 #Split the dataset by family. Running several smaller alignments is much faster than running a large alignment. 
 Alignment_List <- split(dfData, f = dfData$genus_name)
 
+#If your dataset is very large, your computer may not have the memory to run the following code. Consider sampling down your dataset or running the analysis on a larger server.
+#For larger datasets, the following code commented out code can be used to sample down large BINs.
+
+#Filter out genera with less than 1 record each. Further filtering will occur in a later step. 
+#dfData <- dfData %>%
+#  group_by(genus_name) %>%
+#  filter(n() > 1)
+#Ungroup dataframe
+#dfData <- ungroup(dfData, bin_uri)
+
+#Create dataframe with only large BINs
+#largeBIN <- dfData %>%
+#  group_by(bin_uri) %>%
+#  filter(n() >= maxSize)
+#Ungroup dataframe 
+#largeBIN <- ungroup(largeBIN, bin_uri)
+#Split into list of genera dataframes
+#largeBIN <- split(largeBIN, f = largeBIN$bin_uri)
+#Sample down each dataframe
+#largeBIN <- lapply(1:length(largeBIN), function(i){
+#  sample_n(largeBIN[[i]], maxSize)
+#})
+#Combine dataframes into one
+#largeBIN <- bind_rows(largeBIN)
+#Create dataframe with only small BINs
+#smallBIN <- dfData %>%
+#  group_by(bin_uri) %>%
+#  filter(n() < maxSize)
+#Ungroup dataframe 
+#smallBIN <- ungroup(smallBIN, bin_uri)
+#Combine large and small dataframes
+#dfFull <- rbind(largeBIN, smallBIN)
+#Split into list of dataframes by genus 
+#Alignment_List <- split(dfFull, f = dfFull$genus_name)
+
 #Align and trim sequences with a reference sequence. The following parameters were chosen in order to conduct an accurate alignment. Iterations and refinements were set to 10 so that the tree and guide tree are being realigned multiple times and the best alignment is being kept. gapOpening is set to -3000 in order to reduce the gaps present in the alignment
 RefSeqTrim <- function(x) {
   #Create data frame for reference sequence 
@@ -318,17 +355,27 @@ length620 <- lapply(1:length(Data_alignment), function(i){
   Data_alignment[[i]][nchar(Data_alignment[[i]]$nucleotides) == 619, ]
   })
   
-#Merge Dataframes 
+#Merge Dataframes. If working with a large dataset, ignore the following line and use the commented out looping code to run the script seperately for each genus.  
 dfData_alignment <- bind_rows(Data_alignment)
 #Set to dataframe
 dfData_alignment <- as.data.frame(dfData_alignment)
+#dfData_alignment <- lapply(1:length(Data_alignment), function(i){
+#  as.data.frame(Data_alignment[[i]])
+#})
 #Check class of object 
 class(dfData_alignment)
 
 #Convert to DNAStringSet 
 dfData_alignment$nucleotides <- DNAStringSet(dfData_alignment$nucleotides)
+#for(i in 1:length(dfData_alignment)) {
+#  dfData_alignment[[i]]$nucleotides <- DNAStringSet(dfData_alignment[[i]]$nucleotides)
+#}
+
 #Name the Stringset
 names(dfData_alignment$nucleotides) <- dfData_alignment$processid
+#for(i in 1:length(dfData_alignment)) {
+#  names(dfData_alignment[[i]]$nucleotides) <- dfData_alignment[[i]]$processid
+#}
 
 #Set name of alignment file
 AlignmentName <- paste(region, "Alignment")
@@ -337,11 +384,17 @@ writeXStringSet(dfData_alignment$nucleotides, file = AlignmentName, format = "fa
 
 #Convert to dnaBin format 
 dnaBIN <- as.DNAbin(dfData_alignment$nucleotides)
+#dnaBIN <- lapply(1:length(dfData_alignment), function(i){
+#  as.DNAbin(dfData_alignment[[i]]$nucleotides)
+#})
 #Check that the class is correct
 class(dnaBIN)
 
 #Create a distance matrix.
 distanceMatrix <- dist.dna(dnaBIN, model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+#distanceMatrix <- lapply(1:length(dnaBIN), function(i){
+#  dist.dna(dnaBIN[[i]], model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+#})
 
 #Cluster the sequences and plot the dendrogram
 Data_clustered <- IdClusters(distanceMatrix,
@@ -350,11 +403,28 @@ Data_clustered <- IdClusters(distanceMatrix,
                            showPlot = TRUE,
                            type = "both",
                            verbose = TRUE)
+#Data_clustered <- lapply(1:length(distanceMatrix), function(i){
+#  IdClusters(distanceMatrix[[i]], method = clustering_method, cutoff = clustering_threshold, showPlot = TRUE, type = "both", verbose = TRUE)
+#})
 #See how many clusters were created
 length(unique(unlist(Data_clustered[[1]][1])))
 
 #Extract the clustered dataframe
 dfClusters <- Data_clustered[[1]]
+#dfClusters <- lapply(1:length(Data_clustered), function(i){
+#  Data_clustered[[i]][[1]]
+#})
+
+#If the data is still in the list format, follow the following commented out code to combine the genus dataframes into one dataframe
+#Add a column with the index of the dataframe within the list
+#dfClusters <- Map(cbind, dfClusters, index = seq_along(dfClusters))
+#Combine the cluster and index column 
+#for(i in 1:length(dfClusters)) {
+#  dfClusters[[i]]$cluster <- str_c(dfClusters[[i]]$cluster, "_", dfClusters[[i]]$index)
+#}
+#Combine all the dataframes into one 
+#dfClusters <- bind_rows(dfClusters)
+
 #Set record IDs to a column instead of row names
 dfClusters$processid <- row.names(dfClusters)
 #Add clusters column to original dataframe
@@ -368,7 +438,7 @@ dfData <- (dfData[, c("processid", "cluster", "species_name", "nucleotides", "la
 names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
 
 #Remove any unneeded variables 
-rm(Alignment_List, Data_alignment, Data_clustered, dfData_alignment, dfClusters, distanceMatrix, dnaBIN, length620, lengths)
+rm(Alignment_List, Data_alignment, Data_clustered, dfData_alignment, dfClusters, distanceMatrix, dnaBIN, length620, lengths, dfFull, largeBIN, smallBIN)
 
 #5.Group by Regions----
 
