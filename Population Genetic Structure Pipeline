@@ -4,45 +4,38 @@
 
 #1.Loading Packages and Setting up Variables----
 
-#Install and load needed packages 
+#install.packages("ape")
+library(ape)
 #install.packages("apex")
 library(apex)
 #install.packages("coil")
 library(coil)
-#install.packages("data.table")
-library(data.table)
+#install.packages("devtools")
+library(devtools)
 #install_github("r-barnes/dggridR")
 library(dggridR)
 #install.packages("dplyr")
 library(dplyr)
-#install.packages("devtools")
-library(devtools)
 #install.packages("foreach")
 library(foreach)
 #install.packages("ggplot2")
 library(ggplot2)
-#install.packages("iNEXT")
-library(iNEXT)
 #install.packages("lwgeom")
 library(lwgeom)
 #install.packages("mmod")
 library(mmod)
+#install.packages("nlme")
+library(nlme)
 #install.packages("pegas")
 library(pegas)
 #install.packages("phangorn")
 library(phangorn)
-#install.packages("phylotools")
-library(phylotools)
 #install.packages("phytools")
 library(phytools)
-#install.packages("picante")
-library(picante)
-#install.packages("plot.matrix")
-library(plot.matrix)
+#install.packages("phylotools")
+library(phylotools)
 #install.packages("poppr")
 library(poppr)
-#install.packages("readr")
-library(readr)
 #install.packages("rlist")
 library(rlist)
 #install.packages("sf")
@@ -51,11 +44,10 @@ library(sf)
 library(stringr)
 #install.packages("tidyr")
 library(tidyr)
-#install.packages("tidyverse")
-library(tidyverse)
-#BiocManager::install(c("Biostrings", "muscle", "DECIPHER"))
+#install.packages("vegan")
+library(vegan)
+#BiocManager::install(c("Biostrings", "DECIPHER"))
 library(Biostrings)
-library(muscle)
 library(DECIPHER)
 
 #Set number of sequences each genera can have. This will be used to sample down the dataset if it is too large. Here a max of 100 sequences is used.
@@ -126,10 +118,10 @@ K <- 4
 #Save data to a tsv file 
 #write_tsv(dfTaxa, "GreenlandData")
 #Read in the data
-dfData <- read_tsv("GreenlandData")
+dfData <- read.csv("GreenlandData", sep = '\t')
 
 #Read in data from GBIF. Greenland data retrieved from GBIF.org (23 June 2021) GBIF Occurrence Download https://doi.org/10.15468/dl.mk52hp
-dfGeoData <- read_tsv("GreenlandGeo.csv")
+dfGeoData <- read.csv("GreenlandGeo.csv", sep = '\t')
 
 #3. Filter Data----
 
@@ -291,28 +283,28 @@ RefSeqTrim <- function(x) {
   #This reference sequence was taken from BOLD for Diptera (Record ID: ACGAZ1590-12, BIN:AAA1222).
   dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
   colnames(dfRefSeq)[2] <- "nucleotides"
-  #Convert to datatable
-  dfRefSeq <- setDT(dfRefSeq)
-  dfRefSeq[, "nucleotides":=as.character(nucleotides)]
+  #Set nucleotides to a character 
+  dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides)
   #Trim sequences to 620bp
-  dfRefSeq[, nucleotides:=substr(nucleotides, 20, nchar(nucleotides)-19)]
+  dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19)
   #Check sequence length
-  dfRefSeq[, seqLength:=nchar(nucleotides)]
+  dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
   #Ensure sequences are of character type
   alignmentSeqs <- as.character(x$nucleotides)
   #Name according to processid 
   names(alignmentSeqs) <- x$processid
+  #Pull out reference sequence
   alignmentref <- as.character(dfRefSeq$nucleotides[1])
   #Name reference sequence 
   names(alignmentref) <- "Reference"
-  #Put sequences together
+  #Put sequences together for alignment
   alignmentSeqsPlusRef <- append(alignmentref, alignmentSeqs)
   #Convert to DNAStringSet 
   DNAStringSet2 <- DNAStringSet(alignmentSeqsPlusRef)
   #Remove gaps
   DNAStringSet2 <- RemoveGaps(DNAStringSet2)
   #Run alignment 
-  alignment2 <- AlignSeqs(DNAStringSet2, iterations = 10, refinements = 10, gapOpening = -3000)
+  alignment2 <- AlignSeqs(DNAStringSet2)
   #Find stop and start positions in reference 
   refSeqPos <- which(alignment2@ranges@NAMES=="Reference")
   refSeqPos <- alignment2[refSeqPos]
@@ -577,17 +569,17 @@ RefSeqTrim <- function(x) {
   #This reference sequence was taken from BOLD for Diptera (Record ID: ACGAZ1590-12, BIN:AAA1222).
   dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
   colnames(dfRefSeq)[2] <- "nucleotides"
-  #Convert to datatable
-  dfRefSeq <- setDT(dfRefSeq)
-  dfRefSeq[, "nucleotides":=as.character(nucleotides)]
+  #Set nucleotides to a character 
+  dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides)
   #Trim sequences to 620bp
-  dfRefSeq[, nucleotides:=substr(nucleotides, 20, nchar(nucleotides)-19)]
+  dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19)
   #Check sequence length
-  dfRefSeq[, seqLength:=nchar(nucleotides)]
+  dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
   #Ensure sequences are of character type
   alignmentSeqs <- as.character(x$nucleotides)
   #Name according to processid 
   names(alignmentSeqs) <- x$processid
+  #Pull out reference sequence
   alignmentref <- as.character(dfRefSeq$nucleotides[1])
   #Name reference sequence 
   names(alignmentref) <- "Reference"
@@ -832,10 +824,8 @@ DDataframe <- lapply(1:length(DPairwise), function(i){
 HeatMaps_JD <- lapply(1:length(DDataframe), function(i){
   DDataframe[[i]] %>% 
     as.data.frame() %>%
-    rownames_to_column("Populations") %>%
+    as_tibble(rownames = "Populations") %>%
     pivot_longer(-c(Populations), names_to = "samples", values_to = "JD")%>%
-    mutate(samples= fct_relevel(samples, colnames(DDataframe[[i]]))) %>%
-    mutate(Populations = fct_relevel(Populations, colnames(DDataframe[[i]]))) %>%
     ggplot(aes(x=samples, y=Populations, fill=JD)) + 
     geom_raster() +
     xlab("Populations") +
@@ -851,10 +841,8 @@ NeiDataframe <- lapply(1:length(NeiPairwise), function(i){
 HeatMaps_FST <- lapply(1:length(NeiDataframe), function(i){
   NeiDataframe[[i]] %>% 
     as.data.frame() %>%
-    rownames_to_column("Populations") %>%
+    as_tibble(rownames = "Populations") %>%
     pivot_longer(-c(Populations), names_to = "samples", values_to = "FST")%>%
-    mutate(samples= fct_relevel(samples, colnames(NeiDataframe[[i]]))) %>%
-    mutate(Populations = fct_relevel(Populations, colnames(NeiDataframe[[i]]))) %>%
     ggplot(aes(x=samples, y=Populations, fill=FST)) + 
     geom_raster() +
     xlab("Populations") +
@@ -870,10 +858,8 @@ HedrickDataframe <- lapply(1:length(HedrickPairwise), function(i){
 HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
   HedrickDataframe[[i]] %>% 
     as.data.frame() %>%
-    rownames_to_column("Populations") %>%
+    as_tibble(rownames = "Populations") %>%
     pivot_longer(-c(Populations), names_to = "samples", values_to = "GST")%>%
-    mutate(samples= fct_relevel(samples, colnames(HedrickDataframe[[i]]))) %>%
-    mutate(Populations = fct_relevel(Populations, colnames(HedrickDataframe[[i]]))) %>%
     ggplot(aes(x=samples, y=Populations, fill=GST)) + 
     geom_raster() +
     xlab("Populations") +
@@ -1047,7 +1033,7 @@ dm <- dist.ml(phylo_dat)
 tree <- NJ(dm)
 
 #Run a model test to determine which model to use when creating the maximum liklihood tree 
-model_test <- modelTest(phylo_dat)
+model_test <- modelTest(phylo_dat, tree)
 
 #create the environment 
 env <- attr(model_test, "env")
@@ -1091,8 +1077,9 @@ rm(alignment1, dfBIN_List, dfCentroid, dfAllSeq, dfData_BINs, dfNonCentroid, dfR
 #11.Analysis of Variance (ANOVA)----
 
 #Read in csv file containing trait information and FST values. Commented out flight ability for now because all species looked at in this dataset have a flying life stage. If using clustered data, read in the second commented out dataframe.
-Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data3.csv")
-#Trait_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Diptera_Trait_Data_Clustered3.csv")
+Trait_Data <- read.csv("Diptera_Traits_Greenland_Feb7th.csv")
+#Trait_Data <- read.csv(Diptera_Traits_Greenland_Clustered_Feb8th.csv")
+
 #Run ANOVAs for all traits compared to FST
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_FST <- aov(FST ~ larval_diet, data = Trait_Data)
@@ -1128,41 +1115,41 @@ summary(ANOVA_Feeding_Larval_JD)
 
 #Plot results as violin plots
 #FST and adult diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$adult_diet, y=Trait_Data$FST, fill=Trait_Data$adult_diet)) + 
+p <- ggplot(Trait_Data, aes(x=adult_diet, y=FST, fill=adult_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #FST and larval diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$FST, fill=Trait_Data$larval_diet)) + 
+p <- ggplot(Trait_Data, aes(x=larval_diet, y=FST, fill=larval_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #FST and habitat
-p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$FST, fill=Trait_Data$habitat)) + 
+p <- ggplot(Trait_Data, aes(x=habitat, y=FST, fill=habitat)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 
 #GST and adult diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$adult_diet, y=Trait_Data$GST, fill=Trait_Data$adult_diet)) + 
+p <- ggplot(Trait_Data, aes(x=adult_diet, y=GST, fill=adult_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #GST and larval diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$GST, fill=Trait_Data$larval_diet)) + 
+p <- ggplot(Trait_Data, aes(x=larval_diet, y=GST, fill=larval_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #GST and habitat
-p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$GST, fill=Trait_Data$habitat)) + 
+p <- ggplot(Trait_Data, aes(x=habitat, y=GST, fill=habitat)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 
 #Jost's D and adult diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$adult_diet, y=Trait_Data$JD, fill=Trait_Data$adult_diet)) + 
+p <- ggplot(Trait_Data, aes(x=adult_diet, y=JD, fill=adult_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #Jost's D and larval diet
-p <- ggplot(Trait_Data, aes(x=Trait_Data$larval_diet, y=Trait_Data$JD, fill=Trait_Data$larval_diet)) + 
+p <- ggplot(Trait_Data, aes(x=larval_diet, y=JD, fill=larval_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #Jost's D and habitat
-p <- ggplot(Trait_Data, aes(x=Trait_Data$habitat, y=Trait_Data$JD, fill=Trait_Data$habitat)) + 
+p <- ggplot(Trait_Data, aes(x=habitat, y=JD, fill=habitat)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 
@@ -1279,8 +1266,8 @@ rm(Data_Filter)
 #14. Relationship between F-Statistics, Range size and Traits----
 
 #Read in range size data. If using clustered data, read in the second file. 
-Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data3.csv")
-#Range_Data <- read_csv(file="C:/Users/sammi/OneDrive/Documents/Range_Data_Clustered3.csv")
+Range_Data <- read.csv("Diptera_Traits_Greenland_Range_Feb 8th.csv")
+#Range_Data <- read.csv(Data_Traits_Greenland_Range_Clustered_Feb9th.csv")
 
 #Run an ANOVA and PGLS to compare range size to traits and population genetic structure 
 #Run ANOVA comparing range size to population genetic stucture metrics 
@@ -1305,15 +1292,15 @@ summary(ANOVA_Range_Larval)
 
 #Plot results as violin plots
 #Range size and adult diet
-p <- ggplot(Range_Data, aes(x=Range_Data$adult_diet, y=Range_Data$range_size, fill=Range_Data$adult_diet)) + 
+p <- ggplot(Range_Data, aes(x=adult_diet, y=range_size, fill=adult_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #Range size and larval diet
-p <- ggplot(Range_Data, aes(x=Range_Data$larval_diet, y=Range_Data$range_size, fill=Range_Data$larval_diet)) + 
+p <- ggplot(Range_Data, aes(x=larval_diet, y=range_size, fill=larval_diet)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 #Range size and habitat
-p <- ggplot(Range_Data, aes(x=Range_Data$habitat, y=Range_Data$range_size, fill=Range_Data$habitat)) + 
+p <- ggplot(Range_Data, aes(x=habitat, y=range_size, fill=habitat)) + 
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 
