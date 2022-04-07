@@ -451,7 +451,7 @@ dfData <- dfData %>%
 #Ungroup the data
 dfData <- ungroup(dfData, bin_uri)
 
-#Filter out BINs with less than 10 records per region
+#Filter out BINs in a region, if that BIN contains less than 10 records in that region
 dfData <- dfData %>%
   group_by(cell, bin_uri) %>%
   filter(n() > 9)
@@ -527,13 +527,61 @@ SampleCenters  <- dgSEQNUM_to_GEO(Grid, dfData$cell)
 SampleCounts   <- dfData %>% group_by(cell) %>% summarise(count=n())
 
 #Get the grid cell boundaries
-dfGrid  <- dgcellstogrid(Grid, SampleCounts$cell, frame=TRUE, wrapcells=TRUE)
+dfGrid <- dgcellstogrid(Grid, SampleCounts$cell)
+#Rename cell column 
+names(dfGrid)[names(dfGrid) == "seqnum"] <- "cell"
+#Split into a list
+Poly <- split(dfGrid, f = dfGrid$cell)
+#Extract coordinates 
+Coords <- lapply(1:length(Poly), function(i){
+  as.data.frame(st_coordinates(Poly[[i]]))
+})
+#Keep the names for the list
+names(Coords) <- names(Poly)
+#Extract Lat and Lon individually and ensure names are kept
+Lon <- lapply(1:length(Coords), function(i){
+  Coords[[i]]$X
+})
+names(Lon) <- names(Coords)
+Lat <- lapply(1:length(Coords), function(i){
+  Coords[[i]]$Y
+})
+names(Lat) <- names(Coords)
+
+#Convert to dataframe
+Lon <- lapply(1:length(Lon), function(i){
+  as.data.frame(Lon[[i]])
+})
+names(Lon) <- names(Coords)
+Lat <- lapply(1:length(Lat), function(i){
+  as.data.frame(Lat[[i]])
+})
+names(Lat) <- names(Coords)
+#Add column with cell number 
+for (i in 1:length(Lon)) {
+  Lon[[i]]$cell <- names(Lon[i])
+}
+for (i in 1:length(Lat)) {
+  Lat[[i]]$cell <- names(Lat[i])
+}
+#Combine dataframes
+Lon <- bind_rows(Lon)
+Lat <- bind_rows(Lat)
+#Merge lat and lon together
+Lon$Lat <- Lat$`Lat[[i]]`
+#Rename dataframe and column 
+dfCoords <- Lon
+dfCoords$Lon <- dfCoords$`Lon[[i]]`
+#Merge coord and sample count dataframes with dfGrid
+dfGrid <- merge(dfGrid, dfCoords, by.x="cell", by.y="cell")
 dfGrid <- merge(dfGrid, SampleCounts, by.x="cell", by.y="cell")
+#Remove unneeded columns 
+dfGrid <- (dfGrid[, c("cell", "Lon", "Lat", "count")])
 
 #Load map data
 countries <- map_data("world")
 
-#Plot polygons on a flat map. coord_fixed will need to be adjusted to focus in on your area of interest and scale_fill_viridis_c will need to be adjusted to reflect your sample size. 
+#Plot polygons on a flat map. coord_fixed will need to be adjusted to focus in on your area of interest and scale_fill_viridis_c will need to be adjusted to reflect your sample size. Depending on the size of your dataset, the generating the full map may take too much memory, and simpiler version of the map can be used. Coords used for Greenland: c(-22, -18), c(70, 80). Coords used for Canada: c(-160, -20), c(40, 90).
 Map <- ggplot() + 
   geom_polygon(data=countries, aes(x=long, y=lat, group=group), fill= "white", color="black") +
   geom_polygon(data=dfGrid, aes(x=long, y=lat, group=group, fill=count), alpha=0.4) +
@@ -557,7 +605,7 @@ map_spherical <- Map +
 BIN_List <- split(dfData, f = dfData$bin_uri)
 
 #Remove unneeded variables 
-rm(abundance_results,accumulation_curve, dfRegions, Grid, countries, dfGrid, incidence_results, rarefaction_curve, SampleCenters, SampleCounts,Sampled_Regions_Abundance, Sampled_Regions_Incidence)
+rm(abundance_results,accumulation_curve, dfRegions, Grid, countries, dfGrid, incidence_results, rarefaction_curve, SampleCenters, SampleCounts,Sampled_Regions_Abundance, Sampled_Regions_Incidence, Coords, dfCoords, Lat, Lon, Poly)
 
 #6.Multiple Sequence Alignment----
 
