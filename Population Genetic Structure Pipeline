@@ -2,6 +2,11 @@
 #Pipeline developed for chapter 1 of masters thesis
 #Pipeline is designed to determine realized dispersal rates for a variety of taxa, but the pipeline will be tested on Diptera species from various Arctic regions. 
 
+#Thank you to the other researchers whose scripts were adapted for this pipeline. 
+#Centroid and alignment code adapted from Matthew Orton https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R
+#The Sequence trimming function was adapted from Jacqueline May https://github.com/jmay29/phylo/blob/master/refSeqTrim.R
+#The grouping by region and map generation data was adapted from script by Mehra Balsara.
+
 #1.Loading Packages and Setting up Variables----
 
 #install.packages("ape")
