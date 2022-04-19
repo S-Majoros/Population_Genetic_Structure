@@ -929,6 +929,11 @@ AMOVA <- lapply(1:length(seq_genind), function(i){
   poppr.amova(seq_genind[[i]], ~Populations)
 })
 
+#Determine if AMOVA results are significant.   
+AMOVASig <- lapply(1:length(AMOVA), function(i){
+  randtest(AMOVA[[i]], nrepet = 999)
+})
+
 #9.Mismatch Distributions----
 
 #Put sequences into DNABin format
