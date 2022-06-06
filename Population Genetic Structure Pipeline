@@ -128,7 +128,8 @@ dfData <- read.csv("GreenlandData", sep = '\t')
 #Read in data from GBIF. Greenland data retrieved from GBIF.org (23 June 2021) GBIF Occurrence Download https://doi.org/10.15468/dl.mk52hp
 dfGeoData <- read.csv("GreenlandGeo.csv", sep = '\t')
 
-#3. Filter Data----
+#Module 3: Filter Data----
+#This module contains steps to filter the data. This includes steps to filter out records without nucleotide sequences, species names and coordinates. This code also filters out sequences with high gap content, stop codons, and indels. These steps can be adjusted as needed.
 
 #Filter the data 
 dfData <- dfData %>%
