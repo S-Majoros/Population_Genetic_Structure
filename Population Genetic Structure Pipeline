@@ -867,7 +867,8 @@ HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
 #Remove uneeded variables
 rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
 
-#8.Analysis of Molecular Variance (AMOVA)----
+#Module 8: Analysis of Molecular Variance (AMOVA)----
+#This module includes the analysis of molecular variance.
 
 #Calculate Analysis of Molecular Variance 
 AMOVA <- lapply(1:length(seq_genind), function(i){
