@@ -1,11 +1,9 @@
-#Determining realized dispersal rates and comparing rates across taxa with different biological traits
-#Pipeline developed for chapter 1 of masters thesis
-#Pipeline is designed to determine realized dispersal rates for a variety of taxa, but the pipeline will be tested on Diptera species from various Arctic regions. 
+#The following script outlines 14 modules for determining realized dispersal rates and comparing rates across taxa with different biological traits. The modules can be used together or separately based on the researchers needs. The pipeline is designed to determine population genetic structure metrics for a variety of taxa. My analysis was completed by running all modules as a pipeline, and can be repeated using the full script and data provided. The pipeline was tested using Diptera species from Greenland as a small example analysis, and Diptera species form Canada as an example of a larger, more complex analysis. 
 
 #Thank you to the other researchers whose scripts were adapted for this pipeline. 
 #Centroid and alignment code adapted from Matthew Orton https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R
 #The Sequence trimming function was adapted from Jacqueline May https://github.com/jmay29/phylo/blob/master/refSeqTrim.R
-#The grouping by region and map generation data was adapted from script by Mehra Balsara.
+#The grouping by region and map generation script was adapted from script by Mehra Balsara.
 
 #1.Loading Packages and Setting up Variables----
 
