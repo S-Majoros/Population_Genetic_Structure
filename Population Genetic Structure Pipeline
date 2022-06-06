@@ -116,7 +116,7 @@ TreeModel <- "BIC"
 K <- 4 
 
 #Module 2: Extract Data from Databases-----
-#This module contains steps to download and read in data from the Barcode of Life Data Systems (BOLD) and the Global Biodiversity Information Facility (GBIF). Other data can be read in based on the researchers needs.
+#This module contains steps to download and read in data from the Barcode of Life Data Systems (BOLD) and the Global Biodiversity Information Facility (GBIF). Other data can be read in based on the researchers needs by changing the file names/paths. .
 
 #Call data from BOLD. Currently calling Diptera (fly) data from Greenland. Data was retrieved on June 24th 2021. 
 #dfTaxa <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?taxon=Diptera&geo=Greenland&format=tsv")
