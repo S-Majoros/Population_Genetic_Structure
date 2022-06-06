@@ -731,7 +731,8 @@ for(i in 1:length(FastaFileNames)){
 #Remove unneeded variables 
 rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef, BINs, Data_Aligned,Data_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, processID, Reference_Filter, SequenceNames, Sequences, alignmentRefNames, alignmentref)
 
-#7.F-Statistics and Multi-allelic Measures----
+#Module 7: F-Statistics and Multi-allelic Measures----
+#In this module, population genetic structure metrics (FST, GST, and Jost's D) are calculated and heat maps are created. 
 
 #Read in fasta files
 seq_multiFas <- lapply(1:length(FastaFileNames), function(i){
