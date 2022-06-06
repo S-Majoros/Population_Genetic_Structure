@@ -240,16 +240,11 @@ dfGeoData <- (dfGeoData[, c("gbifID", "species","decimalLatitude", "decimalLongi
 #Remove unneeded variables 
 rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequence_lengths, coi5p_object, Ids_Filtered_Indels, Ids_Filtered_Stop, indels, processID, sequences, stop_codon, translation_table)
 
-#4.Organizing Data by Clusters----
+#Module 4: Organizing Data by Clusters----
+#This module includes steps to cluster the sequences by a distance threshold. If using BINs this code in not needed.If your dataset is very large, your computer may not have the memory to run the following code.The script also provides the option to sample down the dataset, as well as to leave the data separated by genus for the whole step rather than recombine them. If using a large dataset, follow the commented out code. If doing analysis on the full set, use the uncommented code. Running the analysis on a larger server or through high performance computing may also be an option for larger datasets.
 
-#If BOLD BINs are being used, the following steps are not needed.
-#If your dataset is very large, your computer may not have the memory to run the following code. Consider sampling down your dataset or running the analysis on a larger server
-#Place data into clusters using an additional distance threshold. 
 #Split the dataset by family. Running several smaller alignments is much faster than running a large alignment. 
 Alignment_List <- split(dfData, f = dfData$genus_name)
-
-#If your dataset is very large, your computer may not have the memory to run the following code. Consider sampling down your dataset or running the analysis on a larger server.
-#For larger datasets, the following code commented out code can be used to sample down large BINs.
 
 #Filter out genera with less than 1 record each. Further filtering will occur in a later step. 
 #dfData <- dfData %>%
@@ -282,58 +277,6 @@ Alignment_List <- split(dfData, f = dfData$genus_name)
 #dfFull <- rbind(largeBIN, smallBIN)
 #Split into list of dataframes by genus 
 #Alignment_List <- split(dfFull, f = dfFull$genus_name)
-
-#Align and trim sequences with a reference sequence. The following parameters were chosen in order to conduct an accurate alignment. Iterations and refinements were set to 10 so that the tree and guide tree are being realigned multiple times and the best alignment is being kept. gapOpening is set to -3000 in order to reduce the gaps present in the alignment
-RefSeqTrim <- function(x) {
-  #Create data frame for reference sequence 
-  #This reference sequence was taken from BOLD for Diptera (Record ID: ACGAZ1590-12, BIN:AAA1222).
-  dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
-  colnames(dfRefSeq)[2] <- "nucleotides"
-  #Set nucleotides to a character 
-  dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides)
-  #Trim sequences to 620bp
-  dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19)
-  #Check sequence length
-  dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
-  #Ensure sequences are of character type
-  alignmentSeqs <- as.character(x$nucleotides)
-  #Name according to processid 
-  names(alignmentSeqs) <- x$processid
-  #Pull out reference sequence
-  alignmentref <- as.character(dfRefSeq$nucleotides[1])
-  #Name reference sequence 
-  names(alignmentref) <- "Reference"
-  #Put sequences together for alignment
-  alignmentSeqsPlusRef <- append(alignmentref, alignmentSeqs)
-  #Convert to DNAStringSet 
-  DNAStringSet2 <- DNAStringSet(alignmentSeqsPlusRef)
-  #Remove gaps
-  DNAStringSet2 <- RemoveGaps(DNAStringSet2)
-  #Run alignment 
-  alignment2 <- AlignSeqs(DNAStringSet2)
-  #Find stop and start positions in reference 
-  refSeqPos <- which(alignment2@ranges@NAMES=="Reference")
-  refSeqPos <- alignment2[refSeqPos]
-  refSeqPosStart <- regexpr("[ACTG]", refSeqPos)
-  refSeqPosStart <- as.numeric(refSeqPosStart)
-  refSeqPosEnd <- nchar(dfRefSeq$nucleotides[1]) + refSeqPosStart
-  refSeqPosEnd <- as.numeric(refSeqPosEnd)
-  #Trim sequence
-  alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd -1)
-  #Convert to DNAStringSet
-  DNAStringSet3 <- DNAStringSet(alignment2Trimmed)
-  #Remove reference sequence 
-  refSeqRm <- which(DNAStringSet3@ranges@NAMES=="Reference")
-  dnaStringSet3 <- subset(DNAStringSet3[-refSeqRm])
-  alignmentOrder <- DNAStringSet3@ranges@NAMES
-  #Reorder based on alignment
-  x <- x[match(alignmentOrder, x$processid), ]
-  #Replace old sequences with new ones 
-  trimmedSeqs <- as.character(DNAStringSet3)
-  x$nucleotides <- trimmedSeqs
-  #Return dataframe with new sequences 
-  return(x)
-}
 
 #Trim sequences to reference sequence 
 Data_alignment <- lapply(1:length(Alignment_List), function(i){
