@@ -5,7 +5,8 @@
 #The Sequence trimming function was adapted from Jacqueline May https://github.com/jmay29/phylo/blob/master/refSeqTrim.R
 #The grouping by region and map generation script was adapted from script by Mehra Balsara.
 
-#1.Loading Packages and Setting up Variables----
+#Module 1: Loading Packages and Setting up Variables----
+#This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Modules and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
 
 #install.packages("ape")
 library(ape)
