@@ -880,7 +880,8 @@ AMOVASig <- lapply(1:length(AMOVA), function(i){
   randtest(AMOVA[[i]], nrepet = 999)
 })
 
-#9.Mismatch Distributions----
+#Module 9: Mismatch Distributions----
+#This module includes code to determine and analyze mismatch distributions.
 
 #Put sequences into DNABin format
 #First convert sequences to a DNAStringSet format
