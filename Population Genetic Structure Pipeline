@@ -1273,7 +1273,8 @@ plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 #plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
 
-#13.Determining Range Size----
+#Module 13: Determining Range Size----
+#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area.
 
 #Reduce dfData_Full to needed columns
 dfData_Full <- (dfData_Full[, c("processid", "species_name", "lat", "lon")])
