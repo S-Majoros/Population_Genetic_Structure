@@ -1123,7 +1123,8 @@ plot(PGLStree)
 #Remove unneeded variables
 rm(alignment1, dfBIN_List, dfCentroid, dfAllSeq, dfData_BINs, dfNonCentroid, dfRefSeq, dnaBINCentroid, dnaStringSet1, dnaStringSet2, env, geneticDistanceCentroid, largeBinList, largeBinProcessid, ml_out, ml_tree, model_fit, model_test, phylo_dat, tree, Tree_Rooted, Best_Model, Best_Model2, BIN_Size, binNumberCentroid, centroidSeq, dm, inv_values, largeBin)
 
-#11.Analysis of Variance (ANOVA)----
+#Module 11: Analysis of Variance (ANOVA)----
+#This module includes code to perform an analysis of variance. The file names/paths will have to be adjusted to those required for your analysis.
 
 #Read in csv file containing trait information and FST values. Commented out flight ability for now because all species looked at in this dataset have a flying life stage. If using clustered data, read in the second commented out dataframe.
 Trait_Data <- read.csv("Diptera_Traits_Greenland_Feb7th.csv")
