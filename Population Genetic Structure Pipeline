@@ -946,7 +946,7 @@ dip <- lapply(1:length(observed), function(i){
   dip.test(observed[[i]])
 })
 
-#10:Phylogenetic Tree----
+#Module 10:Phylogenetic Tree----
 #This module outlines code for creating a phylogenetic tree. This maximum likelihood tree can be used in the PGLS analysis instead of a tree from the literature. 
 
 #Find a centroid sequence for each BIN. A centroid is defined as the sequence with the minimum average distance to all others in its BIN and is a representative sequence for each BIN.
