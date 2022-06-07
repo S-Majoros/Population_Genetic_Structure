@@ -1203,7 +1203,8 @@ p <- ggplot(Trait_Data, aes(x=habitat, y=JD, fill=habitat)) +
   geom_violin(trim=FALSE, legend = NULL)
 p + scale_color_brewer(palette = "Dark2")
 
-#12.Phylogenetic Generalized Least Squares Analysis (PGLS)----
+#Module 12: Phylogenetic Generalized Least Squares Analysis (PGLS)----
+#This module includes code to run a phylogenetic generalized least squares analysis. A phylogenetic tree will be needed. This can be obtained from the literature, using module 10, or from another source. 
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
 PGLStree <- read.nexus("Run3Tree_Nov22")
