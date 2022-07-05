@@ -1458,7 +1458,14 @@ plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 #plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
 
-#Module 13: Determining Range Size----
+#13: Multiple Regression----
+#This module includes steps to run a multiple regression comparing population structure metrics to biological traits and other important variables. This module was used for the Canada data set and performed using the global metrics. 
+
+#Set up dataframe containing all the needed information 
+#Merge the metrics into a dataframe 
+RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue)
+
+#Module 14: Determining Range Size----
 #This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area.
 
 #Reduce dfData_Full to needed columns
@@ -1500,7 +1507,7 @@ Area <- lapply(1:length(Species_List), function(i){
 #Remove unneeded variables
 rm(Data_Filter)
 
-#14. Relationship between F-Statistics, Range size and Traits----
+#15. Relationship between F-Statistics, Range size and Traits----
 
 #Read in range size data. If using clustered data, read in the second file. 
 Range_Data <- read.csv("Diptera_Traits_Greenland_Range_Feb 8th.csv")
