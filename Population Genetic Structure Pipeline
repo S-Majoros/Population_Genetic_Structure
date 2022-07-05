@@ -8,64 +8,9 @@
 #Module 1: Loading Packages and Setting up Variables----
 #This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Modules and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
 
-#install.packages("ape")
-library(ape)
-#install.packages("apex")
-library(apex)
-#install.packages("coil")
-library(coil)
-#install.packages("devtools")
-library(devtools)
-#install_github("r-barnes/dggridR")
-library(dggridR)
-#install.packages("dplyr")
-library(dplyr)
-#install.packages("foreach")
-library(foreach)
-#install.packages("ggplot2")
-library(ggplot2)
-#install.packages("lwgeom")
-library(lwgeom)
-#install.packages("mmod")
-library(mmod)
-#install.packages("nlme")
-library(nlme)
-#install.packages("pegas")
-library(pegas)
-#install.packages("phangorn")
-library(phangorn)
-#install.packages("phytools")
-library(phytools)
-#install.packages("phylotools")
-library(phylotools)
-#install.packages("poppr")
-library(poppr)
-#install.packages("rlist")
-library(rlist)
-#install.packages("sf")
-library(sf)
-#install.packages("stringr")
-library(stringr)
-#install.packages("tidyr")
-library(tidyr)
-#install.packages("vegan")
-library(vegan)
-#BiocManager::install(c("Biostrings", "DECIPHER"))
-library(Biostrings)
-library(DECIPHER)
+#Reference Sequences and RefSeqTrim function
+#There are required for each module that perfroms a multiple sequence alignment. When indicated for the module, load in the following code. 
 
-#Set number of sequences each genera can have. This will be used to sample down the dataset if it is too large. Here a max of 100 sequences is used.
-maxSize <- 100
-#Set distance matrix model. The TN93 model is used in this case. This model assumes different base frequencies and different mutation rates for transitions and transversions, as well as the different rates between pyrimidines and purines. 
-model <- "raw"
-#Set additional clustering threshold. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences.  
-clustering_threshold <- 0.04 
-#Set clustering method.UPGMA was chosen as the clustering method for my analysis. This method is fast, efficient, and commonly used. In this method, each distance contributes equally to the final result, and the averages are weighed by the number of taxa in the cluster. 
-clustering_method <- "single"
-#Set up taxa
-taxa <- "Diptera"
-#Set up study region 
-#region <- "Greenland"
 #Set up reference sequence. A list containing reference sequences for various orders is provided. Each BIN was chosen because it met the following criteria; from the specified order, contained at least 10 CO1-5P sequences, had at least one specimen photograph that matched the higher taxonomy and did not have taxonomic conflicts at family level or above. The reference sequence was chosen because it is 658 base pairs long, has 2 trace file chromatograms, and no missing information or stop codons. A Diptera sequence was used for this case study. 
 #Each sequence was retrieved from BOLD.
 #Diptera: BIN = AAA1222, Record ID = ACGAZ1590-12
@@ -83,6 +28,7 @@ taxa <- "Diptera"
 #Mytilida: BIN = AAG5349, Record = BNAGB010-14
 #Anomopoda: BIN = BOLD:AAA4795, Record = DMLIM001-19
 #Amphipoda: BIN = BOLD:AAA1262, Record = AFISH098-15
+
 reference_sequence <- list(Diptera = "AACTTTATATTTTATTTTTGGAGCTTGATCTAGAATAATTGGAACTTCTTTAAGAATATTAATTCGAATTGAATTAGGTCATCCAGGTTCCTTAATTGGAAATGACCAAATTTATAATGTAATTGTAACAGCTCATGCATTTATTATAATTTTTTTTATAGTAATACCAATTATAATTGGAGGATTTGGAAATTGATTAGTTCCTTTAATATTAGGAGCACCAGATATAGCTTTTCCTCGAATGAATAATATAAGTTTTTGACTTCTTCCTCCTGCTTTAATACTTTTATTAACAAGTAGAATAGTAGAAAGTGGAGCTGGAACAGGATGAACAGTTTATCCTCCTTTATCATCTATTATTGCTCATGGAGGAGCATCTGTTGACTTAGCTATTTTTTCTCTTCATTTAGCAGGAATTTCTTCTATTTTAGGAGCTGTAAATTTTATTACAACTGTAATTAATATACGATCTATTGGTATTACCTTTGATCGAATACCTTTATTTGTTTGATCAGTTGCTATTACAGCCTTATTACTTTTATTATCTTTACCAGTTTTAGCTGGAGCAATTACAATATTATTAACAGATCGAAATTTAAATACATCATTTTTTGATCCTGCTGGAGGAGGAGATCCTATTTTATACCAACATTTATTT", 
                            Coleoptera = "AACTTTATATTTTATTTTTGGTGCTTGATCAGGAATAGTGGGTACTTCTCTAAGAATACTAATTCGAGCTGAATTAGGAAATCCCGGATCCTTAATTGGAGATGATCAAATTTATAATGTTATTGTAACAGCCCATGCTTTCGTAATAATTTTTTTCATAGTTATACCTATTATAATTGGGGGATTTGGAAATTGGTTAGTGCCATTAATATTAGGAGCACCAGATATGGCCTTCCCTCGAATAAATAACATGAGATTTTGACTTTTGCCCCCTTCCTTGACCCTTCTCCTAATAAGTAGAATAGTTGAAAAAGGGGCAGGGACAGGTTGAACAGTTTACCCTCCGCTGTCATCAGGAATCGCTCACAGAGGGGCATCAGTGGACCTAGCTATTTTTAGACTTCATTTAGCAGGGATTTCATCAATTTTAGGAGCAGTAAATTTTATTACAACAATTATTAATATACGATCAGTAGGAATAACATTTGATCGAATACCCTTATTTGTATGATCAGTAGGAATTACAGCATTATTATTATTACTATCTTTACCAGTTTTAGCTGGAGCTATTACTATGCTTCTAACAGATCGAAATTTAAATACTTCCTTTTTTGACCCTGCCGGAGGGGGAGATCCTATTCTTTATCAACATTTATTT", 
                            Hymenoptera = "TATACTTTACTTTATTTTTGCTATATGATCAGGAATAATTGGTGCATCACTAAGTATAATTATCCGTATAGAACTAGCAACTCCTGGAAGATGAATTAATAATGATCAAATTTATAATACTATTGTTACTGCCCATGCTTTTATTATAATTTTCTTTATAGTTATACCATTCATAATTGGAGGATTTGGAAATTGATTAGTACCCTTAATAATTGGAGCCCCAGATATAGCTTTCCCACGAATAAATAATATAAGATTTTGATTATTAATTCCTTCCTTATTACTACTATTAATAGGAAATACTTTAACTTCAGGTTCAGGAACAGGATGAACAATTTACCCTCCATTATCATCAATTATATTTCATTCATCTTTTTCAGTAGATTTTTCTATCTTCTCCTTACATATAGCAGGAATTTCTTCAATCATAGGAGCTATTAATTTTATTGTAACTATTATTTTAATAAAAAATATTTCACTTAATATAAATCAAATCCCTCTATTTCCTTGATCAGTAAAAATTACTGCAATTTTACTTCTTCTCTCTCTTCCAGTTTTAGCAGGAGCTATTACAATATTATTAACAGATCGAAATTTAAATACATCATTTTTTGACCCTTCAGGAGGTGGAGACCCAATTTTATATCAACATTTATTT", 
@@ -93,18 +39,180 @@ reference_sequence <- list(Diptera = "AACTTTATATTTTATTTTTGGAGCTTGATCTAGAATAATTGG
                            Rodentia = "TACCCTCTACATAATTTTCGGTGCTTGAGCAGGTATAGTAGGAACTGGCCTTAGCATCTTAATCCGAGCTGAACTAGGTCAACCCGGCTCCCTATTAGGAGATGATCAGATCTATAACGTAATTGTAACCGCACACGCTTTTGTTATAATCTTTTTTATAGTTATACCTATCATGATTGGGGGTTTTGGCAACTGACTCGTACCATTAATAATCGGAGCCCCCGACATAGCATTCCCACGAATAAATAACATAAGCTTTTGACTATTACCACCCTCATTCCTTCTTCTCCTAGCCTCCTCAATAGTAGAAGCAGGAGCAGGAACAGGCTGAACCGTTTATCCTCCTCTAGCAGGAAACCTCGCACATGCAGGAGCATCAGTTGACCTAGCCATTTTCTCTCTTCATTTAGCCGGAATTTCTTCAATTTTAGGGGCAATTAACTTTATTACAACAATTATCAATATAAAACCACCCGCCATATCACAATATCAAACCCCATTATTTGTATGATCAGTTCTAATCACTGCAGTCCTACTTCTCCTATCCTTGCCCGTACTAGCCGCTGGCATTACTATACTACTAACAGATCGAAACCTAAACACAACTTTCTTTGACCCAGCTGGAGGGGGAGACCCCATTCTATATCAACATCTGTTC",
                            Chiroptera = "CACCCTTTATCTTCTGTTTGGTGCTTGAGCAGGCATAGTAGGCACTGCACTAAGCCTTCTTATCCGTGCTGAGCTCGGCCAACCCGGAGCCTTATTAGGTGATGATCAGATCTATAATGTAATTGTAACAGCCCATGCCTTTGTGATAATCTTCTTTATAGTTATACCTATTATAATTGGAGGCTTTGGTAACTGACTAATTCCTCTAATAATTGGTGCCCCTGACATAGCCTTTCCCCGAATAAACAATATAAGCTTCTGACTCCTACCTCCCTCTTTCTTATTATTACTAGCCTCTTCAACAGTCGAAGCAGGAGTGGGTACCGGCTGAACAGTATACCCACCCCTAGCAGGCAATCTCGCACATGCAGGAGCTTCTGTAGATCTAGCTATTTTTTCTCTCCACCTTGCAGGAGTCTCATCAATTCTAGGCGCTATCAACTTTATTACCACTATTATTAATATGAAGCCCCCTGCTCTCTCTCAATATCAAACACCCCTGTTCGTCTGATCTGTCCTAATTACAGCCGTCTTATTACTTCTGTCTCTTCCTGTCCTAGCAGCAGGTATCACTATACTACTAACAGACCGAAACCTTAATACCACCTTCTTTGACCCTGCTGGAGGAGGAGACCCAATCCTATATCAACACCTATTC",
                            Cypriniformes = "CACCCTTTATCTTGTATTTGGTGCCTGAGCTGGGATAGTGGGGACTGCCCTAAGCCTCCTTATTCGAGCTGAATTAAGCCAACCCGGATCCCTTTTAGGCGATGATCAAATTTATAATGTTATTGTTACCGCCCACGCCTTCGTAATAATTTTCTTTATAGTAATGCCAATTCTTATCGGCGGGTTTGGAAACTGACTTGTTCCACTAATGATTGGTGCACCTGATATAGCATTCCCACGAATAAATAATATAAGCTTCTGACTTCTTCCCCCATCATTCCTGCTACTACTAGCCTCTTCCGGGGTTGAAGCCGGCGCTGGGACAGGGTGAACAGTATACCCACCCCTCGCAGGTAATCTCGCTCATGCAGGCGCATCAGTAGACTTAACGATCTTCTCACTCCACCTGGCAGGTGTATCATCAATCCTAGGGGCAGTTAACTTTATTACCACAATTATTAACATGAAACCCCCAGCAATTTCCCAATATCAAACGCCCCTCTTTGTATGAGCCGTATTGGTAACAGCTGTCCTTCTCCTACTATCACTACCGGTCCTAGCTGCCGGAATTACAATACTACTTACAGATCGTAATCTTAATACCACCTTCTTCGACCCGGCGGGAGGGGGAGACCCAATCTTATACCAACACTTATTC",
-                           Salmoniformes = "CACCCTTTATTTAGTATTTGGTGCCTGAGCCGGAATAGTCGGCACAGCCCTGAGTCTCCTTATTCGAGCCGAACTGAGCCAGCCCGGAGCCCTTCTGGGTGATGATCAAATTTATAATGTGATCGTCACGGCCCATGCTTTCGTTATGATTTTCTTTATAGTTATGCCAATTATGATCGGCGGGTTCGGAAACTGATTAATCCCCCTTATGATTGGTGCCCCTGATATAGCCTTTCCCCGAATAAATAACATGAGCTTCTGACTGCTTCCCCCGTCCTTTCTTCTTCTCTTAGCCTCATCTGGGGTTGAAGCCGGAGCCGGGACAGGGTGGACAGTATACCCCCCTCTGGCCGGTAATCTAGCCCACGCAGGAGCCTCTGTAGATTTAACTATTTTTTCCCTTCACCTAGCTGGTATTTCTTCTATTTTGGGGGCCATTAATTTTATTACAACCATTATCAACATGAAACCCCCAGCGATCTCTCAATACCAAACCCCTCTTTTTGTATGGGCTGTTCTGATTACCGCCGTCCTCTTACTACTTTCCCTGCCTGTACTTGCAGCAGGCATCACAATGTTACTTACAGACCGAAATCTTAATACCACTTTCTTTGACCCAGCAGGAGGGGGGGACCCAATCCTTTATCAACATCTATTT",
                            Unionidae = "TACTTTATATTTATTATTGGCTTTGTGGTCTGGTTTAATTGGGTTAGCTTTGAGGCTTTTGATTCGAGCTGAGTTGGGTCAACCAGGAAGGTTGTTAGGGGATGATCAATTGTACAATGTGATTGTTACAGCTCATGCTTTTATAATAATTTTTTTCTTGGTAATACCAATGATGATTGGTGGGTTTGGTAATTGGCTTATTCCTTTAATAATTGGTGCTCCTGATATAGCTTTTCCTCGATTAAATAATTTAAGGTTTTGGTTGCTTGTACCAGCTTTATTTTTGCTGTTAAGGTCATCATTGGTAGAGAGGGGTGTTGGTACAGGTTGAACAGTATACCCTCCTTTGTCTGGAAGTGTTGCTCATTCTGGGGCTTCGGTGGATTTGGCCATTTTCTCTTTACATCTTGCCGGTGCTTCCTCAATTTTAGGTGCTATCAATTTTATCTCTACTGTTGGGAATATGCGATCCCCAGGTTTAGTCGCTGAGCGAATTCCTTTGTTTGTTTGAGCTGTTACAGTGACAGCTGTGTTGTTAGTTGCTGCTTTACCAGTTTTAGCTGGTGCTATTACGATATTGCTTACTGATCGTAATCTGAACACTTCGTTTTTTGACCCTACGGGGGGAGGTGATCCTATTTTGTATATGCATTTATTT",
                            Mytilida = "AAGACTCTATATTATCTTAGGTGTTTGATCGGGAATGGTGGGGATTGGTTTAAGAATGTTAATTCGAATTGAGTTAGGTCGTCCTGGAAGATTTTTAGGGGACGATCAGCTATATAACGTCATTGTTACGGCCCATGCTTTAGTTATAATTTTCTTTATGGTTATGCCTTTAATGGTCGGGGGTTTTGGGAATTGGCTTCTTCCATTAATAATAGGTTCTGTAGATATAATTTTTCCGCGACTTAACAATTTGAGATTTTGGTTTCTCCCCTCTTCATTATTTATACTGTTGAGGTCTACTTTTATTGAAAGCGGGTCCGGTACTGGATGGACTTTATATCCTCCTTTGTCTTCATATACAGGACATAGTGGCCCAGCTGTTGACATATCTTTATTTTCTTTACATTTGGCAGGTGCTTCTTCTATTGGTGGATCTATTAACTTTTTAACTAGTATAAAAAATATGCCGGTGGAGGTAATGCGAGGAGAGCGGATAATGTTGTTCTTGTGGTCTATGGTGGTAACAGCTGTTCTTTTATTGGTGTCTTTGCCTGTGCTGGCTGGCGGTATTACTATGCTGATTTTTGATCGTCATTTTAATACTTCTTTTTATGACCCTGTAGGAGGGGGAGATCCAGTGTTGTACCAACATCTCTTT",
                            Anomopoda = "GACTTTATATTTTGTATTCGGGGTTTGATCAGGTATGGTAGGTACTGCTCTAAGTATACTTATTCGAGCTGAATTAGGACAATCAGGTAGTTTAATTGGGGATGATCAGATTTATAATGTTATTGTCACTGCCCACGCGTTTGTAATAATTTTTTTTATGGTTATGCCTATTATAATTGGAGGTTTCGGGAACTGGCTAGTACCTTTGATGTTGGGAGCTCCTGACATAGCCTTCCCTCGATTAAATAATTTAAGTTTTTGATTTTTACCCCCCGCTTTAACTCTTTTACTTGTGGGAGGGGCAGTGGAAAGTGGTGCTGGGACTGGTTGAACTGTATACCCCCCTCTCTCTGCGGGGATCGCTCATGCTGGGGCCTCTGTTGACTTAAGTATTTTTTCTCTGCATCTAGCAGGTGTTTCTTCTATTTTAGGGGCAGTAAATTTTATTACAACTATCATTAATATACGATCTTTAGGTATAACTTTAGATCGAATTCCCTTGTTTGTATGAGCGGTTGGAATCACTGCACTCTTACTTTTACTAAGTTTGCCCGTTCTTGCGGGAGCAATTACCATACTCTTAACTGACCGTAATTTGAATACTTCATTCTTTGATCCTGCGGGGGGTGGGGATCCAATTTTATACCAACATTTATTT",
                            Amphipoda = "TACACTATATTTTATTTTAGGAGCTTGGTCTAGAGTTGTAGGTACTTCTCTAAGAGTTATTATTCGCTCAGAGTTAAGCGCTCCTGGTAATTTAATTGGAGACGACCAGTTATATAATGTAATAGTGACAGCTCACGCTTTCATTATAATTTTTTTTATAGTAATACCTATTATAATCGGAGGGTTTGGTAACTGGCTAGTACCCTTAATACTAGGCAGACCAGATATAGCCTTCCCCCGTATAAACAACATAAGATTTTGACTTCTCCCTCCTTCATTAACTTTATTACTTATAAGAGGATTAGTAGAAAGAGGTGTGGGTACAGGGTGAACTGTCTACCCCCCCCTAGCCGGTGCTACAGCCCATAGAGGGGGCGCGGTTGACTTAGCTATTTTTTCTTTACACCTGGCTGGTGCTTCTTCCATTCTAGGGGCTATTAATTTTATTTCCACTACTATTAATATACGAGGTCCCGGTATATTTATAGACCAGATACCCTTGTTTGTTTGATCAGTATTTATCACAGCAATTTTACTACTACTATCCTTACCTGTTCTAGCAGGTGCTATTACCATATTACTGACTGATCGTAATTTAAACACATCTTTTTTTGACCCTAGAGGTGGAGGTGATCCTATTCTATATCAACACTTATTT")
-#Set what size of polygon to be used in the study. A size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples
+
+#Set up a function to trim the sequences using a reference sequence. 
+RefSeqTrim <- function(x) {
+  #Create data frame for reference sequence 
+  #This reference sequence was taken from BOLD for Diptera (Record ID: ACGAZ1590-12, BIN:AAA1222).
+  dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
+  colnames(dfRefSeq)[2] <- "nucleotides"
+  #Set nucleotides to a character 
+  dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides)
+  #Trim sequences to 620bp
+  dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19)
+  #Check sequence length
+  dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
+  #Ensure sequences are of character type
+  alignmentSeqs <- as.character(x$nucleotides)
+  #Name according to processid 
+  names(alignmentSeqs) <- x$processid
+  #Pull out reference sequence
+  alignmentref <- as.character(dfRefSeq$nucleotides[1])
+  #Name reference sequence 
+  names(alignmentref) <- "Reference"
+  #Put sequences together for alignment
+  alignmentSeqsPlusRef <- append(alignmentref, alignmentSeqs)
+  #Convert to DNAStringSet 
+  DNAStringSet2 <- DNAStringSet(alignmentSeqsPlusRef)
+  #Remove gaps
+  DNAStringSet2 <- RemoveGaps(DNAStringSet2)
+  #Run alignment 
+  alignment2 <- AlignSeqs(DNAStringSet2)
+  #Find stop and start positions in reference 
+  refSeqPos <- which(alignment2@ranges@NAMES=="Reference")
+  refSeqPos <- alignment2[refSeqPos]
+  refSeqPosStart <- regexpr("[ACTG]", refSeqPos)
+  refSeqPosStart <- as.numeric(refSeqPosStart)
+  refSeqPosEnd <- nchar(dfRefSeq$nucleotides[1]) + refSeqPosStart
+  refSeqPosEnd <- as.numeric(refSeqPosEnd)
+  #Trim sequence
+  alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd -1)
+  #Convert to DNAStringSet
+  DNAStringSet3 <- DNAStringSet(alignment2Trimmed)
+  #Remove reference sequence 
+  refSeqRm <- which(DNAStringSet3@ranges@NAMES=="Reference")
+  dnaStringSet3 <- subset(DNAStringSet3[-refSeqRm])
+  alignmentOrder <- DNAStringSet3@ranges@NAMES
+  #Reorder based on alignment
+  x <- x[match(alignmentOrder, x$processid), ]
+  #Replace old sequences with new ones 
+  trimmedSeqs <- as.character(DNAStringSet3)
+  x$nucleotides <- trimmedSeqs
+  #Return dataframe with new sequences 
+  return(x)
+}
+
+#Packages and variables by module. 
+#For each module being used, load the recommended packages and variables. 
+#No packages or variables needed for module 1 or 2. 
+
+#Module 3: 
+#install.packages("coil")
+library(coil)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("foreach")
+library(foreach)
+#install.packages("rlist")
+library(rlist)
+#install.packages("stringr")
+library(stringr)
+
+#Module 4:
+#install.packages("ape")
+library(ape)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("stringr")
+library(stringr)
+#BiocManager::install(c("Biostrings", "DECIPHER"))
+library(Biostrings)
+library(DECIPHER)
+#Reference Sequences and RefSeqTrim function are needed
+
+#Set number of sequences each genera can have. This will be used to sample down the dataset if it is too large. Here a max of 100 sequences is used.
+maxSize <- 100
+
+#Set distance matrix model to be used in the function dist.dna. In this case the model was set to raw, or p-distance. This model takes the number of sites that differ between each sequence pair. As this model is used in the BIN algorithm, we chose to use it here as well. The default model for the function is K80.   
+model <- "raw"
+
+#Set the clustering threshold for use in the IDClusters function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is -Inf.   
+clustering_threshold <- 0.04
+
+#Set the clustering method to be used in the IdClusters function. Single linkage is used here. Refined single linkage was used in the BIN paper (Ratnasingham & Hebert, 2013), so in order to provide a comparison, regular single linkage is used. The deafult method for the function is UPGMA.   
+clustering_method <- "single"
+
+#Module 5: 
+#install.packages("devtools")
+library(devtools)
+#install_github("r-barnes/dggridR")
+library(dggridR)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("ggplot2")
+library(ggplot2)
+#install.packages("rlist")
+library(rlist)
+#install.packages("tidyr")
+library(tidyr)
+#install.packages("vegan")
+library(vegan)
+
+#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. A size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 1000 was used.No default values is provided in the function. 
 Polygon_Length <- 50
+
 #Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with an abundance based and incidence based richness of 50% or more are included.
 percent_sampled_abundance <- 0.5
 percent_sampled_incidence <- 0.5
 
-#Set up dataframe with Outgroup sequences. In this study, 3 Trichoptera sequences from BOLD were chosen as the outgroups.
+#Module 6:
+#install.packages("phylotools")
+library(phylotools)
+#BiocManager::install(c("Biostrings", "DECIPHER"))
+library(Biostrings)
+library(DECIPHER)
+#Reference Sequences and RefSeqTrim function are needed
+
+#Set up study region 
+region <- "Greenland"
+
+#Module 7: 
+#install.packages("apex")
+library(apex)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("mmod")
+library(mmod)
+#install.packages("tibble")
+library(tibble)
+#install.packages("tidyr")
+library(tidyr)
+
+#Module 8:
+#install.packages("poppr")
+library(poppr)
+
+#Module 9:
+#install.packages("ape")
+library(ape)
+#BiocManager::install(c("Biostrings"))
+library(Biostrings)
+#install.packages("diptest")
+library(diptest)
+#install.packages("pegas")
+library(pegas)
+#install.packages("Metrics")
+library(Metrics)
+
+#Module 10:
+#install.packages("ape")
+library(ape)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("foreach")
+library(foreach)
+#install.packages("phangorn")
+library(phangorn)
+#BiocManager::install(c("Biostrings", "DECIPHER"))
+library(Biostrings)
+library(DECIPHER)
+#Reference Sequences and RefSeqTrim function are needed
+
+#Set up dataframe with Outgroup sequences. In this study, 3 Trichoptera sequences from BOLD were chosen as the outgroups. Substitute these outgroups with those best suited for your study. 
 Outgroups <- data.frame(processid = c("Outgroup1", "Outgroup2", "Outgroup3"),
                         bin_uri = c("Outgroup1", "Outgroup2", "Outgroup3"),
                         species_name = c("Outgroup1", "Outgroup2", "Outgroup3"),
@@ -112,8 +220,41 @@ Outgroups <- data.frame(processid = c("Outgroup1", "Outgroup2", "Outgroup3"),
 
 #Set up the model that should be used to select the best model for maximum likelihood tree generation. In our case, BIC was chosen. BIC evaluates models based on posterior probability and maximum likelihood 
 TreeModel <- "BIC"
-#Set up number of intervals of discrete gamma distribution (k-value) for the maximum likelihood tree generation. For our study the value was set to 4. 4 is commonly used in studies and a default for many packages, however it is higher than the default used here. 
+
+#Set up number of intervals of discrete gamma distribution (k-value) for the maximum likelihood tree generation to be used in the function pml. For our study the value was set to 4. 4 is commonly used in studies and a default for many packages, however it is higher than the default used here. The default for this package is 1. 
 K <- 4 
+
+#Module 11:
+#install.packages("ggplot2")
+library(ggplot2)
+
+#Module 12:
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("nlme")
+library(nlme)
+#install.packages("phytools")
+library(phytools)
+#install.packages("tibble")
+library(tibble)
+
+#Module 13:
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("lwgeom")
+library(lwgeom)
+#install.packages("sf")
+library(sf)
+
+#Module 14:
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("phytools")
+library(phytools)
+#install.packages("nlme")
+library(nlme)
+#install.packages("tibble")
+library(tibble)
 
 #Module 2: Extract Data from Databases-----
 #This module contains steps to download and read in data from the Barcode of Life Data Systems (BOLD) and the Global Biodiversity Information Facility (GBIF). Other data can be read in based on the researchers needs by changing the file names/paths. .
@@ -863,6 +1004,50 @@ HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
     xlab("Populations") +
     labs(fill = "GST")
 })
+
+#For larger datasets, such as the Canada dataset, you can also calculate global FST, GST and Jost's D. This can be used in further analysis. 
+#Calculate global Jost's D
+DGlobal <- lapply(1:length(seq_genind), function(i){
+  D_Jost(seq_genind[[i]])
+})
+#Calculate global GST
+GSTGlobal <- lapply(1:length(seq_genind), function(i){
+  Gst_Hedrick(seq_genind[[i]])
+})
+#Calculate global FST
+FSTGlobal <- lapply(1:length(seq_genind), function(i){
+  Gst_Nei(seq_genind[[i]])
+})
+
+#Create a histogram showing the spread of global Jost's D values 
+#Extract the values from each list
+DGlobalValue <- lapply(1:length(DGlobal), function(i){
+  DGlobal[[i]]$global.het
+})
+#Convert into vector
+DGlobalValue <- as.numeric(DGlobalValue)
+#Plot histogram 
+hist(DGlobalValue)
+
+#Create a histogram showing the spread of global GST values 
+#Extract the values from each list
+GSTGlobalValue <- lapply(1:length(GSTGlobal), function(i){
+  GSTGlobal[[i]]$global
+})
+#Convert into vector
+GSTGlobalValue <- as.numeric(GSTGlobalValue)
+#Plot histogram 
+hist(GSTGlobalValue)
+
+#Create a histogram showing the spread of global FST values 
+#Extract the values from each list
+FSTGlobalValue <- lapply(1:length(FSTGlobal), function(i){
+  FSTGlobal[[i]]$global
+})
+#Convert into vector
+FSTGlobalValue <- as.numeric(FSTGlobalValue)
+#Plot histogram 
+hist(FSTGlobalValue)
 
 #Remove uneeded variables
 rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
