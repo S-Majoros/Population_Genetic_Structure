@@ -1459,11 +1459,21 @@ plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 #plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
 
 #13: Multiple Regression----
-#This module includes steps to run a multiple regression comparing population structure metrics to biological traits and other important variables. This module was used for the Canada data set and performed using the global metrics. 
+#Set up dataframe containing all the needed information
+#Find number of cells for each species 
+number_of_cells <-  lapply(1:length(Data_Full), function(i){
+  length(unique(Data_Full[[i]]$cell))
+})
+#Set to numeric 
+number_of_cells <- as.numeric(cellnumber)
 
-#Set up dataframe containing all the needed information 
-#Merge the metrics into a dataframe 
-RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue)
+#Merge information into a dataframe 
+RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells)
+
+#Load in trait data
+Trait_Data <- read.csv("CanadaSpeciesApril25.csv")
+#Merge the dataframes 
+RegData <- cbind(Trait_Data, RegData)
 
 #Module 14: Determining Range Size----
 #This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area.
