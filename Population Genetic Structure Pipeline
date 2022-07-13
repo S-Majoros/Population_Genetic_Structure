@@ -1465,13 +1465,83 @@ number_of_cells <-  lapply(1:length(Data_Full), function(i){
   length(unique(Data_Full[[i]]$cell))
 })
 #Set to numeric 
-number_of_cells <- as.numeric(cellnumber)
+number_of_cells <- as.numeric(number_of_cells)
+
+#Find center coordinate for each cell
+SampleCenters  <- lapply(1:length(Data_Full), function(i){
+  dgSEQNUM_to_GEO(Grid, Data_Full[[i]]$cell)
+})
+#Convert to Dataframes 
+SampleCenters <- lapply(1:length(SampleCenters), function(i){
+  as.data.frame(SampleCenters[[i]])
+})
+#Find distance between cells
+CellDistances <- lapply(1:length(SampleCenters), function(i){
+  distm(SampleCenters[[i]])
+})
+#Pull out the max distance 
+MaxDist <- lapply(1:length(CellDistances), function(i){
+  max(CellDistances[[i]])
+})
+#Set to numeric 
+MaxDist <- as.numeric(MaxDist)
+
+#Find number of record for each species 
+NumberofRecords <- lapply(1:length(Data_Full), function(i){
+  nrow(Data_Full[[i]])
+})
+#Set to numeric 
+NumberofRecords <- as.numeric(NumberofRecords)
 
 #Merge information into a dataframe 
-RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells)
+RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells, MaxDist, NumberofRecords)
 
 #Load in trait data
 Trait_Data <- read.csv("CanadaSpeciesApril25.csv")
+
+#Name each element of list with species names
+names(SampleCenters) <- Trait_Data$bin_uri
+#Find which BINs are found in more than three cells
+MoreCells <- list.exclude(Data_Full, !length(unique(cell)) > 3)
+#Combine into one dataframe
+MoreCells <- bind_rows(MoreCells)
+#Get BIN names
+MoreCells <- unique(MoreCells$bin_uri)
+#Split SampleCenters
+MoreCellsIndex <- which(names(SampleCenters) %in% MoreCells == TRUE)
+MoreCellsList <- SampleCenters[MoreCellsIndex]
+#Find which BINs are found in 3 cells 
+ThreeCells <- list.exclude(Data_Full, !length(unique(cell)) == 3)
+#Combine into one dataframe
+ThreeCells <- bind_rows(ThreeCells)
+#Get BIN names
+ThreeCells <- unique(ThreeCells$bin_uri)
+#Split SampleCenters
+ThreeCellsIndex <- which(names(SampleCenters) %in% ThreeCells == TRUE)
+ThreeCellsList <- SampleCenters[ThreeCellsIndex]
+#Find which BINs are found in 2 cells 
+TwoCells <- list.exclude(Data_Full, !length(unique(cell)) == 2)
+#Combine into one dataframe
+TwoCells <- bind_rows(TwoCells)
+#Get BIN names
+TwoCells <- unique(TwoCells$bin_uri)
+#Split SampleCenters
+TwoCellsIndex <- which(names(SampleCenters) %in% TwoCells == TRUE)
+TwoCellsList <- SampleCenters[TwoCellsIndex]
+
+#Find the center point for each species range that has 4 or more points
+RangeCenters <- lapply(1:length(MoreCellsList), function(i){
+  centroid(MoreCellsList[[i]])
+})
+
+midLon <- (try$lon_deg[1] + try$lon_deg[2])/2
+midLat <- (try$lat_deg[1] + try$lat_deg[2])/2
+
+#Find the center point for each species range
+RangeCenters <- lapply(1:length(SampleCenters), function(i){
+  centroid(SampleCenters[[i]])
+})
+
 #Merge the dataframes 
 RegData <- cbind(Trait_Data, RegData)
 
