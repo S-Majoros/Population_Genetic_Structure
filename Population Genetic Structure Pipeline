@@ -238,7 +238,17 @@ library(phytools)
 #install.packages("tibble")
 library(tibble)
 
-#Module 13:
+#Module 13: Multiple Regression
+#install_github("r-barnes/dggridR")
+library(dggridR)
+#install.packages("geosphere")
+library(geosphere)
+#install.packages("sp")
+library(sp)
+#install.packages("visreg")
+library(visreg)
+
+#Module 14:
 #install.packages("dplyr")
 library(dplyr)
 #install.packages("lwgeom")
@@ -246,7 +256,7 @@ library(lwgeom)
 #install.packages("sf")
 library(sf)
 
-#Module 14:
+#Module 15:
 #install.packages("dplyr")
 library(dplyr)
 #install.packages("phytools")
@@ -1459,6 +1469,8 @@ plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 #plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
 
 #13: Multiple Regression----
+#This module includes steps to run a multiple regression comparing population structure metrics to biological traits and other important variables. This module was used for the Canada data set and performed using the global metrics. 
+
 #Set up dataframe containing all the needed information
 #Find number of cells for each species 
 number_of_cells <-  lapply(1:length(Data_Full), function(i){
@@ -1486,6 +1498,32 @@ MaxDist <- lapply(1:length(CellDistances), function(i){
 #Set to numeric 
 MaxDist <- as.numeric(MaxDist)
 
+#Find Center point of each set of coordinates for each species 
+#Convert to Spatial Points Object 
+PolygonList <- lapply(1:length(SampleCenters), function(i){
+  SpatialPoints(coords = SampleCenters[[i]][, c("lon_deg", "lat_deg")], proj4string = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
+})
+#Find centroid 
+CentroidList <- lapply(1:length(PolygonList), function(i){
+  gCentroid(PolygonList[[i]])
+})
+#convert SpatialPoints to dataframes
+CentroidList <- lapply(1:length(CentroidList), function(i){
+  as.data.frame(CentroidList[[i]])
+})
+#Pull out Lon coordinates 
+LonCoord <- lapply(1:length(CentroidList), function(i){
+  CentroidList[[i]]$x
+})
+#Set to numeric 
+LonCoord <- as.numeric(LonCoord)
+#Pull out Lat coordinates
+LatCoord <- lapply(1:length(CentroidList), function(i){
+  CentroidList[[i]]$y
+})
+#Set to numeric 
+LatCoord <- as.numeric(LatCoord)
+
 #Find number of record for each species 
 NumberofRecords <- lapply(1:length(Data_Full), function(i){
   nrow(Data_Full[[i]])
@@ -1494,56 +1532,68 @@ NumberofRecords <- lapply(1:length(Data_Full), function(i){
 NumberofRecords <- as.numeric(NumberofRecords)
 
 #Merge information into a dataframe 
-RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells, MaxDist, NumberofRecords)
+RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells, NumberofRecords, MaxDist, LonCoord, LatCoord)
 
 #Load in trait data
 Trait_Data <- read.csv("CanadaSpeciesApril25.csv")
 
-#Name each element of list with species names
-names(SampleCenters) <- Trait_Data$bin_uri
-#Find which BINs are found in more than three cells
-MoreCells <- list.exclude(Data_Full, !length(unique(cell)) > 3)
-#Combine into one dataframe
-MoreCells <- bind_rows(MoreCells)
-#Get BIN names
-MoreCells <- unique(MoreCells$bin_uri)
-#Split SampleCenters
-MoreCellsIndex <- which(names(SampleCenters) %in% MoreCells == TRUE)
-MoreCellsList <- SampleCenters[MoreCellsIndex]
-#Find which BINs are found in 3 cells 
-ThreeCells <- list.exclude(Data_Full, !length(unique(cell)) == 3)
-#Combine into one dataframe
-ThreeCells <- bind_rows(ThreeCells)
-#Get BIN names
-ThreeCells <- unique(ThreeCells$bin_uri)
-#Split SampleCenters
-ThreeCellsIndex <- which(names(SampleCenters) %in% ThreeCells == TRUE)
-ThreeCellsList <- SampleCenters[ThreeCellsIndex]
-#Find which BINs are found in 2 cells 
-TwoCells <- list.exclude(Data_Full, !length(unique(cell)) == 2)
-#Combine into one dataframe
-TwoCells <- bind_rows(TwoCells)
-#Get BIN names
-TwoCells <- unique(TwoCells$bin_uri)
-#Split SampleCenters
-TwoCellsIndex <- which(names(SampleCenters) %in% TwoCells == TRUE)
-TwoCellsList <- SampleCenters[TwoCellsIndex]
-
-#Find the center point for each species range that has 4 or more points
-RangeCenters <- lapply(1:length(MoreCellsList), function(i){
-  centroid(MoreCellsList[[i]])
-})
-
-midLon <- (try$lon_deg[1] + try$lon_deg[2])/2
-midLat <- (try$lat_deg[1] + try$lat_deg[2])/2
-
-#Find the center point for each species range
-RangeCenters <- lapply(1:length(SampleCenters), function(i){
-  centroid(SampleCenters[[i]])
-})
-
 #Merge the dataframes 
 RegData <- cbind(Trait_Data, RegData)
+
+#Check the traits to ensure that labels are correct
+unique(RegData$Habitat)
+unique(RegData$Adult.Diet)
+unique(RegData$Larval.Diet)
+#Find count of each trait 
+table(RegData['Habitat'])
+table(RegData['Adult.Diet'])
+table(RegData['Larval.Diet'])
+#Plot histograms for continuous variables
+hist(RegData$number_of_cells)
+hist(RegData$NumberofRecords)
+hist(RegData$MaxDist)
+hist(LonCoord)
+hist(LatCoord)
+
+#Run multiple regressions 
+MulRegJD <- lm(DGlobalValue ~ Habitat + Adult.Diet + Larval.Diet + number_of_cells + NumberofRecords + MaxDist + LonCoord + LatCoord, RegData)
+MulRegGST <- lm(GSTGlobalValue ~ Habitat + Adult.Diet + Larval.Diet + number_of_cells + NumberofRecords + MaxDist + LonCoord + LatCoord, RegData)
+MulRegFST <- lm(FSTGlobalValue ~ Habitat + Adult.Diet + Larval.Diet + number_of_cells + NumberofRecords + MaxDist + LonCoord + LatCoord, RegData)
+#Get summary
+summary(MulRegJD)
+summary(MulRegGST)
+summary(MulRegFST)
+
+#Plot the response variable vs each predictor 
+visreg(MulRegJD, "Habitat", gg = TRUE)
+visreg(MulRegJD, "Adult.Diet", gg = TRUE)
+visreg(MulRegJD, "Larval.Diet", gg = TRUE)
+visreg(MulRegJD, "number_of_cells", gg = TRUE)
+visreg(MulRegJD, "NumberofRecords", gg = TRUE)
+visreg(MulRegJD, "MaxDist", gg = TRUE)
+visreg(MulRegJD, "LonCoord", gg = TRUE)
+visreg(MulRegJD, "LatCoord", gg = TRUE)
+
+visreg(MulRegGST, "Habitat", gg = TRUE)
+visreg(MulRegGST, "Adult.Diet", gg = TRUE)
+visreg(MulRegGST, "Larval.Diet", gg = TRUE)
+visreg(MulRegGST, "number_of_cells", gg = TRUE)
+visreg(MulRegGST, "NumberofRecords", gg = TRUE)
+visreg(MulRegGST, "MaxDist", gg = TRUE)
+visreg(MulRegGST, "LonCoord", gg = TRUE)
+visreg(MulRegGST, "LatCoord", gg = TRUE)
+
+visreg(MulRegFST, "Habitat", gg = TRUE)
+visreg(MulRegFST, "Adult.Diet", gg = TRUE)
+visreg(MulRegFST, "Larval.Diet", gg = TRUE)
+visreg(MulRegFST, "number_of_cells", gg = TRUE)
+visreg(MulRegFST, "NumberofRecords", gg = TRUE)
+visreg(MulRegFST, "MaxDist", gg = TRUE)
+visreg(MulRegFST, "LonCoord", gg = TRUE)
+visreg(MulRegFST, "LatCoord", gg = TRUE)
+
+#Remove unneeded variables
+rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, RangeCenters, PolygonList, Grid, CentroidList)
 
 #Module 14: Determining Range Size----
 #This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area.
