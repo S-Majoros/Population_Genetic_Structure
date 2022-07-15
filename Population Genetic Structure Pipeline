@@ -706,7 +706,7 @@ map_spherical <- Map +
 BIN_List <- split(dfData, f = dfData$bin_uri)
 
 #Remove unneeded variables 
-rm(abundance_results,accumulation_curve, dfRegions, Grid, countries, dfGrid, incidence_results, rarefaction_curve, SampleCenters, SampleCounts,Sampled_Regions_Abundance, Sampled_Regions_Incidence, Coords, dfCoords, Lat, Lon, Poly)
+rm(abundance_results,accumulation_curve, dfRegions, countries, dfGrid, incidence_results, rarefaction_curve, SampleCenters, SampleCounts,Sampled_Regions_Abundance, Sampled_Regions_Incidence, Coords, dfCoords, Lat, Lon, Poly)
 
 #Module 6: Multiple Sequence Alignment----
 #In this module, the sequences are aligned to a reference.
