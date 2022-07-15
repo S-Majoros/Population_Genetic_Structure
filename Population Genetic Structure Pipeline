@@ -1466,6 +1466,13 @@ NumberofRecords <- as.numeric(NumberofRecords)
 #Merge information into a dataframe 
 RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells, NumberofRecords, MaxDist, LonCoord, LatCoord)
 
+#Extract the most common species name for each BIN. These names are needed in order to manually assign traits from the literature. 
+#CanadaSpecies <- lapply(1:length(BIN_List), function(i){data.frame(max(BIN_List[[i]]$species_name), max(BIN_List[[i]]$bin_uri))})
+#Combine the dataframes
+#CanadaSpecies <- bind_rows(CanadaSpecies)
+#Save to file. The pathway and file names will need to be updated. 
+#write.csv(CanadaSpecies,"C:/Users/sammi/OneDrive/Documents\\CanadaSpeciesApril25.csv", row.names = FALSE)
+
 #Load in trait data
 Trait_Data <- read.csv("CanadaSpeciesApril25.csv")
 
