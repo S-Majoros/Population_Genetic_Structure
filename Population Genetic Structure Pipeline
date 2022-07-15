@@ -1276,34 +1276,28 @@ Trait_Data <- read.csv("Diptera_Traits_Greenland_Feb7th.csv")
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_FST <- aov(FST ~ larval_diet, data = Trait_Data)
 ANOVA_Habitat_FST <- aov(FST ~ habitat, data = Trait_Data)
-#ANOVA_Flight_FST <- aov(FST ~ flight_ability, data = Trait_Data)
 #Get ANOVA summary 
 summary(ANOVA_Habitat_FST)
 summary(ANOVA_Feeding_Adult_FST)
 summary(ANOVA_Feeding_Larval_FST)
-#summary(ANOVA_Flight_FST)
 
 #Run ANOVAs for all traits compared to GST
 ANOVA_Feeding_Adult_GST <- aov(GST ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_GST <- aov(GST ~ larval_diet, data = Trait_Data)
-ANOVA_Habitat_GST <- aov(GST ~ habitat, data = Trait_Data)
-#ANOVA_Flight_GST <- aov(GST ~ flight_ability, data = Trait_Data)
+ANOVA_Habitat_GST <- aov(GST ~ habitat, data = Trait_Data)a)
 #Get ANOVA summary 
 summary(ANOVA_Habitat_GST)
 summary(ANOVA_Feeding_Adult_GST)
 summary(ANOVA_Feeding_Larval_GST)
-#summary(ANOVA_Flight_GST)
 
 #Run ANOVAs for all traits compared to JD
 ANOVA_Feeding_Adult_JD <- aov(JD ~ adult_diet, data = Trait_Data)
 ANOVA_Feeding_Larval_JD <- aov(JD ~ larval_diet, data = Trait_Data)
 ANOVA_Habitat_JD <- aov(JD ~ habitat, data = Trait_Data)
-#ANOVA_Flight_JD <- aov(JD ~ flight_ability, data = Trait_Data)
 #Get ANOVA summary 
 summary(ANOVA_Habitat_JD)
 summary(ANOVA_Feeding_Adult_JD)
 summary(ANOVA_Feeding_Larval_JD)
-#summary(ANOVA_Flight_JD)
 
 #Plot results as violin plots
 #FST and adult diet
@@ -1367,53 +1361,44 @@ Trait_Data <- Trait_Data[match(PGLStree$tip.label, rownames(Trait_Data)), ]
 pglsModel_Habitat_FST <- gls(FST ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Adult_Diet_FST <- gls(FST ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Larval_Diet_FST <- gls(FST ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
-#pglsModel_Flight_FST <- gls(FST ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 #Get PGLS summary 
 summary(pglsModel_Habitat_FST)
 summary(pglsModel_Adult_Diet_FST)
 summary(pglsModel_Larval_Diet_FST)
-#summary(pglsModel_Flight_FST)
 
 #Create boxplots for traits vs. population genetic structure metrics 
 plot_Habitat_FST<- boxplot(Trait_Data$FST ~ Trait_Data$habitat)
 plot_Adult_Diet_FST <- boxplot(Trait_Data$FST ~ Trait_Data$adult_diet)
 plot_Larval_Diet_FST <- boxplot(Trait_Data$FST ~ Trait_Data$larval_diet)
-#plot_Flight_FST <- boxplot(Trait_Data$FST ~ Trait_Data$flight_ability)
 
 #Run PGLS for GST
 pglsModel_Habitat_GST <- gls(GST ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Adult_Diet_GST <- gls(GST ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Larval_Diet_GST <- gls(GST ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
-#pglsModel_Flight_GST <- gls(GST ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 #Get PGLS summary 
 summary(pglsModel_Habitat_GST)
 summary(pglsModel_Adult_Diet_GST)
 summary(pglsModel_Larval_Diet_GST)
-#summary(pglsModel_Flight_GST)
 
 #Create boxplots for traits vs. population genetic structure metrics 
 plot_Habitat_GST<- boxplot(Trait_Data$GST ~ Trait_Data$habitat)
 plot_Adult_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$adult_diet)
 plot_Larval_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$larval_diet)
-#plot_Flight_GST <- boxplot(Trait_Data$GST ~ Trait_Data$flight_ability)
 
 #Run PGLS for JD
 #Run PGLS analysis 
 pglsModel_Habitat_JD <- gls(JD ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Adult_Diet_JD <- gls(JD ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 pglsModel_Larval_Diet_JD <- gls(JD ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
-#pglsModel_Flight_JD <- gls(JD ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
 #Get PGLS summary 
 summary(pglsModel_Habitat_JD)
 summary(pglsModel_Adult_Diet_JD)
 summary(pglsModel_Larval_Diet_JD)
-#summary(pglsModel_Flight_JD)
 
 #Create boxplots for traits vs. population genetic structure metrics 
 plot_Habitat_JD<- boxplot(Trait_Data$JD ~ Trait_Data$habitat)
 plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
-#plot_Flight_JD <- boxplot(Trait_Data$JD ~ Trait_Data$flight_ability)
 
 #13: Multiple Regression----
 #This module includes steps to run a multiple regression comparing population structure metrics to biological traits and other important variables. This module was used for the Canada data set and performed using the global metrics. 
