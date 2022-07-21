@@ -160,6 +160,8 @@ percent_sampled_abundance <- 0.5
 percent_sampled_incidence <- 0.5
 
 #Module 6:
+#install.packages("foreach")
+library(foreach)
 #install.packages("phylotools")
 library(phylotools)
 #BiocManager::install(c("Biostrings", "DECIPHER"))
