@@ -1484,6 +1484,8 @@ Trait_Data <- read.csv("CanadaSpeciesApril25.csv")
 
 #Merge the dataframes 
 RegData <- cbind(Trait_Data, RegData)
+#This dataset can be saved to your computer for future analysis and comparisions. 
+#write.csv(RegData, "C:/Users/sammi/OneDrive/Documents\\RegData500")
 
 #Check the traits to ensure that labels are correct
 unique(RegData$Habitat)
