@@ -254,7 +254,9 @@ library(sp)
 #install.packages("visreg")
 library(visreg)
 
-#Module 14:
+#No packages required for module 14
+
+#Module 15:
 #install.packages("dplyr")
 library(dplyr)
 #install.packages("lwgeom")
@@ -262,7 +264,7 @@ library(lwgeom)
 #install.packages("sf")
 library(sf)
 
-#Module 15:
+#Module 16:
 #install.packages("dplyr")
 library(dplyr)
 #install.packages("phytools")
@@ -1542,7 +1544,28 @@ visreg(MulRegFST, "LatCoord", gg = TRUE)
 #Remove unneeded variables
 rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, RangeCenters, PolygonList, Grid, CentroidList)
 
-#Module 14: Determining Range Size----
+#14.Sensitivity Analysis: Comparing Datasets----
+#This module includes steps to load in datasets for comparision and run a paired t-test. For my analysis, datasets generated using different polygons lenghts are compared. 
+
+#Read in the origional datasets
+RegData500 <- read.csv("RegData500")
+#Read in the comparision set
+RegDataCompare <- read.csv("RegData50")
+#RegDataCompare <- read.csv("RegData100")
+
+#Reduce dataframes to only species found in both 
+Data_Filter <- which(RegData500$species_name %in% RegDataCompare$species_name)
+RegData500 <- RegData500[Data_Filter, ]
+
+#Run t-test comparing each metric 
+t.test(RegData500$DGlobalValue, RegData50$DGlobalValue, paired=TRUE)
+t.test(RegData500$FSTGlobalValue, RegData50$FSTGlobalValue, paired=TRUE)
+t.test(RegData500$GSTGlobalValue, RegData50$GSTGlobalValue, paired=TRUE)
+
+#Remove unneeded variables 
+rm(Data_Filter)
+
+#Module 15: Determining Range Size----
 #This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area.
 
 #Reduce dfData_Full to needed columns
@@ -1584,7 +1607,7 @@ Area <- lapply(1:length(Species_List), function(i){
 #Remove unneeded variables
 rm(Data_Filter)
 
-#15. Relationship between F-Statistics, Range size and Traits----
+#16. Relationship between F-Statistics, Range size and Traits----
 
 #Read in range size data. If using clustered data, read in the second file. 
 Range_Data <- read.csv("Diptera_Traits_Greenland_Range_Feb 8th.csv")
