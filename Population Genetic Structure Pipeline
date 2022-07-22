@@ -177,6 +177,8 @@ region <- "Greenland"
 library(apex)
 #install.packages("dplyr")
 library(dplyr)
+#install.packages("ggplot2")
+library(ggplot2)
 #install.packages("mmod")
 library(mmod)
 #install.packages("tibble")
