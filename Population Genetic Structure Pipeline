@@ -1,4 +1,4 @@
-#The following script outlines 14 modules for determining realized dispersal rates and comparing rates across taxa with different biological traits. The modules can be used together or separately based on the researchers needs. The pipeline is designed to determine population genetic structure metrics for a variety of taxa. My analysis was completed by running all modules as a pipeline, and can be repeated using the full script and data provided. The pipeline was tested using Diptera species from Greenland as a small example analysis, and Diptera species form Canada as an example of a larger, more complex analysis. 
+#The following script outlines 15 modules for determining realized dispersal rates and comparing rates across taxa with different biological traits. The modules can be used together or separately based on the researchers needs. The pipeline is designed to determine population genetic structure metrics for a variety of taxa. My analysis was completed by running all modules as a pipeline, and can be repeated using the full script and data provided. The pipeline was tested using Diptera species from Greenland as a small example analysis, and Diptera species form Canada as an example of a larger, more complex analysis. 
 
 #Thank you to the other researchers whose scripts were adapted for this pipeline. 
 #Centroid and alignment code adapted from Matthew Orton https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R
@@ -6,7 +6,7 @@
 #The grouping by region and map generation script was adapted from script by Mehra Balsara.
 
 #Module 1: Loading Packages and Setting up Variables----
-#This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Modules and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
+#This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Packages and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
 
 #Reference Sequences and RefSeqTrim function
 #There are required for each module that perfroms a multiple sequence alignment. When indicated for the module, load in the following code. 
@@ -133,7 +133,7 @@ model <- "raw"
 #Set the clustering threshold for use in the IDClusters function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is -Inf.   
 clustering_threshold <- 0.04
 
-#Set the clustering method to be used in the IdClusters function. Single linkage is used here. Refined single linkage was used in the BIN paper (Ratnasingham & Hebert, 2013), so in order to provide a comparison, regular single linkage is used. The deafult method for the function is UPGMA.   
+#Set the clustering method to be used in the IdClusters function. Single linkage is used here. Refined single linkage was used in the BIN paper, so in order to provide a comparison, regular single linkage is used. The default method for the function is UPGMA.   
 clustering_method <- "single"
 
 #Module 5: 
@@ -152,7 +152,7 @@ library(tidyr)
 #install.packages("vegan")
 library(vegan)
 
-#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. A size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 1000 was used.No default values is provided in the function. 
+#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. For Greenland, a size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 1000 was used.No default values is provided in the function. 
 Polygon_Length <- 50
 
 #Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with an abundance based and incidence based richness of 50% or more are included.
@@ -222,7 +222,7 @@ Outgroups <- data.frame(processid = c("Outgroup1", "Outgroup2", "Outgroup3"),
                         species_name = c("Outgroup1", "Outgroup2", "Outgroup3"),
                         nucleotides = c("AACTTTATATTTTATTTTTGGAAGATGAGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATAATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACAGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT","AACTTTATATTTTATTTTTGGAAGATGAGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATAATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACCGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT","AACTTTATATTTTATTTTTGGAAGATGGGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATGATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACAGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT"))
 
-#Set up the model that should be used to select the best model for maximum likelihood tree generation. In our case, BIC was chosen. BIC evaluates models based on posterior probability and maximum likelihood 
+#Set up the model that should be used to select the best model for maximum likelihood tree generation. In our case, BIC was chosen. BIC evaluates models based on posterior probability and maximum likelihood. 
 TreeModel <- "BIC"
 
 #Set up number of intervals of discrete gamma distribution (k-value) for the maximum likelihood tree generation to be used in the function pml. For our study the value was set to 4. 4 is commonly used in studies and a default for many packages, however it is higher than the default used here. The default for this package is 1. 
@@ -690,7 +690,7 @@ dfGrid <- (dfGrid[, c("cell", "Lon", "Lat", "count")])
 #Load map data
 countries <- map_data("world")
 
-#Plot polygons on a flat map. coord_fixed will need to be adjusted to focus in on your area of interest and scale_fill_viridis_c will need to be adjusted to reflect your sample size. Depending on the size of your dataset, the generating the full map may take too much memory, and simpiler version of the map can be used. Coords used for Greenland: c(-22, -18), c(70, 80). Coords used for Canada: c(-160, -20), c(40, 90).
+#Plot polygons on a flat map. coord_fixed will need to be adjusted to focus in on your area of interest and scale_fill_viridis_c will need to be adjusted to reflect your sample size. Depending on the size of your dataset, the generating the full map may take too much memory, and a simpler version of the map can be used. Coords used for Greenland: c(-22, -18), c(70, 80). Coords used for Canada: c(-160, -20), c(40, 90).
 Map <- ggplot() + 
   geom_polygon(data=countries, aes(x=long, y=lat, group=group), fill= "white", color="black") +
   geom_polygon(data=dfGrid, aes(x=long, y=lat, group=group, fill=count), alpha=0.4) +
@@ -839,7 +839,7 @@ for(i in 1:length(FastaFileNames)){
 rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef, BINs, Data_Aligned,Data_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, processID, Reference_Filter, SequenceNames, Sequences, alignmentRefNames, alignmentref)
 
 #Module 7: F-Statistics and Multi-allelic Measures----
-#In this module, population genetic structure metrics (FST, GST, and Jost's D) are calculated and heat maps are created. 
+#In this module, population genetic structure metrics (FST, GST, and Jost's D) are calculated and heat maps are created. This module also contains code to create a map showing the metrics between regions. For larger, more complex datasets, the option to calculate global FST, GST and Jost's D is provided. 
 
 #Read in fasta files
 seq_multiFas <- lapply(1:length(FastaFileNames), function(i){
@@ -970,6 +970,59 @@ HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
     labs(fill = "GST")
 })
 
+#Create a map showing the population genetic structure metrics between different regions for species with differing traits. For this map, only the 10 largest BINs were used. This is to allow the map to be easily read and interpreted. 
+#Combine Data_Full into one dataframe 
+dfData_Full <- bind_rows(Data_Full)
+#Reduce Dataframe to only the 50 largest BINs
+dfData_Full <- dfData_Full %>%
+  add_count(bin_uri) %>%
+  filter(dense_rank(-n) < 11)
+#Check to make sure only 10 BINs are selected 
+length(unique(dfData_Full$bin_uri))
+#Split into separate dataframes 
+top_10 <- split(dfData_Full, f = dfData_Full$bin_uri)
+
+#Extract the most common species name for each BIN
+top10Species <- lapply(1:length(top_10), function(i){data.frame(max(top_10[[i]]$species_name), max(top_10[[i]]$bin_uri))})
+#Combine the dataframes
+top10Species <- bind_rows(top10Species)
+#Save to file. The pathway and file names will need to be updated.Traits, metrics and regions will need to manually added. 
+#write.csv(top10Species,"C:/Users/sammi/OneDrive/Documents\\top10Species.csv", row.names = FALSE)
+
+#Read in the data for a map
+MapData <- read.csv("top10Species2.csv")
+
+#Set up map layout
+mapLayout <- list(
+  showland = TRUE,
+  showlakes = TRUE,
+  showcountries = TRUE,
+  showocean = TRUE,
+  countrywidth = 0.5,
+  landcolor = toRGB("grey90"),
+  lakecolor = toRGB("white"),
+  oceancolor = toRGB("white"),
+  projection = list(type = 'eckert4'),
+  lonaxis = list(
+    showgrid = TRUE,
+    gridcolor = toRGB("gray40"),
+    gridwidth = 0.5
+  ),
+  lataxis = list(
+    showgrid = TRUE,
+    gridcolor = toRGB("gray40"),
+    gridwidth = 0.5
+  )
+)
+
+#Plot the Map
+plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$FST), colors = c("darkorange", "blue"), mode = "markers+lines", type = 'scattergeo') %>%
+  layout(geo = mapLayout)
+plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$GST), colors = c("darkorange", "blue", "deepskyblue"), mode = "markers+lines", type = 'scattergeo') %>%
+  layout(geo = mapLayout)
+plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$JD), colors = c("darkorange", "blue", "deepskyblue"), mode = "markers+lines", type = 'scattergeo') %>%
+  layout(geo = mapLayout)
+  
 #For larger datasets, such as the Canada dataset, you can also calculate global FST, GST and Jost's D. This can be used in further analysis. 
 #Calculate global Jost's D
 DGlobal <- lapply(1:length(seq_genind), function(i){
@@ -1030,6 +1083,15 @@ AMOVASig <- lapply(1:length(AMOVA), function(i){
   randtest(AMOVA[[i]], nrepet = 999)
 })
 
+#Plot histogram showing distribution of AMOVA values 
+PhiValue <- lapply(1:length(AMOVA), function(i){
+ AMOVA[[i]]$statphi$Phi
+})
+#Convert into vector
+PhiValue <- as.numeric(PhiValue)
+#Plot histogram 
+hist(PhiValue)
+
 #Module 9: Mismatch Distributions----
 #This module includes code to determine and analyze mismatch distributions.
 
@@ -1087,14 +1149,25 @@ expected <- lapply(1:length(MD), function(i){
 observed <- lapply(1:length(MD), function(i){
   MD[[i]]$histogram$density
 })
-#Caluclate mean absolute error 
-MeanAbsoluteError <- lapply(1:length(observed), function(i){
-  mae(observed[[i]], expected[[i]])
-})
 #Calculate dip test
 dip <- lapply(1:length(observed), function(i){
   dip.test(observed[[i]])
 })
+
+#Plot histograms showing the distribution of dip.test statistics. 
+#Plot histogram showing distribution of AMOVA values 
+DipValue <- lapply(1:length(dip), function(i){
+  dip[[i]]$statistic
+})
+DipPValue <- lapply(1:length(dip), function(i){
+  dip[[i]]$p.value
+})
+#Convert into vector
+DipValue <- as.numeric(DipValue)
+DipPValue <- as.numeric(DipValue)
+#Plot histogram 
+hist(DipValue)
+hist(DipPValue)
 
 #Module 10:Phylogenetic Tree----
 #This module outlines code for creating a phylogenetic tree. This maximum likelihood tree can be used in the PGLS analysis instead of a tree from the literature. 
@@ -1278,7 +1351,7 @@ rm(alignment1, dfBIN_List, dfCentroid, dfAllSeq, dfData_BINs, dfNonCentroid, dfR
 
 #Read in csv file containing trait information and FST values. If using clustered data, read in the second commented out dataframe.
 Trait_Data <- read.csv("Diptera_Traits_Greenland_Feb7th.csv")
-#Trait_Data <- read.csv(Diptera_Traits_Greenland_Clustered_Feb8th.csv")
+#Trait_Data <- read.csv("Diptera_Traits_Greenland_Clustered_Feb8th.csv")
 
 #Run ANOVAs for all traits compared to FST
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
@@ -1352,7 +1425,7 @@ p + scale_color_brewer(palette = "Dark2")
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
 PGLStree <- read.nexus("Run3Tree_Nov22")
-#PGLStree <- read.nexus("Run3ClusteredTreeTree_Nov23")
+#PGLStree <- read.nexus("Tree_Greenland_Clustered_Feb9th")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
 PGLStree <- force.ultrametric(PGLStree, method="extend")
@@ -1409,7 +1482,7 @@ plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 
 #13: Multiple Regression----
-#This module includes steps to run a multiple regression comparing population structure metrics to biological traits and other important variables. This module was used for the Canada data set and performed using the global metrics. 
+#This module includes steps to run a multiple regression comparing population genetic structure metrics to biological traits and other important variables. This module was used for the Canada data set and performed using the global metrics. 
 
 #Set up dataframe containing all the needed information
 #Find number of cells for each species 
@@ -1483,6 +1556,7 @@ RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_ce
 
 #Load in trait data
 Trait_Data <- read.csv("CanadaSpeciesApril25.csv")
+#Trait_Data <- read.csv("CanadaSpeciesClustering.csv")
 
 #Merge the dataframes 
 RegData <- cbind(Trait_Data, RegData)
@@ -1545,28 +1619,37 @@ visreg(MulRegFST, "LatCoord", gg = TRUE)
 rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, RangeCenters, PolygonList, Grid, CentroidList)
 
 #14.Sensitivity Analysis: Comparing Datasets----
-#This module includes steps to load in datasets for comparision and run a paired t-test. For my analysis, datasets generated using different polygons lenghts are compared. 
+#This module includes steps to load in datasets for comparison and run a paired t-test. For my analysis, datasets generated using different polygons lengths are compared. 
 
-#Read in the origional datasets
+#Read in the original datasets
 RegData500 <- read.csv("RegData500")
 #Read in the comparision set
 RegDataCompare <- read.csv("RegData50")
-#RegDataCompare <- read.csv("RegData100")
+#RegDataCompare <- read.csv("RegData250")
 
-#Reduce dataframes to only species found in both 
-Data_Filter <- which(RegData500$species_name %in% RegDataCompare$species_name)
+#Reduce dataframes to only species found in both
+#Find species found in both
+SharedBINs <- intersect(RegData500$bin_uri, RegDataCompare$bin_uri)
+#Reduce both dataframes
+Data_Filter <- which(RegData500$bin_uri %in% SharedBINs)
 RegData500 <- RegData500[Data_Filter, ]
+Data_Filter <- which(RegDataCompare$bin_uri %in% SharedBINs)
+RegDataCompare <- RegDataCompare[Data_Filter, ]
+
+#Ensure dataframes are in the same order
+RegData500 <- RegData500[order(RegData500$bin_uri),]
+RegDataCompare <- RegDataCompare[order(RegDataCompare$bin_uri),]
 
 #Run t-test comparing each metric 
-t.test(RegData500$DGlobalValue, RegData50$DGlobalValue, paired=TRUE)
-t.test(RegData500$FSTGlobalValue, RegData50$FSTGlobalValue, paired=TRUE)
-t.test(RegData500$GSTGlobalValue, RegData50$GSTGlobalValue, paired=TRUE)
+t.test(RegData500$DGlobalValue, RegDataCompare$DGlobalValue, paired=TRUE)
+t.test(RegData500$FSTGlobalValue, RegDataCompare$FSTGlobalValue, paired=TRUE)
+t.test(RegData500$GSTGlobalValue, RegDataCompare$GSTGlobalValue, paired=TRUE)
 
 #Remove unneeded variables 
 rm(Data_Filter)
 
-#Module 15: Determining Range Size----
-#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area.
+#Module 15: Range Size Analysis ----
+#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area. The range size is the compared the population genetic structure metrics and biological traits using an ANOVA and PGLS. 
 
 #Reduce dfData_Full to needed columns
 dfData_Full <- (dfData_Full[, c("processid", "species_name", "lat", "lon")])
