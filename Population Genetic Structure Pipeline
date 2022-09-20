@@ -1687,17 +1687,12 @@ Area <- lapply(1:length(Species_List), function(i){
     st_area()
 })
 
-#Remove unneeded variables
-rm(Data_Filter)
-
-#16. Relationship between F-Statistics, Range size and Traits----
-
 #Read in range size data. If using clustered data, read in the second file. 
 Range_Data <- read.csv("Diptera_Traits_Greenland_Range_Feb 8th.csv")
-#Range_Data <- read.csv(Data_Traits_Greenland_Range_Clustered_Feb9th.csv")
+#Range_Data <- read.csv("Data_Traits_Greenland_Range_Clustered_Feb9th.csv")
 
 #Run an ANOVA and PGLS to compare range size to traits and population genetic structure 
-#Run ANOVA comparing range size to population genetic stucture metrics 
+#Run ANOVA comparing range size to population genetic structure metrics 
 ANOVA_Range_FST <- aov(range_size ~ FST, data = Range_Data)
 ANOVA_Range_GST <- aov(range_size ~ GST, data = Range_Data)
 ANOVA_Range_JD <- aov(range_size ~ JD, data = Range_Data)
@@ -1710,28 +1705,12 @@ summary(ANOVA_Range_JD)
 ANOVA_Range_Adult <- aov(range_size ~ adult_diet, data = Range_Data)
 ANOVA_Range_Larval <- aov(range_size ~ larval_diet, data = Range_Data)
 ANOVA_Range_Habitat<- aov(range_size ~ habitat, data = Range_Data)
-#ANOVA_Range_Flight <- aov(range_size ~ flight_ability, data = Range_Data)
 #Get ANOVA summary 
 summary(ANOVA_Range_Habitat)
 summary(ANOVA_Range_Adult)
 summary(ANOVA_Range_Larval)
-#summary(ANOVA_Range_Flight)
 
-#Plot results as violin plots
-#Range size and adult diet
-p <- ggplot(Range_Data, aes(x=adult_diet, y=range_size, fill=adult_diet)) + 
-  geom_violin(trim=FALSE, legend = NULL)
-p + scale_color_brewer(palette = "Dark2")
-#Range size and larval diet
-p <- ggplot(Range_Data, aes(x=larval_diet, y=range_size, fill=larval_diet)) + 
-  geom_violin(trim=FALSE, legend = NULL)
-p + scale_color_brewer(palette = "Dark2")
-#Range size and habitat
-p <- ggplot(Range_Data, aes(x=habitat, y=range_size, fill=habitat)) + 
-  geom_violin(trim=FALSE, legend = NULL)
-p + scale_color_brewer(palette = "Dark2")
-
-#Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS.
+#Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS. 
 PGLStree <- read.nexus("Run3SpeciesTree_Nov23")
 #Clustered Tree
 #PGLStree <- read.nexus("Run3ClusteredRangeTree_Nov23")
@@ -1741,7 +1720,7 @@ PGLStree <- force.ultrametric(PGLStree, method="extend")
 
 #Set the row names to species names 
 Range_Data <- Range_Data %>%
-  column_to_rownames(var = 'species_name')
+  column_to_rownames(var = 'Species')
 #Make sure tree and dataframe are in the same order
 Range_Data <- Range_Data[match(PGLStree$tip.label, rownames(Range_Data)), ]
 
@@ -1754,19 +1733,16 @@ summary(pglsModel_Range_FST)
 summary(pglsModel_Range_GST)
 summary(pglsModel_Range_JD)
 
-#Run PGLS analysis 
+#Run PGLS analysis comparing range size to traits 
 pglsModel_Range_Habitat <- gls(range_size ~ habitat, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
 pglsModel_Range_Adult <- gls(range_size ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
 pglsModel_Range_Larval <- gls(range_size ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
-#pglsModel_Range_Flight <- gls(range_size ~ flight_ability, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
 #Get PGLS summary 
 summary(pglsModel_Range_Habitat)
 summary(pglsModel_Range_Adult)
 summary(pglsModel_Range_Larval)
-#summary(pglsModel_Range_Flight)
 
-#Create boxplots for range size vs. traits
-plot_Range_Habitat <- boxplot(Range_Data$range_size ~ Range_Data$habitat)
-plot_Range_Adult <- boxplot(Range_Data$range_size ~ Range_Data$adult_diet)
-plot_Range_Larval <- boxplot(Range_Data$Range_size ~ Range_Data$larval_diet)
-#plot_Range_Flight <- boxplot(Range_Data$range_size ~ Range_Data$flight_ability)
+#Remove unneeded variables
+rm(Data_Filter)
+#Remove unneeded variables
+rm(Data_Filter)
