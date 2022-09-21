@@ -112,6 +112,9 @@ library(rlist)
 #install.packages("stringr")
 library(stringr)
 
+#Set up taxa 
+taxa <- "Diptera"
+
 #Module 4:
 #install.packages("ape")
 library(ape)
