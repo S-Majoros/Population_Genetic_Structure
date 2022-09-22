@@ -130,6 +130,9 @@ library(DECIPHER)
 #Set number of sequences each genera can have. This will be used to sample down the dataset if it is too large. Here a max of 100 sequences is used.
 maxSize <- 100
 
+#Set up region of study
+region <- "Greenland"
+
 #Set distance matrix model to be used in the function dist.dna. In this case the model was set to raw, or p-distance. This model takes the number of sites that differ between each sequence pair. As this model is used in the BIN algorithm, we chose to use it here as well. The default model for the function is K80.   
 model <- "raw"
 
