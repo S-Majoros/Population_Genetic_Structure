@@ -269,8 +269,6 @@ library(dplyr)
 library(lwgeom)
 #install.packages("sf")
 library(sf)
-
-#Module 16:
 #install.packages("dplyr")
 library(dplyr)
 #install.packages("phytools")
