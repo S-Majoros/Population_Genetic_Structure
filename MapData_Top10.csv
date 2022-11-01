@@ -1,0 +1,299 @@
+species_name,bin_uri,region,lat,lon,FST,GST,JD,Habitat,Adult Diet,Larval Diet
+Delia platura,AAA3453,150,41.36029,-84.12637,1,4,3,1,1,1
+Delia platura,AAA3453,207,41.36029,-84.12637,1,4,3,1,1,1
+Delia platura,AAA3453,150,41.36029,-84.12637,1,2,2,1,1,1
+Delia platura,AAA3453,199,44.42601,-78.75,1,2,2,1,1,1
+Delia platura,AAA3453,150,41.36029,-84.12637,1,2,2,1,1,1
+Delia platura,AAA3453,190,45.55804,-72.84134,1,2,2,1,1,1
+Delia platura,AAA3453,150,41.36029,-84.12637,1,2,2,1,1,1
+Delia platura,AAA3453,122,51.57367,-119.4378,1,2,2,1,1,1
+Delia platura,AAA3453,150,41.36029,-84.12637,1,3,1,1,1,1
+Delia platura,AAA3453,163,50.79254,-65.82074,1,3,1,1,1,1
+Delia platura,AAA3453,150,41.36029,-84.12637,1,4,4,1,1,1
+Delia platura,AAA3453,105,59.89824,-111.7212,1,4,4,1,1,1
+Delia platura,AAA3453,150,41.36029,-84.12637,1,2,2,1,1,1
+Delia platura,AAA3453,142,51.99328,-105.47381,1,2,2,1,1,1
+Delia platura,AAA3453,207,41.36029,-84.12637,1,3,3,1,1,1
+Delia platura,AAA3453,199,44.42601,-78.75,1,3,3,1,1,1
+Delia platura,AAA3453,207,41.36029,-84.12637,1,3,3,1,1,1
+Delia platura,AAA3453,190,45.55804,-72.84134,1,3,3,1,1,1
+Delia platura,AAA3453,207,41.36029,-84.12637,1,3,3,1,1,1
+Delia platura,AAA3453,122,51.57367,-119.4378,1,3,3,1,1,1
+Delia platura,AAA3453,207,41.36029,-84.12637,1,4,4,1,1,1
+Delia platura,AAA3453,163,50.79254,-65.82074,1,4,4,1,1,1
+Delia platura,AAA3453,207,41.36029,-84.12637,1,3,3,1,1,1
+Delia platura,AAA3453,105,59.89824,-111.7212,1,3,3,1,1,1
+Delia platura,AAA3453,207,41.36029,-84.12637,1,3,3,1,1,1
+Delia platura,AAA3453,142,51.99328,-105.47381,1,3,3,1,1,1
+Delia platura,AAA3453,141,47.89626,-115.96,1,2,2,1,1,1
+Delia platura,AAA3453,171,49.72995,-85.08052,1,2,2,1,1,1
+Delia platura,AAA3453,141,47.89626,-115.96,1,2,2,1,1,1
+Delia platura,AAA3453,132,51.98825,-112.469,1,2,2,1,1,1
+Smittia sp. ES12,AAB0377,126,59.11463,-62.81647,2,4,4,1,4,1
+Smittia sp. ES12,AAB0377,67,61.70988,-134.0633,2,4,4,1,4,1
+Smittia sp. ES12,AAB0377,126,59.11463,-62.81647,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,122,51.57367,-119.4378,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,126,59.11463,-62.81647,2,4,4,1,4,1
+Smittia sp. ES12,AAB0377,124,59.11463,-94.68353,2,4,4,1,4,1
+Smittia sp. ES12,AAB0377,126,59.11463,-62.81647,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,132,51.98825,-112.469,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,67,61.70988,-134.0633,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,40,69.6311,-139.40633,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,67,61.70988,-134.0633,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,122,51.57367,-119.4378,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,67,61.70988,-134.0633,1,4,4,1,4,1
+Smittia sp. ES12,AAB0377,124,59.11463,-94.68353,1,4,4,1,4,1
+Smittia sp. ES12,AAB0377,67,61.70988,-134.0633,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,132,51.98825,-112.469,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,40,69.6311,-139.40633,1,2,2,1,4,1
+Smittia sp. ES12,AAB0377,122,51.57367,-119.4378,1,2,2,1,4,1
+Smittia sp. ES12,AAB0377,40,69.6311,-139.40633,1,4,4,1,4,1
+Smittia sp. ES12,AAB0377,124,59.11463,-94.68353,1,4,4,1,4,1
+Smittia sp. ES12,AAB0377,40,69.6311,-139.40633,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,132,51.98825,-112.469,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,122,51.57367,-119.4378,1,4,4,1,4,1
+Smittia sp. ES12,AAB0377,124,59.11463,-94.68353,1,4,4,1,4,1
+Smittia sp. ES12,AAB0377,122,51.57367,-119.4378,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,132,51.98825,-112.469,1,3,3,1,4,1
+Smittia sp. ES12,AAB0377,124,59.11463,-94.68353,1,4,4,1,4,1
+Smittia sp. ES12,AAB0377,132,51.98825,-112.469,1,4,4,1,4,1
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,104,55.11228,-123.4828,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,77,63.0272,-125.37963,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,199,44.42601,-78.75,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,124,59.11463,-94.68353,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,163,50.79254,-65.82074,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,190,45.55804,-72.84134,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,122,51.57367,-119.4378,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,40,69.6311,-139.40633,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,171,49.72995,-85.08052,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,87,63.75005,-116.0492,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,59,66.41751,-131.77342,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,132,51.98825,-112.469,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,142,51.99328,-105.47381,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,131,47.30617,-122.3507,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,248,47.45135,-60.6792,1,4,4,2,4,2
+Paratanytarsus laccophilus,AAC8842,94,53.95966,-130.71241,1,4,4,2,4,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,199,44.42601,-78.75,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,4,4,1,3,2
+Scathophaga stercoraria,AAD0853,124,59.11463,-94.68353,1,4,4,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,4,4,1,3,2
+Scathophaga stercoraria,AAD0853,141,47.89626,-115.96,1,4,4,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,94,53.95966,-130.71241,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,207,41.36029,-84.12637,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,154,51.58031,-58.99614,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,142,51.99328,-105.47381,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,150,41.36029,-84.12637,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,132,51.98825,-112.469,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,122,51.57367,-119.4378,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,163,50.79254,-65.82074,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,190,45.55804,-72.84134,1,3,3,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,131,47.30617,-122.3507,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,4,4,1,3,2
+Scathophaga stercoraria,AAD0853,104,55.11228,-123.4828,1,4,4,1,3,2
+Scathophaga stercoraria,AAD0853,171,49.72995,-85.08052,1,2,2,1,3,2
+Scathophaga stercoraria,AAD0853,151,51.58031,-98.50386,1,2,2,1,3,2
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,154,51.58031,-58.99614,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,163,50.79254,-65.82074,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,248,47.45135,-60.6792,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,132,51.98825,-112.469,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,142,51.99328,-105.47381,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,257,47.93483,-54.37323,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,181,46.62024,-66.90799,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,77,63.0272,-125.37963,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,94,53.95966,-130.71241,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,2,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,68,67.51421,-121.46392,2,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,67,61.70988,-134.0633,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,190,45.55804,-72.84134,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,256,43.24839,-62.12921,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,2,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,207,41.36029,-84.12637,2,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes asquamatus,AAD1720,171,49.72995,-85.08052,1,4,4,2,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,2,2,1,4,1
+Scatopsciara atomaria,AAH3920,132,51.98825,-112.469,1,2,2,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,122,51.57367,-119.4378,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,199,44.42601,-78.75,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,141,47.89626,-115.96,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,163,50.79254,-65.82074,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,248,47.45135,-60.6792,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,181,46.62024,-66.90799,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,257,47.93483,-54.37323,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,2,2,1,4,1
+Scatopsciara atomaria,AAH3920,142,51.99328,-105.47381,1,2,2,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,3,3,1,4,1
+Scatopsciara atomaria,AAH3920,151,51.58031,-98.50386,1,3,3,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,256,43.24839,-62.12921,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,207,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,105,59.89824,-111.7212,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,2,2,1,4,1
+Scatopsciara atomaria,AAH3920,131,47.30617,-122.3507,1,2,2,1,4,1
+Scatopsciara atomaria,AAH3920,150,41.36029,-84.12637,1,4,4,1,4,1
+Scatopsciara atomaria,AAH3920,171,49.72995,-85.08052,1,4,4,1,4,1
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,3,3,1,2,2
+Megaselia pulicaria complex,AAU8534,122,51.57367,-119.4378,1,3,3,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,77,63.0272,-125.37963,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,3,3,1,2,2
+Megaselia pulicaria complex,AAU8534,141,47.89626,-115.96,1,3,3,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,171,49.72995,-85.08052,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,87,63.75005,-116.0492,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,257,47.93483,-54.37323,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,3,3,1,2,2
+Megaselia pulicaria complex,AAU8534,105,59.89824,-111.7212,1,3,3,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,181,46.62024,-66.90799,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,256,43.24839,-62.12921,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,190,45.55804,-72.84134,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,163,50.79254,-65.82074,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,207,41.36029,-84.12637,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,67,61.70988,-134.0633,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia pulicaria complex,AAU8534,154,51.58031,-58.99614,1,4,4,1,2,2
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,199,44.42601,-78.75,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,3,3,2,4,1
+Limnophyes sp. 14ES,ABU5525,248,47.45135,-60.6792,1,3,3,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,132,51.98825,-112.469,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,207,41.36029,-84.12637,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,122,51.57367,-119.4378,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,163,50.79254,-65.82074,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,131,47.30617,-122.3507,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,190,45.55804,-72.84134,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,189,45.55804,-84.55866,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,154,51.58031,-58.99614,1,2,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,151,51.58031,-98.50386,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,181,46.62024,-66.90799,1,3,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,94,53.95966,-130.71241,1,3,2,2,4,1
+Limnophyes sp. 14ES,ABU5525,199,44.42601,-78.75,1,3,3,2,4,1
+Limnophyes sp. 14ES,ABU5525,248,47.45135,-60.6792,1,3,3,2,4,1
+Limnophyes sp. 14ES,ABU5525,199,44.42601,-78.75,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,132,51.98825,-112.469,1,4,4,2,4,1
+Limnophyes sp. 14ES,ABU5525,199,44.42601,-78.75,1,3,3,2,4,1
+Limnophyes sp. 14ES,ABU5525,207,41.36029,-84.12637,1,3,3,2,4,1
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,132,51.98825,-112.469,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,151,51.58031,-98.50386,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,105,59.89824,-111.7212,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,141,47.89626,-115.96,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,122,51.57367,-119.4378,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,171,49.72995,-85.08052,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,163,50.79254,-65.82074,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,67,61.70988,-134.0633,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,77,63.0272,-125.37963,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,150,41.36029,-84.12637,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,131,47.30617,-122.3507,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,59,66.41751,-131.77342,1,4,4,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,190,45.55804,-72.84134,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,257,47.93483,-54.37323,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,199,44.42601,-78.75,1,3,3,1,2,2
+Megaselia arcticae,ADA3072,248,47.45135,-60.6792,1,3,3,1,2,2
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,199,44.42601,-78.75,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,171,49.72995,-85.08052,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,248,47.45135,-60.6792,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,207,41.36029,-84.12637,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,190,45.55804,-72.84134,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,3,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,154,51.58031,-58.99614,1,3,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,163,50.79254,-65.82074,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,67,61.70988,-134.0633,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,199,44.42601,-78.75,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,171,49.72995,-85.08052,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,248,47.45135,-60.6792,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,207,41.36029,-84.12637,1,4,4,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,190,45.55804,-72.84134,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,154,51.58031,-58.99614,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,181,46.62024,-66.90799,1,2,2,1,4,1
+Gymnometriocnemus brumalis,ADX9795,67,61.70988,-134.0633,1,2,2,1,4,1
