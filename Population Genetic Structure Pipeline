@@ -11,7 +11,7 @@
 #Reference Sequences and RefSeqTrim function
 #There are required for each module that perfroms a multiple sequence alignment. When indicated for the module, load in the following code. 
 
-#Set up reference sequence. A list containing reference sequences for various orders is provided. Each BIN was chosen because it met the following criteria; from the specified order, contained at least 10 CO1-5P sequences, had at least one specimen photograph that matched the higher taxonomy and did not have taxonomic conflicts at family level or above. The reference sequence was chosen because it is 658 base pairs long, has 2 trace file chromatograms, and no missing information or stop codons. A Diptera sequence was used for this case study. 
+#Set up reference sequence. A list containing reference sequences for various orders is provided. Each BIN was chosen because it met the following criteria; from the specified order, contained at least 10 CO1-5P sequences, had at least one specimen photograph that matched the higher taxonomy and did not have taxonomic conflicts at family level or above. The reference sequence was chosen because it is 658 base pairs long, has 2 high quality trace file chromatograms, and no missing information or stop codons. A Diptera sequence was used for this case study. 
 #Each sequence was retrieved from BOLD.
 #Diptera: BIN = AAA1222, Record ID = ACGAZ1590-12
 #Coleoptera: BIN = BOLD:AAA1254, Record = BBCCM200-10
@@ -130,7 +130,7 @@ library(DECIPHER)
 #Set number of sequences each genera can have. This will be used to sample down the dataset if it is too large. Here a max of 100 sequences is used.
 maxSize <- 100
 
-#Set up region of study
+#Set up region of study. Here Greenland and Canada are used. 
 region <- "Greenland"
 
 #Set distance matrix model to be used in the function dist.dna. In this case the model was set to raw, or p-distance. This model takes the number of sites that differ between each sequence pair. As this model is used in the BIN algorithm, we chose to use it here as well. The default model for the function is K80.   
@@ -158,7 +158,7 @@ library(tidyr)
 #install.packages("vegan")
 library(vegan)
 
-#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. For Greenland, a size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 1000 was used.No default values is provided in the function. 
+#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. For Greenland, a size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 1000 was used. No default values is provided in the function. 
 Polygon_Length <- 50
 
 #Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with an abundance based and incidence based richness of 50% or more are included.
@@ -175,7 +175,7 @@ library(Biostrings)
 library(DECIPHER)
 #Reference Sequences and RefSeqTrim function are needed
 
-#Set up study region 
+#Set up study region. Here Greenland and Canada are used. 
 region <- "Greenland"
 
 #Module 7: 
@@ -187,6 +187,8 @@ library(dplyr)
 library(ggplot2)
 #install.packages("mmod")
 library(mmod)
+#install.packages("plotly")
+library(plotly)
 #install.packages("tibble")
 library(tibble)
 #install.packages("tidyr")
@@ -279,16 +281,19 @@ library(nlme)
 library(tibble)
 
 #Module 2: Extract Data from Databases-----
-#This module contains steps to download and read in data from the Barcode of Life Data Systems (BOLD) and the Global Biodiversity Information Facility (GBIF). Other data can be read in based on the researchers needs by changing the file names/paths. .
+#This module contains steps to download and read in data from the Barcode of Life Data Systems (BOLD) and the Global Biodiversity Information Facility (GBIF). Other data can be read in based on the researchers needs by changing the file names/paths. If running the Canada dataset, load in the Canada data instead. Due to the file size, the Canada data cannot be shared on Github. If you would like these files, please feel free to contact me. 
 
 #Call data from BOLD. Currently calling Diptera (fly) data from Greenland. Data was retrieved on June 24th 2021. 
 #dfTaxa <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?taxon=Diptera&geo=Greenland&format=tsv")
+#To call data from Canada, use the folowing code instead.
+#dfTaxa <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?taxon=Diptera&geo=Cabada&format=tsv")
+
 #Save data to a tsv file 
 #write_tsv(dfTaxa, "GreenlandData")
 #Read in the data
 dfData <- read.csv("GreenlandData", sep = '\t')
 
-#Read in data from GBIF. Greenland data retrieved from GBIF.org (23 June 2021) GBIF Occurrence Download https://doi.org/10.15468/dl.mk52hp
+#Read in data from GBIF. Greenland data retrieved from GBIF.org (23 June 2021) GBIF Occurrence Download https://doi.org/10.15468/dl.mk52hp. Canada data was retrieved from GBIF.org GBIF Occurrence Download https://doi.org/10.15468/dl.jjbaxk 
 dfGeoData <- read.csv("GreenlandGeo.csv", sep = '\t')
 
 #Module 3: Filter Data----
@@ -335,7 +340,7 @@ containLatLon <- grep ("[0-9]", dfData$lat)
 dfData <- dfData[containLatLon, ]
 
 #Sequences can only contain a, c, g, t, -, or n. Use the following code to remove any sequences that contain other characters. 
-dfData <- filter(dfData, !grepl("R", dfData$nucleotides)==TRUE)
+dfData <- filter(dfData, !grepl("R", dfData$nucleotides))
 dfData <- filter(dfData, !grepl("K", dfData$nucleotides))
 dfData <- filter(dfData, !grepl("M", dfData$nucleotides))
 dfData <- filter(dfData, !grepl("Y", dfData$nucleotides))
@@ -404,7 +409,7 @@ dfGeoData <- (dfGeoData[, c("gbifID", "species","decimalLatitude", "decimalLongi
 rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequence_lengths, coi5p_object, Ids_Filtered_Indels, Ids_Filtered_Stop, indels, processID, sequences, stop_codon, translation_table)
 
 #Module 4: Organizing Data by Clusters----
-#This module includes steps to cluster the sequences by a distance threshold. If using BINs this code in not needed.If your dataset is very large, your computer may not have the memory to run the following code.The script also provides the option to sample down the dataset, as well as to leave the data separated by genus for the whole step rather than recombine them. If using a large dataset, follow the commented out code. If doing analysis on the full set, use the uncommented code. Running the analysis on a larger server or through high performance computing may also be an option for larger datasets.
+#This module includes steps to cluster the sequences by a distance threshold. If using BINs this code in not needed. If your dataset is very large, your computer may not have the memory to run the following code.The script also provides the option to sample down the dataset, as well as to leave the data separated by genus for the whole step rather than recombine them. If using a large dataset, follow the commented out code. If doing analysis on the full set, use the uncommented code. Running the analysis on a larger server or through high performance computing may also be an option for larger datasets.
 
 #Split the dataset by family. Running several smaller alignments is much faster than running a large alignment. 
 Alignment_List <- split(dfData, f = dfData$genus_name)
@@ -500,7 +505,7 @@ distanceMatrix <- dist.dna(dnaBIN, model = model, as.matrix = TRUE, pairwise.del
 #  dist.dna(dnaBIN[[i]], model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
 #})
 
-#Cluster the sequences and plot the dendrogram
+#Cluster the sequences and plot the dendrogram. NOTE: The version of DECIPHER used here is 2.22.0. The code may need to be adjusted for newer versions. A distance matrix is no longer needed, instead use a DNAStringSet. 
 Data_clustered <- IdClusters(distanceMatrix,
                            method = clustering_method,
                            cutoff = clustering_threshold,
@@ -538,7 +543,7 @@ dfData_Clustered <- merge(dfClusters, dfData, by = "processid")
 dfData <- dfData_Clustered
 #Reduce dataframe to needed columns 
 dfData <- (dfData[, c("processid", "cluster", "species_name", "nucleotides", "lat", "lon")])
-#Rename cluster to bin_uri just for simplicity 
+#Rename cluster to bin_uri just for simplicity.  
 names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
 
 #Remove any unneeded variables 
