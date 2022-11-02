@@ -550,7 +550,7 @@ names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
 rm(Alignment_List, Data_alignment, Data_clustered, dfData_alignment, dfClusters, distanceMatrix, dnaBIN, length620, lengths, dfFull, largeBIN, smallBIN)
 
 #Module 5: Group by Regions----
-#For this module, the data are sorted into cells/regions. The regions and BINs are then filtered to only include those that meet our size requirements. The filtering steps can be adjusted as needed. Code to create a map showing the regions is also included.  
+#For this module, the data are sorted into cells/regions. The regions and BINs are then filtered to only include those that meet our size requirements. The filtering steps can be adjusted as needed. Code to create a map showing the geographic regions is also included.  
 
 #Construct a grid of cells 
 Grid <- dgconstruct(spacing=Polygon_Length, metric= TRUE, resround = 'down')
@@ -605,7 +605,7 @@ dfRegions <- pivot_wider(dfRegions, names_from = cell, values_from = count)
 #Remove columns with NAs
 dfRegions <- na.omit(dfRegions)
 
-#set to dataframe
+#Set to dataframe
 dfRegions <- as.data.frame(dfRegions)
 #Set bin_uri to rownames 
 rownames(dfRegions) <- dfRegions[,1]
