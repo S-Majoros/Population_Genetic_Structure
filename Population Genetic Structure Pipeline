@@ -4,6 +4,7 @@
 #Centroid and alignment code adapted from Matthew Orton https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R
 #The Sequence trimming function was adapted from Jacqueline May https://github.com/jmay29/phylo/blob/master/refSeqTrim.R
 #The grouping by region and map generation script was adapted from script by Mehra Balsara.
+#Code to calculate populaton genetic structure was adapted from a vignette written by Margarita M. López-Uribe and edited by Zhian N. Kamvar, available from: https://popgen.nescent.org/PopDiffSequenceData.html. 
 
 #Module 1: Loading Packages and Setting up Variables----
 #This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Packages and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
@@ -848,7 +849,7 @@ for(i in 1:length(FastaFileNames)){
 rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef, BINs, Data_Aligned,Data_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, processID, Reference_Filter, SequenceNames, Sequences, alignmentRefNames, alignmentref)
 
 #Module 7: F-Statistics and Multi-allelic Measures----
-#In this module, population genetic structure metrics (FST, GST, and Jost's D) are calculated and heat maps are created. This module also contains code to create a map showing the metrics between regions. For larger, more complex datasets, the option to calculate global FST, GST and Jost's D is provided. 
+#In this module, population genetic structure metrics (FST, GST, and Jost's D) are calculated and heat maps are created. This module also contains code to create a map showing the metrics between polygons in Canada. For larger, more complex datasets, the option to calculate global FST, GST and Jost's D is provided. 
 
 #Read in fasta files
 seq_multiFas <- lapply(1:length(FastaFileNames), function(i){
@@ -979,7 +980,7 @@ HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
     labs(fill = "GST")
 })
 
-#Create a map showing the population genetic structure metrics between different regions for species with differing traits. For this map, only the 10 largest BINs were used. This is to allow the map to be easily read and interpreted. 
+#Create a map showing the population genetic structure metrics between different regions for species with differing traits. For this map, only the 10 largest BINs were used. This is to allow the map to be easily read and interpreted. This map was only generated for the Canada dataset
 #Combine Data_Full into one dataframe 
 dfData_Full <- bind_rows(Data_Full)
 #Reduce Dataframe to only the 50 largest BINs
@@ -1024,7 +1025,7 @@ mapLayout <- list(
   )
 )
 
-#Plot the Map
+#Plot the maps
 plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$FST), colors = c("darkorange", "blue"), mode = "markers+lines", type = 'scattergeo') %>%
   layout(geo = mapLayout)
 plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$GST), colors = c("darkorange", "blue", "deepskyblue"), mode = "markers+lines", type = 'scattergeo') %>%
@@ -1164,7 +1165,6 @@ dip <- lapply(1:length(observed), function(i){
 })
 
 #Plot histograms showing the distribution of dip.test statistics. 
-#Plot histogram showing distribution of AMOVA values 
 DipValue <- lapply(1:length(dip), function(i){
   dip[[i]]$statistic
 })
@@ -1272,7 +1272,7 @@ colnames(dfAllSeq)[10] <- "cell"
 #Create RefSeq data frame
 dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
 
-#name nucleotide column and set as character 
+#Name nucleotide column and set as character 
 colnames(dfRefSeq)[2] <- "nucleotides"
 dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides) 
 #Trim references to standard 620
@@ -1359,8 +1359,8 @@ rm(alignment1, dfBIN_List, dfCentroid, dfAllSeq, dfData_BINs, dfNonCentroid, dfR
 #This module includes code to perform an analysis of variance. The file names/paths will have to be adjusted to those required for your analysis. This module and module 12 work well for smaller datasets, but for larger sets, the multiple regression model could be considered.
 
 #Read in csv file containing trait information and FST values. If using clustered data, read in the second commented out dataframe.
-Trait_Data <- read.csv("Diptera_Traits_Greenland_Feb7th.csv")
-#Trait_Data <- read.csv("Diptera_Traits_Greenland_Clustered_Feb8th.csv")
+Trait_Data <- read.csv("Traits_Greenland_BIN.csv")
+#Trait_Data <- read.csv("Traits_Greenland_Cluster.csv")
 
 #Run ANOVAs for all traits compared to FST
 ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
@@ -1430,11 +1430,15 @@ p <- ggplot(Trait_Data, aes(x=habitat, y=JD, fill=habitat)) +
 p + scale_color_brewer(palette = "Dark2")
 
 #Module 12: Phylogenetic Generalized Least Squares Analysis (PGLS)----
-#This module includes code to run a phylogenetic generalized least squares analysis. A phylogenetic tree will be needed. This can be obtained from the literature, using module 10, or from another source. 
+#This module includes code to run a phylogenetic generalized least squares analysis. A phylogenetic tree will be needed. This can be obtained from the literature, using module 10, or from another source. This module and module 11 work well for smaller datasets, but for larger sets, the multiple regression model could be considered.
+
+#Read in csv file containing trait information and population genetic structure measures. If using clustered data, read in the second commented out dataframe.
+Trait_Data <- read.csv("Traits_Greenland_BIN.csv")
+#Trait_Data <- read.csv("Traits_Greenland_Cluster.csv")
 
 #Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree.
-PGLStree <- read.nexus("Run3Tree_Nov22")
-#PGLStree <- read.nexus("Tree_Greenland_Clustered_Feb9th")
+PGLStree <- read.nexus("Tree_Greenland_BIN")
+#PGLStree <- read.nexus("Tree_Greenland_Cluster")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
 PGLStree <- force.ultrametric(PGLStree, method="extend")
@@ -1563,9 +1567,9 @@ RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_ce
 #Save to file. The pathway and file names will need to be updated. 
 #write.csv(CanadaSpecies,"C:/Users/sammi/OneDrive/Documents\\CanadaSpeciesApril25.csv", row.names = FALSE)
 
-#Load in trait data
-Trait_Data <- read.csv("CanadaSpeciesApril25.csv")
-#Trait_Data <- read.csv("CanadaSpeciesClustering.csv")
+#Load in completed trait data
+Trait_Data <- read.csv("Traits_Canada_BIN.csv")
+#Trait_Data <- read.csv("Traits_Canada_Cluster.csv")
 
 #Merge the dataframes 
 RegData <- cbind(Trait_Data, RegData)
@@ -1658,7 +1662,7 @@ t.test(RegData500$GSTGlobalValue, RegDataCompare$GSTGlobalValue, paired=TRUE)
 rm(Data_Filter)
 
 #Module 15: Range Size Analysis ----
-#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area. The range size is the compared the population genetic structure metrics and biological traits using an ANOVA and PGLS. 
+#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area. The range size is the compared the population genetic structure metrics and biological traits using an ANOVA and PGLS. This analysis was only run using the Greenland dataset. 
 
 #Reduce dfData_Full to needed columns
 dfData_Full <- (dfData_Full[, c("processid", "species_name", "lat", "lon")])
@@ -1683,7 +1687,7 @@ Species_List <- split(dfRange_Data, f = dfRange_Data$species_name)
 #set sf use s2 to FALSE
 sf_use_s2(FALSE)
 
-#Find the range size.Code adapted from https://stackoverflow.com/questions/48383990/convert-sequence-of-longitude-and-latitude-to-polygon-via-sf-in-r
+#Find the range size
 Area <- lapply(1:length(Species_List), function(i){
   Species_List[[i]] %>%
     #Covert coordinates to point geometries
@@ -1697,8 +1701,8 @@ Area <- lapply(1:length(Species_List), function(i){
 })
 
 #Read in range size data. If using clustered data, read in the second file. 
-Range_Data <- read.csv("Diptera_Traits_Greenland_Range_Feb 8th.csv")
-#Range_Data <- read.csv("Data_Traits_Greenland_Range_Clustered_Feb9th.csv")
+Range_Data <- read.csv("Traits_Greenland_BIN_Range.csv")
+#Range_Data <- read.csv("Traits_Greenland_Cluster_Range.csv")
 
 #Run an ANOVA and PGLS to compare range size to traits and population genetic structure 
 #Run ANOVA comparing range size to population genetic structure metrics 
@@ -1720,9 +1724,9 @@ summary(ANOVA_Range_Adult)
 summary(ANOVA_Range_Larval)
 
 #Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS. 
-PGLStree <- read.nexus("Run3SpeciesTree_Nov23")
+PGLStree <- read.nexus("Tree_Greenland_BIN_Range")
 #Clustered Tree
-#PGLStree <- read.nexus("Run3ClusteredRangeTree_Nov23")
+#PGLStree <- read.nexus("Tree_Greenland_Cluster_Range")
 #Set branch lengths to one
 PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
 PGLStree <- force.ultrametric(PGLStree, method="extend")
@@ -1751,7 +1755,5 @@ summary(pglsModel_Range_Habitat)
 summary(pglsModel_Range_Adult)
 summary(pglsModel_Range_Larval)
 
-#Remove unneeded variables
-rm(Data_Filter)
 #Remove unneeded variables
 rm(Data_Filter)
