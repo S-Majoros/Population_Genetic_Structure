@@ -1634,29 +1634,29 @@ rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue
 #14.Sensitivity Analysis: Comparing Datasets----
 #This module includes steps to load in datasets for comparison and run a paired t-test. For my analysis, datasets generated using different polygons lengths are compared. 
 
-#Read in the original datasets
-RegData500 <- read.csv("RegData500")
+#Read in the original datasets original 
+DataOriginal <- read.csv("RegData500")
 #Read in the comparision set
-RegDataCompare <- read.csv("RegData50")
-#RegDataCompare <- read.csv("RegData250")
+DataCompare <- read.csv("RegData50")
+#DataCompare <- read.csv("RegData250")
 
 #Reduce dataframes to only species found in both
 #Find species found in both
-SharedBINs <- intersect(RegData500$bin_uri, RegDataCompare$bin_uri)
+SharedBINs <- intersect(DataOriginal$bin_uri, DataCompare$bin_uri)
 #Reduce both dataframes
-Data_Filter <- which(RegData500$bin_uri %in% SharedBINs)
-RegData500 <- RegData500[Data_Filter, ]
-Data_Filter <- which(RegDataCompare$bin_uri %in% SharedBINs)
-RegDataCompare <- RegDataCompare[Data_Filter, ]
+Data_Filter <- which(DataOriginal$bin_uri %in% SharedBINs)
+DataOriginal <- DataOriginal[Data_Filter, ]
+Data_Filter <- which(DataCompare$bin_uri %in% SharedBINs)
+DataCompare <- DataCompare[Data_Filter, ]
 
 #Ensure dataframes are in the same order
-RegData500 <- RegData500[order(RegData500$bin_uri),]
-RegDataCompare <- RegDataCompare[order(RegDataCompare$bin_uri),]
+DataOriginal <- DataOriginal[order(DataOriginal$bin_uri),]
+DataCompare <- DataCompare[order(DataCompare$bin_uri),]
 
 #Run t-test comparing each metric 
-t.test(RegData500$DGlobalValue, RegDataCompare$DGlobalValue, paired=TRUE)
-t.test(RegData500$FSTGlobalValue, RegDataCompare$FSTGlobalValue, paired=TRUE)
-t.test(RegData500$GSTGlobalValue, RegDataCompare$GSTGlobalValue, paired=TRUE)
+t.test(DataOriginal$DGlobalValue, DataCompare$DGlobalValue, paired=TRUE)
+t.test(DataOriginal$FSTGlobalValue, DataCompare$FSTGlobalValue, paired=TRUE)
+t.test(DataOriginal$GSTGlobalValue, DataCompare$GSTGlobalValue, paired=TRUE)
 
 #Remove unneeded variables 
 rm(Data_Filter)
