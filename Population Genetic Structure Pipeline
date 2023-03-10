@@ -1557,8 +1557,22 @@ NumberofRecords <- lapply(1:length(Data_Full), function(i){
 #Set to numeric 
 NumberofRecords <- as.numeric(NumberofRecords)
 
+#For comparing metrics to distance, create a linearized metric
+LinearizedFST <- lapply(1:length(FSTGlobalValue), function(i) {
+  FSTGlobalValue[[i]]/(1 - FSTGlobalValue[[i]])
+})
+LinearizedFST <- unlist(LinearizedFST)
+LinearizedGST <- lapply(1:length(GSTGlobalValue), function(i) {
+  GSTGlobalValue[[i]]/(1 - GSTGlobalValue[[i]])
+})
+LinearizedGST <- unlist(LinearizedGST)
+LinearizedD <- lapply(1:length(DGlobalValue), function(i) {
+  DGlobalValue[[i]]/(1 - DGlobalValue[[i]])
+})
+LinearizedD <- unlist(LinearizedD)
+
 #Merge information into a dataframe 
-RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells, NumberofRecords, MaxDist, LonCoord, LatCoord)
+RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells, NumberofRecords, MaxDist, LonCoord, LatCoord, LinearizedD, LinearizedFST, LinearizedGST)
 
 #Extract the most common species name for each BIN. These names are needed in order to manually assign traits from the literature. 
 #CanadaSpecies <- lapply(1:length(BIN_List), function(i){data.frame(max(BIN_List[[i]]$species_name), max(BIN_List[[i]]$bin_uri))})
@@ -1600,6 +1614,22 @@ summary(MulRegJD)
 summary(MulRegGST)
 summary(MulRegFST)
 
+#Run regression comparing linearized metrics to distance
+#Replace inf with NA
+RegLinData <- do.call(data.frame,                      
+                   lapply(RegData,
+                          function(x) replace(x, is.infinite(x), NA)))
+#Remove NAs
+RegLinData <- na.omit(RegLinData)
+#Run regressions
+LinRegJD <- lm(LinearizedD ~ MaxDist + LonCoord + LatCoord, RegLinData)
+LinRegFST <- lm(LinearizedFST ~ MaxDist + LonCoord +LatCoord, RegLinData)
+LinRegGST <- lm(LinearizedGST ~ MaxDist + LonCoord +LatCoord, RegLinData)
+#Get summary
+summary(LinRegJD)
+summary(LinRegGST)
+summary(LinRegFST)
+
 #Plot the response variable vs each predictor 
 visreg(MulRegJD, "Habitat", gg = TRUE)
 visreg(MulRegJD, "Adult.Diet", gg = TRUE)
@@ -1627,6 +1657,18 @@ visreg(MulRegFST, "NumberofRecords", gg = TRUE)
 visreg(MulRegFST, "MaxDist", gg = TRUE)
 visreg(MulRegFST, "LonCoord", gg = TRUE)
 visreg(MulRegFST, "LatCoord", gg = TRUE)
+
+visreg(LinRegFST, "MaxDist", gg = TRUE) + theme_bw()
+visreg(LinRegFST, "LonCoord", gg = TRUE) + theme_bw()
+visreg(LinRegFST, "LatCoord", gg = TRUE) + theme_bw()
+
+visreg(LinRegGST, "MaxDist", gg = TRUE) + theme_bw()
+visreg(LinRegGST, "LonCoord", gg = TRUE) + theme_bw()
+visreg(LinRegGST, "LatCoord", gg = TRUE) + theme_bw()
+
+visreg(LinRegJD, "MaxDist", gg = TRUE) + theme_bw()
+visreg(LinRegJD, "LonCoord", gg = TRUE) + theme_bw()
+visreg(LinRegJD, "LatCoord", gg = TRUE) + theme_bw()
 
 #Remove unneeded variables
 rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, RangeCenters, PolygonList, Grid, CentroidList)
