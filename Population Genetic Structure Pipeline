@@ -492,53 +492,36 @@ AlignmentName <- paste(region, "Alignment")
 #Save alignment to file so it can be viewed in programs such as MEGA. 
 writeXStringSet(dfData_alignment$nucleotides, file = AlignmentName, format = "fasta")
 
-#Convert to dnaBin format 
-dnaBIN <- as.DNAbin(dfData_alignment$nucleotides)
-#dnaBIN <- lapply(1:length(dfData_alignment), function(i){
-#  as.DNAbin(dfData_alignment[[i]]$nucleotides)
-#})
-#Check that the class is correct
-class(dnaBIN)
-
-#Create a distance matrix.
-distanceMatrix <- dist.dna(dnaBIN, model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
-#distanceMatrix <- lapply(1:length(dnaBIN), function(i){
-#  dist.dna(dnaBIN[[i]], model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+#Remove gaps for StringSet
+dfData_alignment$nucleotides <- RemoveGaps(dfData_alignment$nucleotides)
+#dfData_alignment$nucleotides <- lapply(1:length(dfData_alignment), function(i){
+#  RemoveGaps(dfData_alignment[[i]]$nucleotides)
 #})
 
-#Cluster the sequences and plot the dendrogram. NOTE: The version of DECIPHER used here is 2.22.0. The code may need to be adjusted for newer versions. A distance matrix is no longer needed, instead use a DNAStringSet. 
-Data_clustered <- IdClusters(distanceMatrix,
-                           method = clustering_method,
-                           cutoff = clustering_threshold,
-                           showPlot = TRUE,
-                           type = "both",
-                           verbose = TRUE)
-#Data_clustered <- lapply(1:length(distanceMatrix), function(i){
-#  IdClusters(distanceMatrix[[i]], method = clustering_method, cutoff = clustering_threshold, showPlot = TRUE, type = "both", verbose = TRUE)
+#Cluster the sequences 
+Data_clustered <- Clusterize(dfData_alignment$nucleotides,
+                             cutoff = clustering_threshold)
+#Data_clustered <- lapply(1:length(dfData_alignment), funtion(i){
+#Clusterize(dfData_alignment[[i]]$nucleotides,
+#           cutoff = clustering_threshold)
 #})
+
 #See how many clusters were created
-length(unique(unlist(Data_clustered[[1]][1])))
+length(unique(Data_clustered$cluster))
 
-#Extract the clustered dataframe
-dfClusters <- Data_clustered[[1]]
-#dfClusters <- lapply(1:length(Data_clustered), function(i){
-#  Data_clustered[[i]][[1]]
-#})
-
-#If the data is still in the list format, follow the following commented out code to combine the genus dataframes into one dataframe
 #Add a column with the index of the dataframe within the list
-#dfClusters <- Map(cbind, dfClusters, index = seq_along(dfClusters))
+#Data_clustered <- Map(cbind, Data_clustered, index = seq_along(Data_clustered))
 #Combine the cluster and index column 
-#for(i in 1:length(dfClusters)) {
-#  dfClusters[[i]]$cluster <- str_c(dfClusters[[i]]$cluster, "_", dfClusters[[i]]$index)
+#for(i in 1:length(Data_clustered)) {
+#  Data_clustered[[i]]$cluster <- str_c(Data_clustered[[i]]$cluster, "_", Data_clustered[[i]]$index)
 #}
 #Combine all the dataframes into one 
-#dfClusters <- bind_rows(dfClusters)
+#Data_clustered <- bind_rows(Data_clustered)
 
 #Set record IDs to a column instead of row names
-dfClusters$processid <- row.names(dfClusters)
+Data_clustered$processid <- row.names(Data_clustered)
 #Add clusters column to original dataframe
-dfData_Clustered <- merge(dfClusters, dfData, by = "processid")
+dfData_Clustered <- merge(Data_clustered, dfData, by = "processid")
 
 #Rename the dfData_Clustered in order to run the rest of the pipeline
 dfData <- dfData_Clustered
