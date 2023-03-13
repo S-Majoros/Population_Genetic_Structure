@@ -134,14 +134,8 @@ maxSize <- 100
 #Set up region of study. Here Greenland and Canada are used. 
 region <- "Greenland"
 
-#Set distance matrix model to be used in the function dist.dna. In this case the model was set to raw, or p-distance. This model takes the number of sites that differ between each sequence pair. As this model is used in the BIN algorithm, we chose to use it here as well. The default model for the function is K80.   
-model <- "raw"
-
-#Set the clustering threshold for use in the IDClusters function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is -Inf.   
+#Set the clustering threshold for use in the Clusterize function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is 0.   
 clustering_threshold <- 0.04
-
-#Set the clustering method to be used in the IdClusters function. Single linkage is used here. Refined single linkage was used in the BIN paper, so in order to provide a comparison, regular single linkage is used. The default method for the function is UPGMA.   
-clustering_method <- "single"
 
 #Module 5: 
 #install.packages("devtools")
@@ -224,6 +218,9 @@ library(phangorn)
 library(Biostrings)
 library(DECIPHER)
 #Reference Sequences and RefSeqTrim function are needed
+
+#Set distance matrix model to be used in the function dist.dna. In this case the model was set to raw, or p-distance. This model takes the number of sites that differ between each sequence pair. The default model for the function is K80.   
+model <- "raw"
 
 #Set up dataframe with Outgroup sequences. In this study, 3 Trichoptera sequences from BOLD were chosen as the outgroups. Substitute these outgroups with those best suited for your study. 
 Outgroups <- data.frame(processid = c("Outgroup1", "Outgroup2", "Outgroup3"),
