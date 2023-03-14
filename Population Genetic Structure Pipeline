@@ -134,8 +134,14 @@ maxSize <- 100
 #Set up region of study. Here Greenland and Canada are used. 
 region <- "Greenland"
 
+#Set distance matrix model to be used in the function dist.dna. In this case the model was set to raw, or p-distance. This model takes the number of sites that differ between each sequence pair. The default model for the function is K80.   
+model <- "raw"
+
 #Set the clustering threshold for use in the Clusterize function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is 0.   
 clustering_threshold <- 0.04
+
+#Set the clustering method to be used in the IdClusters function. Single linkage is used here. Refined single linkage was used in the BIN paper, so in order to provide a comparison, regular single linkage is used. The default method for the function is UPGMA.   
+clustering_method <- "single"
 
 #Module 5: 
 #install.packages("devtools")
@@ -489,36 +495,47 @@ AlignmentName <- paste(region, "Alignment")
 #Save alignment to file so it can be viewed in programs such as MEGA. 
 writeXStringSet(dfData_alignment$nucleotides, file = AlignmentName, format = "fasta")
 
-#Remove gaps for StringSet
-dfData_alignment$nucleotides <- RemoveGaps(dfData_alignment$nucleotides)
-#dfData_alignment$nucleotides <- lapply(1:length(dfData_alignment), function(i){
-#  RemoveGaps(dfData_alignment[[i]]$nucleotides)
+#Convert to dnaBin format 
+dnaBIN <- as.DNAbin(dfData_alignment$nucleotides)
+#dnaBIN <- lapply(1:length(dfData_alignment), function(i){
+#  as.DNAbin(dfData_alignment[[i]]$nucleotides)
+#})
+#Check that the class is correct
+class(dnaBIN)
+
+#Create a distance matrix.
+distanceMatrix <- dist.dna(dnaBIN, model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+#distanceMatrix <- lapply(1:length(dnaBIN), function(i){
+#  dist.dna(dnaBIN[[i]], model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
 #})
 
 #Cluster the sequences 
-Data_clustered <- Clusterize(dfData_alignment$nucleotides,
-                             cutoff = clustering_threshold)
+Data_clustered <- TreeLine(dfData_alignment$nucleotides, distanceMatrix, method = clustering_method, type = "both", cutoff = clustering_threshold)
 #Data_clustered <- lapply(1:length(dfData_alignment), funtion(i){
-#Clusterize(dfData_alignment[[i]]$nucleotides,
-#           cutoff = clustering_threshold)
+#TreeLine(dfData_alignment[[i]]$nucleotides, distanceMatrix[[i]], method = clustering_method, type = "both", cutoff = clustering_threshold)
 #})
 
+#Extract the clustered dataframe
+dfClusters <- Data_clustered[[1]]
+#dfClusters <- lapply(1:length(Data_clustered), function(i){
+#Data_clustered[[i]][[1]]
+#})
 #See how many clusters were created
-length(unique(Data_clustered$cluster))
+length(unique(dfClusters$cluster))
 
 #Add a column with the index of the dataframe within the list
-#Data_clustered <- Map(cbind, Data_clustered, index = seq_along(Data_clustered))
+#dfClusters <- Map(cbind, dfClusters, index = seq_along(dfClusters))
 #Combine the cluster and index column 
-#for(i in 1:length(Data_clustered)) {
-#  Data_clustered[[i]]$cluster <- str_c(Data_clustered[[i]]$cluster, "_", Data_clustered[[i]]$index)
+#for(i in 1:length(dfClusters)) {
+#  dfClusters[[i]]$cluster <- str_c(dfClusters[[i]]$cluster, "_", dfClusters[[i]]$index)
 #}
 #Combine all the dataframes into one 
-#Data_clustered <- bind_rows(Data_clustered)
+#dfClusters <- bind_rows(dfClusters)
 
 #Set record IDs to a column instead of row names
-Data_clustered$processid <- row.names(Data_clustered)
+dfClusters$processid <- row.names(dfClusters)
 #Add clusters column to original dataframe
-dfData_Clustered <- merge(Data_clustered, dfData, by = "processid")
+dfData_Clustered <- merge(dfClusters, dfData, by = "processid")
 
 #Rename the dfData_Clustered in order to run the rest of the pipeline
 dfData <- dfData_Clustered
