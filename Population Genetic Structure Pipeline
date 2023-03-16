@@ -159,7 +159,7 @@ library(tidyr)
 #install.packages("vegan")
 library(vegan)
 
-#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. For Greenland, a size of 100 miles across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 1000 was used. No default values is provided in the function. 
+#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. For Greenland, a size of 50km across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 500km was used. No default values is provided in the function. 
 Polygon_Length <- 50
 
 #Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with an abundance based and incidence based richness of 50% or more are included.
