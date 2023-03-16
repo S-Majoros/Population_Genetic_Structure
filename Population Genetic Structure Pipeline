@@ -1,4 +1,4 @@
-#The following script outlines 15 modules for determining realized dispersal rates and comparing rates across taxa with different biological traits. The modules can be used together or separately based on the researchers needs. The pipeline is designed to determine population genetic structure metrics for a variety of taxa. My analysis was completed by running all modules as a pipeline, and can be repeated using the full script and data provided. The pipeline was tested using Diptera species from Greenland as a small example analysis, and Diptera species form Canada as an example of a larger, more complex analysis. 
+#The following script outlines 15 modules for determining realized dispersal rates and comparing rates across taxa with different biological traits. The modules can be used together or separately based on the researchers needs. The pipeline is designed to determine population genetic structure measures for a variety of taxa. My analysis was completed by running all modules as a pipeline, and can be repeated using the full script and data provided. The pipeline was tested using Diptera species from Greenland as a small example analysis, and Diptera species form Canada as an example of a larger, more complex analysis. 
 
 #Thank you to the other researchers whose scripts were adapted for this pipeline. 
 #Centroid and alignment code adapted from Matthew Orton https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R
@@ -846,7 +846,7 @@ for(i in 1:length(FastaFileNames)){
 rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef, BINs, Data_Aligned,Data_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, processID, Reference_Filter, SequenceNames, Sequences, alignmentRefNames, alignmentref)
 
 #Module 7: F-Statistics and Multi-allelic Measures----
-#In this module, population genetic structure metrics (FST, GST, and Jost's D) are calculated and heat maps are created. This module also contains code to create a map showing the metrics between polygons in Canada. For larger, more complex datasets, the option to calculate global FST, GST and Jost's D is provided. 
+#In this module, population genetic structure measures (FST, GST, and Jost's D) are calculated and heat maps are created. This module also contains code to create a map showing the measures between polygons in Canada. For larger, more complex datasets, the option to calculate global FST, GST and Jost's D is provided. 
 
 #Read in fasta files
 seq_multiFas <- lapply(1:length(FastaFileNames), function(i){
@@ -977,7 +977,7 @@ HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
     labs(fill = "GST")
 })
 
-#Create a map showing the population genetic structure metrics between different regions for species with differing traits. For this map, only the 10 largest BINs were used. This is to allow the map to be easily read and interpreted. This map was only generated for the Canada dataset
+#Create a map showing the population genetic structure measures between different regions for species with differing traits. For this map, only the 10 largest BINs were used. This is to allow the map to be easily read and interpreted. This map was only generated for the Canada dataset
 #Combine Data_Full into one dataframe 
 dfData_Full <- bind_rows(Data_Full)
 #Reduce Dataframe to only the 50 largest BINs
@@ -993,7 +993,7 @@ top_10 <- split(dfData_Full, f = dfData_Full$bin_uri)
 top10Species <- lapply(1:length(top_10), function(i){data.frame(max(top_10[[i]]$species_name), max(top_10[[i]]$bin_uri))})
 #Combine the dataframes
 top10Species <- bind_rows(top10Species)
-#Save to file. The pathway and file names will need to be updated.Traits, metrics and regions will need to manually added. 
+#Save to file. The pathway and file names will need to be updated.Traits, measures and regions will need to manually added. 
 #write.csv(top10Species,".\\top10Species.csv", row.names = FALSE)
 
 #Read in the data for a map
@@ -1471,7 +1471,7 @@ summary(pglsModel_Habitat_GST)
 summary(pglsModel_Adult_Diet_GST)
 summary(pglsModel_Larval_Diet_GST)
 
-#Create boxplots for traits vs. population genetic structure metrics 
+#Create boxplots for traits vs. population genetic structure measures 
 plot_Habitat_GST<- boxplot(Trait_Data$GST ~ Trait_Data$habitat)
 plot_Adult_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$adult_diet)
 plot_Larval_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$larval_diet)
@@ -1486,13 +1486,13 @@ summary(pglsModel_Habitat_JD)
 summary(pglsModel_Adult_Diet_JD)
 summary(pglsModel_Larval_Diet_JD)
 
-#Create boxplots for traits vs. population genetic structure metrics 
+#Create boxplots for traits vs. population genetic structure measures
 plot_Habitat_JD<- boxplot(Trait_Data$JD ~ Trait_Data$habitat)
 plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 
 #13: Multiple Regression----
-#This module includes steps to run a multiple regression comparing population genetic structure metrics to biological traits and other important variables. This module was used for the Canada data set and performed using the global metrics. 
+#This module includes steps to run a multiple regression comparing population genetic structure measures to biological traits and other important variables. This module was used for the Canada data set and performed using the global measures. 
 
 #Set up dataframe containing all the needed information
 #Find number of cells for each species 
@@ -1554,7 +1554,7 @@ NumberofRecords <- lapply(1:length(Data_Full), function(i){
 #Set to numeric 
 NumberofRecords <- as.numeric(NumberofRecords)
 
-#For comparing metrics to distance, create a linearized metric
+#For comparing measures to distance, create a linearized measure
 LinearizedFST <- lapply(1:length(FSTGlobalValue), function(i) {
   FSTGlobalValue[[i]]/(1 - FSTGlobalValue[[i]])
 })
@@ -1611,7 +1611,7 @@ summary(MulRegJD)
 summary(MulRegGST)
 summary(MulRegFST)
 
-#Run regression comparing linearized metrics to distance
+#Run regression comparing linearized measures to distance
 #Replace inf with NA
 RegLinData <- do.call(data.frame,                      
                    lapply(RegData,
@@ -1692,7 +1692,7 @@ DataCompare <- DataCompare[Data_Filter, ]
 DataOriginal <- DataOriginal[order(DataOriginal$bin_uri),]
 DataCompare <- DataCompare[order(DataCompare$bin_uri),]
 
-#Run t-test comparing each metric 
+#Run t-test comparing each measure
 t.test(DataOriginal$DGlobalValue, DataCompare$DGlobalValue, paired=TRUE)
 t.test(DataOriginal$FSTGlobalValue, DataCompare$FSTGlobalValue, paired=TRUE)
 t.test(DataOriginal$GSTGlobalValue, DataCompare$GSTGlobalValue, paired=TRUE)
@@ -1701,7 +1701,7 @@ t.test(DataOriginal$GSTGlobalValue, DataCompare$GSTGlobalValue, paired=TRUE)
 rm(Data_Filter)
 
 #Module 15: Range Size Analysis ----
-#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area. The range size is the compared the population genetic structure metrics and biological traits using an ANOVA and PGLS. This analysis was only run using the Greenland dataset. 
+#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area. The range size is the compared the population genetic structure measures and biological traits using an ANOVA and PGLS. This analysis was only run using the Greenland dataset. 
 
 #Reduce dfData_Full to needed columns
 dfData_Full <- (dfData_Full[, c("processid", "species_name", "lat", "lon")])
@@ -1744,7 +1744,7 @@ Range_Data <- read.csv("Traits_Greenland_BIN_Range.csv")
 #Range_Data <- read.csv("Traits_Greenland_Cluster_Range.csv")
 
 #Run an ANOVA and PGLS to compare range size to traits and population genetic structure 
-#Run ANOVA comparing range size to population genetic structure metrics 
+#Run ANOVA comparing range size to population genetic structure measures
 ANOVA_Range_FST <- aov(range_size ~ FST, data = Range_Data)
 ANOVA_Range_GST <- aov(range_size ~ GST, data = Range_Data)
 ANOVA_Range_JD <- aov(range_size ~ JD, data = Range_Data)
@@ -1776,7 +1776,7 @@ Range_Data <- Range_Data %>%
 #Make sure tree and dataframe are in the same order
 Range_Data <- Range_Data[match(PGLStree$tip.label, rownames(Range_Data)), ]
 
-#Run PGLS comparing metrics of population genetic structure to range size
+#Run PGLS comparing measures of population genetic structure to range size
 pglsModel_Range_FST <- gls(range_size ~ FST, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
 pglsModel_Range_GST <- gls(range_size ~ GST, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
 pglsModel_Range_JD <- gls(range_size ~ JD, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
