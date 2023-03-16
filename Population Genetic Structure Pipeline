@@ -511,8 +511,8 @@ distanceMatrix <- dist.dna(dnaBIN, model = model, as.matrix = TRUE, pairwise.del
 
 #Cluster the sequences 
 Data_clustered <- TreeLine(dfData_alignment$nucleotides, distanceMatrix, method = clustering_method, type = "both", cutoff = clustering_threshold)
-#Data_clustered <- lapply(1:length(dfData_alignment), funtion(i){
-#TreeLine(dfData_alignment[[i]]$nucleotides, distanceMatrix[[i]], method = clustering_method, type = "both", cutoff = clustering_threshold)
+#Data_clustered <- lapply(1:length(dfData_alignment), function(i){
+#  TreeLine(dfData_alignment[[i]]$nucleotides, distanceMatrix[[i]], method = clustering_method, type = "both", cutoff = clustering_threshold)
 #})
 
 #Extract the clustered dataframe
