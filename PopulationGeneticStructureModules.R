@@ -6,7 +6,9 @@
 #The grouping by region and map generation script was adapted from script by Mehra Balsara.
 #Code to calculate populaton genetic structure was adapted from a vignette written by Margarita M. L?pez-Uribe and edited by Zhian N. Kamvar, available from: https://popgen.nescent.org/PopDiffSequenceData.html. 
 
-#1.Loading Packages and Setting up Variables----
+# 1.Loading Packages and Setting up Variables----
+------------------------------------------------
+------------------------------------------------
 #This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Packages and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
 
 #Reference Sequences and RefSeqTrim function
