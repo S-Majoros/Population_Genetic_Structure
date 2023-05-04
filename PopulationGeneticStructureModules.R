@@ -1,0 +1,1807 @@
+#The following script outlines 15 modules for determining realized dispersal rates and comparing rates across taxa with different biological traits. The modules can be used together or separately based on the researchers needs. The pipeline is designed to determine population genetic structure measures for a variety of taxa. My analysis was completed by running all modules as a pipeline, and can be repeated using the full script and data provided. The pipeline was tested using Diptera species from Greenland as a small example analysis, and Diptera species form Canada as an example of a larger, more complex analysis. 
+
+#Thank you to the other researchers whose scripts were adapted for this pipeline. 
+#Centroid and alignment code adapted from Matthew Orton https://github.com/m-orton/Evolutionary-Rates-Analysis-Pipeline/blob/master/EvolutionaryComparisonPipelineSmallTaxa.R
+#The Sequence trimming function was adapted from Jacqueline May https://github.com/jmay29/phylo/blob/master/refSeqTrim.R
+#The grouping by region and map generation script was adapted from script by Mehra Balsara.
+#Code to calculate populaton genetic structure was adapted from a vignette written by Margarita M. L?pez-Uribe and edited by Zhian N. Kamvar, available from: https://popgen.nescent.org/PopDiffSequenceData.html. 
+
+#1.Loading Packages and Setting up Variables----
+#This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Packages and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
+
+#Reference Sequences and RefSeqTrim function
+#There are required for each module that perfroms a multiple sequence alignment. When indicated for the module, load in the following code. 
+
+#Set up reference sequence. A list containing reference sequences for various orders is provided. Each BIN was chosen because it met the following criteria; from the specified order, contained at least 10 CO1-5P sequences, had at least one specimen photograph that matched the higher taxonomy and did not have taxonomic conflicts at family level or above. The reference sequence was chosen because it is 658 base pairs long, has 2 trace file chromatograms, and no missing information or stop codons. A Diptera sequence was used for this case study. 
+#Each sequence was retrieved from BOLD.
+#Diptera: BIN = AAA1222, Record ID = ACGAZ1590-12
+#Coleoptera: BIN = BOLD:AAA1254, Record = BBCCM200-10
+#Hymenoptera: BIN = BOLDAAA1257, Record = BANT102-10
+#Lepidoptera: BIN = AAA0006, Record = BLPDT1277-10
+#Hemiptera: BIN = BOLD:AAA1279, Record = APHNB232-11
+#Orthoptera: BIN = BOLD:AA3062, Record = BBOWC012-10
+#Carnivora: BIN = BOLD:AAC0892, Record = ETBM057-11
+#Rodentia: BIN = AAA1230, Record = MXBRO097-11
+#Chiroptera: BIN = BOLD:AAA0002, Record = ABECA957-06
+#Cypriniformes: BIN = AAA2710, Record = BNAF279-09
+#Salmoniformes: BIN = BOLD:AAD6463, Record = FBPIS369-11
+#Unionidae: BIN = BOLD:AAB1158, Record = RBCMI356-14
+#Mytilida: BIN = AAG5349, Record = BNAGB010-14
+#Anomopoda: BIN = BOLD:AAA4795, Record = DMLIM001-19
+#Amphipoda: BIN = BOLD:AAA1262, Record = AFISH098-15
+
+reference_sequence <- list(Diptera = "AACTTTATATTTTATTTTTGGAGCTTGATCTAGAATAATTGGAACTTCTTTAAGAATATTAATTCGAATTGAATTAGGTCATCCAGGTTCCTTAATTGGAAATGACCAAATTTATAATGTAATTGTAACAGCTCATGCATTTATTATAATTTTTTTTATAGTAATACCAATTATAATTGGAGGATTTGGAAATTGATTAGTTCCTTTAATATTAGGAGCACCAGATATAGCTTTTCCTCGAATGAATAATATAAGTTTTTGACTTCTTCCTCCTGCTTTAATACTTTTATTAACAAGTAGAATAGTAGAAAGTGGAGCTGGAACAGGATGAACAGTTTATCCTCCTTTATCATCTATTATTGCTCATGGAGGAGCATCTGTTGACTTAGCTATTTTTTCTCTTCATTTAGCAGGAATTTCTTCTATTTTAGGAGCTGTAAATTTTATTACAACTGTAATTAATATACGATCTATTGGTATTACCTTTGATCGAATACCTTTATTTGTTTGATCAGTTGCTATTACAGCCTTATTACTTTTATTATCTTTACCAGTTTTAGCTGGAGCAATTACAATATTATTAACAGATCGAAATTTAAATACATCATTTTTTGATCCTGCTGGAGGAGGAGATCCTATTTTATACCAACATTTATTT", 
+                           Coleoptera = "AACTTTATATTTTATTTTTGGTGCTTGATCAGGAATAGTGGGTACTTCTCTAAGAATACTAATTCGAGCTGAATTAGGAAATCCCGGATCCTTAATTGGAGATGATCAAATTTATAATGTTATTGTAACAGCCCATGCTTTCGTAATAATTTTTTTCATAGTTATACCTATTATAATTGGGGGATTTGGAAATTGGTTAGTGCCATTAATATTAGGAGCACCAGATATGGCCTTCCCTCGAATAAATAACATGAGATTTTGACTTTTGCCCCCTTCCTTGACCCTTCTCCTAATAAGTAGAATAGTTGAAAAAGGGGCAGGGACAGGTTGAACAGTTTACCCTCCGCTGTCATCAGGAATCGCTCACAGAGGGGCATCAGTGGACCTAGCTATTTTTAGACTTCATTTAGCAGGGATTTCATCAATTTTAGGAGCAGTAAATTTTATTACAACAATTATTAATATACGATCAGTAGGAATAACATTTGATCGAATACCCTTATTTGTATGATCAGTAGGAATTACAGCATTATTATTATTACTATCTTTACCAGTTTTAGCTGGAGCTATTACTATGCTTCTAACAGATCGAAATTTAAATACTTCCTTTTTTGACCCTGCCGGAGGGGGAGATCCTATTCTTTATCAACATTTATTT", 
+                           Hymenoptera = "TATACTTTACTTTATTTTTGCTATATGATCAGGAATAATTGGTGCATCACTAAGTATAATTATCCGTATAGAACTAGCAACTCCTGGAAGATGAATTAATAATGATCAAATTTATAATACTATTGTTACTGCCCATGCTTTTATTATAATTTTCTTTATAGTTATACCATTCATAATTGGAGGATTTGGAAATTGATTAGTACCCTTAATAATTGGAGCCCCAGATATAGCTTTCCCACGAATAAATAATATAAGATTTTGATTATTAATTCCTTCCTTATTACTACTATTAATAGGAAATACTTTAACTTCAGGTTCAGGAACAGGATGAACAATTTACCCTCCATTATCATCAATTATATTTCATTCATCTTTTTCAGTAGATTTTTCTATCTTCTCCTTACATATAGCAGGAATTTCTTCAATCATAGGAGCTATTAATTTTATTGTAACTATTATTTTAATAAAAAATATTTCACTTAATATAAATCAAATCCCTCTATTTCCTTGATCAGTAAAAATTACTGCAATTTTACTTCTTCTCTCTCTTCCAGTTTTAGCAGGAGCTATTACAATATTATTAACAGATCGAAATTTAAATACATCATTTTTTGACCCTTCAGGAGGTGGAGACCCAATTTTATATCAACATTTATTT", 
+                           Lepidoptera = "AACATTATATTTTATTTTTGGAATTTGAGCAGGTATAGTCGGAACTTCTTTAAGATTATTAATTCGAGCTGAATTAGGTAACCCAGGGTCTTTAATTGGAGATGACCAAATTTATAATACAATTGTTACAGCTCATGCTTTTATTATAATTTTTTTTATAGTAATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCTTTAATATTAGGAGCTCCTGATATAGCTTTCCCCCGAATAAATAACATAAGTTTCTGATTATTGCCTCCTTCTCTTACTCTATTAATTTCTAGAAGAATTGTAGAGAATGGGGCAGGGACTGGATGAACAGTTTACCCCCCACTTTCATCTAATATTGCCCATGGGGGTAGATCAGTAGATTTAGCAATTTTTTCTTTACATTTAGCTGGTATTTCTTCAATTTTAGGGGCAATCAATTTTATTACTACTATTATTAATATACGATTAAATAATATATCATTTGATCAATTACCTTTATTTGTTTGAGCAGTGGGAATTACAGCTTTATTATTACTTTTATCTTTACCTGTTTTAGCTGGAGCTATCACTATATTATTAACTGATCGAAATTTAAATACATCTTTTTTTGATCCTGCTGGAGGAGGAGATCCTATTTTATACCAACATTTATTT", 
+                           Hemiptera = "AACTTTATATTTCTTATTCGGAATCTGATCAGGAATAATTGGATCTTCATTAAGAATTCTAATCCGATTAGAATTAAGACAAATTAATTCAATTATTAATAATAATCAATTATATAATGTTATTGTTACAATTCATGCTTTCATTATAATTTTCTTTATAACTATACCTATTGTAATTGGAGGATTTGGAAATTGATTAATCCCTATAATAATAGGGTGCCCTGATATATCTTTTCCACGTTTAAATAATATTAGATTTTGAATATTACCCCCCTCATTAATAATAATAATTGCAAGATTTATAATCAATAATGGAACAGGAACAGGATGAACAATCTACCCACCTTTATCAAATAATATTGCTCATAATAATATTTCAGTTGATTTAACCATTTTTTCACTACATCTAGCAGGTATTTCATCCATTTTAGGAGCAATTAATTTTATTTGTACTATTTTAAATATAATACCAAATAATATAAAACTTAATCAAATTCCACTCTTCCCGTGATCAATCTTAATTACAGCAGTATTATTAATTTTATCTCTACCTGTATTAGCAGGTGCTATTACAATACTATTAACTGATCGAAATTTAAATACTTCATTTTTTGATCCCTCAGGGGGAGGAGACCCAATCTTATATCAGCATCTATT", 
+                           Orthoptera = "TACCTTATATTTTTTATTTGGAGCATGGGCTGGAATAGTAGGAACTTCTATAAGAATAATTATTCGAGCAGAATTAGGTCAACCAGGATCTCTAATTGGAGACGACCAAATTTATAATGTAATTATTACAGCACACGCATTTGTAATAATTTTCTTTATAGTTATACCTATTATAATTGGAGGATTTGGTAATTGACTTGTTCCATTAATAATTGGAGCACCAGATATAGCATTTCCACGAATAAATAATATAAGTTTTTGACTTTTACCGCCATCATTGACCCTTTTACTTGCATCTTCTATAGTTGATAATGGAGCTGGGACAGGATGAACAGTTTACCCTCCGCTTGCTGGAGCAATTGCTCATGGAGGAGCATCAGTTGATTTAGCTATCTTCTCTCTTCATTTAGCTGGTGTATCATCAATTTTAGGAGCAGTTAATTTTATTACAACAGCAATTAATATACGATCAGAGAGAATAACATTAGATCAAACACCATTATTTGTTTGATCAGTAGCTATTACAGCCCTTCTTTTATTATTATCACTTCCTGTACTAGCAGGAGCTATTACAATATTATTAACTGATCGAAACTTAAATACATCATTTTTTGACCCTGCAGGAGGGGGTGACCCAATTCTATATCAACATTTATTT",
+                           Carnivora = "CACCCTTTATCTCTTATTCGGTGCATGAGCCGGAATAGTAGGGACTGCTCTCAGCCTACTAATCCGTGCTGAACTAGGTCAACCTGGCGCCCTGCTAGGAGATGACCAGGTATACAATGTGATCGTAACTGCTCACGCATTCGTAATAATTTTCTTCATAGTAATGCCCATCATGCTTGGGGGCTTTGGAAACTGACTTATCCCTCTAATAATCGGTGCACCCGATATAGCATTCCCACGAATAAATAACATAAGCTTTTGACTTCTCCCACCTTCTTTTCTCCTCCTATTAGCCTCTTCCATGGTAGAAGCAGGCGCAGGAACAGGATGAACTGTATACCCTCCTTTAGCAGGGAATCTAGCACATGCAGGAGCATCCGTAGACCTGGCAATTTTTTCACTACACTTAGCTGGTGTTTCATCTATCCTAGGGTCAATTAACTTTATCACTACTATTATCAACATGAAACCACCCGCTATATCGCAATACCAAACTCCGCTGTTTGTATGATCAGTTTTAATTACAGCCGTACTTCTTCTTCTATCCTTACCAGTACTAGCAGCCGGTATTACCATGCTACTCACAGATCGAAACCTAAACACTACTTTCTTTGACCCGGCCGGAGGAGGAGACCCCATCCTGTACCAACACCTGTTT",
+                           Rodentia = "TACCCTCTACATAATTTTCGGTGCTTGAGCAGGTATAGTAGGAACTGGCCTTAGCATCTTAATCCGAGCTGAACTAGGTCAACCCGGCTCCCTATTAGGAGATGATCAGATCTATAACGTAATTGTAACCGCACACGCTTTTGTTATAATCTTTTTTATAGTTATACCTATCATGATTGGGGGTTTTGGCAACTGACTCGTACCATTAATAATCGGAGCCCCCGACATAGCATTCCCACGAATAAATAACATAAGCTTTTGACTATTACCACCCTCATTCCTTCTTCTCCTAGCCTCCTCAATAGTAGAAGCAGGAGCAGGAACAGGCTGAACCGTTTATCCTCCTCTAGCAGGAAACCTCGCACATGCAGGAGCATCAGTTGACCTAGCCATTTTCTCTCTTCATTTAGCCGGAATTTCTTCAATTTTAGGGGCAATTAACTTTATTACAACAATTATCAATATAAAACCACCCGCCATATCACAATATCAAACCCCATTATTTGTATGATCAGTTCTAATCACTGCAGTCCTACTTCTCCTATCCTTGCCCGTACTAGCCGCTGGCATTACTATACTACTAACAGATCGAAACCTAAACACAACTTTCTTTGACCCAGCTGGAGGGGGAGACCCCATTCTATATCAACATCTGTTC",
+                           Chiroptera = "CACCCTTTATCTTCTGTTTGGTGCTTGAGCAGGCATAGTAGGCACTGCACTAAGCCTTCTTATCCGTGCTGAGCTCGGCCAACCCGGAGCCTTATTAGGTGATGATCAGATCTATAATGTAATTGTAACAGCCCATGCCTTTGTGATAATCTTCTTTATAGTTATACCTATTATAATTGGAGGCTTTGGTAACTGACTAATTCCTCTAATAATTGGTGCCCCTGACATAGCCTTTCCCCGAATAAACAATATAAGCTTCTGACTCCTACCTCCCTCTTTCTTATTATTACTAGCCTCTTCAACAGTCGAAGCAGGAGTGGGTACCGGCTGAACAGTATACCCACCCCTAGCAGGCAATCTCGCACATGCAGGAGCTTCTGTAGATCTAGCTATTTTTTCTCTCCACCTTGCAGGAGTCTCATCAATTCTAGGCGCTATCAACTTTATTACCACTATTATTAATATGAAGCCCCCTGCTCTCTCTCAATATCAAACACCCCTGTTCGTCTGATCTGTCCTAATTACAGCCGTCTTATTACTTCTGTCTCTTCCTGTCCTAGCAGCAGGTATCACTATACTACTAACAGACCGAAACCTTAATACCACCTTCTTTGACCCTGCTGGAGGAGGAGACCCAATCCTATATCAACACCTATTC",
+                           Cypriniformes = "CACCCTTTATCTTGTATTTGGTGCCTGAGCTGGGATAGTGGGGACTGCCCTAAGCCTCCTTATTCGAGCTGAATTAAGCCAACCCGGATCCCTTTTAGGCGATGATCAAATTTATAATGTTATTGTTACCGCCCACGCCTTCGTAATAATTTTCTTTATAGTAATGCCAATTCTTATCGGCGGGTTTGGAAACTGACTTGTTCCACTAATGATTGGTGCACCTGATATAGCATTCCCACGAATAAATAATATAAGCTTCTGACTTCTTCCCCCATCATTCCTGCTACTACTAGCCTCTTCCGGGGTTGAAGCCGGCGCTGGGACAGGGTGAACAGTATACCCACCCCTCGCAGGTAATCTCGCTCATGCAGGCGCATCAGTAGACTTAACGATCTTCTCACTCCACCTGGCAGGTGTATCATCAATCCTAGGGGCAGTTAACTTTATTACCACAATTATTAACATGAAACCCCCAGCAATTTCCCAATATCAAACGCCCCTCTTTGTATGAGCCGTATTGGTAACAGCTGTCCTTCTCCTACTATCACTACCGGTCCTAGCTGCCGGAATTACAATACTACTTACAGATCGTAATCTTAATACCACCTTCTTCGACCCGGCGGGAGGGGGAGACCCAATCTTATACCAACACTTATTC",
+                           Unionidae = "TACTTTATATTTATTATTGGCTTTGTGGTCTGGTTTAATTGGGTTAGCTTTGAGGCTTTTGATTCGAGCTGAGTTGGGTCAACCAGGAAGGTTGTTAGGGGATGATCAATTGTACAATGTGATTGTTACAGCTCATGCTTTTATAATAATTTTTTTCTTGGTAATACCAATGATGATTGGTGGGTTTGGTAATTGGCTTATTCCTTTAATAATTGGTGCTCCTGATATAGCTTTTCCTCGATTAAATAATTTAAGGTTTTGGTTGCTTGTACCAGCTTTATTTTTGCTGTTAAGGTCATCATTGGTAGAGAGGGGTGTTGGTACAGGTTGAACAGTATACCCTCCTTTGTCTGGAAGTGTTGCTCATTCTGGGGCTTCGGTGGATTTGGCCATTTTCTCTTTACATCTTGCCGGTGCTTCCTCAATTTTAGGTGCTATCAATTTTATCTCTACTGTTGGGAATATGCGATCCCCAGGTTTAGTCGCTGAGCGAATTCCTTTGTTTGTTTGAGCTGTTACAGTGACAGCTGTGTTGTTAGTTGCTGCTTTACCAGTTTTAGCTGGTGCTATTACGATATTGCTTACTGATCGTAATCTGAACACTTCGTTTTTTGACCCTACGGGGGGAGGTGATCCTATTTTGTATATGCATTTATTT",
+                           Mytilida = "AAGACTCTATATTATCTTAGGTGTTTGATCGGGAATGGTGGGGATTGGTTTAAGAATGTTAATTCGAATTGAGTTAGGTCGTCCTGGAAGATTTTTAGGGGACGATCAGCTATATAACGTCATTGTTACGGCCCATGCTTTAGTTATAATTTTCTTTATGGTTATGCCTTTAATGGTCGGGGGTTTTGGGAATTGGCTTCTTCCATTAATAATAGGTTCTGTAGATATAATTTTTCCGCGACTTAACAATTTGAGATTTTGGTTTCTCCCCTCTTCATTATTTATACTGTTGAGGTCTACTTTTATTGAAAGCGGGTCCGGTACTGGATGGACTTTATATCCTCCTTTGTCTTCATATACAGGACATAGTGGCCCAGCTGTTGACATATCTTTATTTTCTTTACATTTGGCAGGTGCTTCTTCTATTGGTGGATCTATTAACTTTTTAACTAGTATAAAAAATATGCCGGTGGAGGTAATGCGAGGAGAGCGGATAATGTTGTTCTTGTGGTCTATGGTGGTAACAGCTGTTCTTTTATTGGTGTCTTTGCCTGTGCTGGCTGGCGGTATTACTATGCTGATTTTTGATCGTCATTTTAATACTTCTTTTTATGACCCTGTAGGAGGGGGAGATCCAGTGTTGTACCAACATCTCTTT",
+                           Anomopoda = "GACTTTATATTTTGTATTCGGGGTTTGATCAGGTATGGTAGGTACTGCTCTAAGTATACTTATTCGAGCTGAATTAGGACAATCAGGTAGTTTAATTGGGGATGATCAGATTTATAATGTTATTGTCACTGCCCACGCGTTTGTAATAATTTTTTTTATGGTTATGCCTATTATAATTGGAGGTTTCGGGAACTGGCTAGTACCTTTGATGTTGGGAGCTCCTGACATAGCCTTCCCTCGATTAAATAATTTAAGTTTTTGATTTTTACCCCCCGCTTTAACTCTTTTACTTGTGGGAGGGGCAGTGGAAAGTGGTGCTGGGACTGGTTGAACTGTATACCCCCCTCTCTCTGCGGGGATCGCTCATGCTGGGGCCTCTGTTGACTTAAGTATTTTTTCTCTGCATCTAGCAGGTGTTTCTTCTATTTTAGGGGCAGTAAATTTTATTACAACTATCATTAATATACGATCTTTAGGTATAACTTTAGATCGAATTCCCTTGTTTGTATGAGCGGTTGGAATCACTGCACTCTTACTTTTACTAAGTTTGCCCGTTCTTGCGGGAGCAATTACCATACTCTTAACTGACCGTAATTTGAATACTTCATTCTTTGATCCTGCGGGGGGTGGGGATCCAATTTTATACCAACATTTATTT",
+                           Amphipoda = "TACACTATATTTTATTTTAGGAGCTTGGTCTAGAGTTGTAGGTACTTCTCTAAGAGTTATTATTCGCTCAGAGTTAAGCGCTCCTGGTAATTTAATTGGAGACGACCAGTTATATAATGTAATAGTGACAGCTCACGCTTTCATTATAATTTTTTTTATAGTAATACCTATTATAATCGGAGGGTTTGGTAACTGGCTAGTACCCTTAATACTAGGCAGACCAGATATAGCCTTCCCCCGTATAAACAACATAAGATTTTGACTTCTCCCTCCTTCATTAACTTTATTACTTATAAGAGGATTAGTAGAAAGAGGTGTGGGTACAGGGTGAACTGTCTACCCCCCCCTAGCCGGTGCTACAGCCCATAGAGGGGGCGCGGTTGACTTAGCTATTTTTTCTTTACACCTGGCTGGTGCTTCTTCCATTCTAGGGGCTATTAATTTTATTTCCACTACTATTAATATACGAGGTCCCGGTATATTTATAGACCAGATACCCTTGTTTGTTTGATCAGTATTTATCACAGCAATTTTACTACTACTATCCTTACCTGTTCTAGCAGGTGCTATTACCATATTACTGACTGATCGTAATTTAAACACATCTTTTTTTGACCCTAGAGGTGGAGGTGATCCTATTCTATATCAACACTTATTT")
+
+#Set up a function to trim the sequences using a reference sequence. 
+RefSeqTrim <- function(x) {
+  #Create data frame for reference sequence 
+  #This reference sequence was taken from BOLD for Diptera (Record ID: ACGAZ1590-12, BIN:AAA1222).
+  dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
+  colnames(dfRefSeq)[2] <- "nucleotides"
+  #Set nucleotides to a character 
+  dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides)
+  #Trim sequences to 620bp
+  dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19)
+  #Check sequence length
+  dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
+  #Ensure sequences are of character type
+  alignmentSeqs <- as.character(x$nucleotides)
+  #Name according to processid 
+  names(alignmentSeqs) <- x$processid
+  #Pull out reference sequence
+  alignmentref <- as.character(dfRefSeq$nucleotides[1])
+  #Name reference sequence 
+  names(alignmentref) <- "Reference"
+  #Put sequences together for alignment
+  alignmentSeqsPlusRef <- append(alignmentref, alignmentSeqs)
+  #Convert to DNAStringSet 
+  DNAStringSet2 <- DNAStringSet(alignmentSeqsPlusRef)
+  #Remove gaps
+  DNAStringSet2 <- RemoveGaps(DNAStringSet2)
+  #Run alignment 
+  alignment2 <- AlignSeqs(DNAStringSet2)
+  #Find stop and start positions in reference 
+  refSeqPos <- which(alignment2@ranges@NAMES=="Reference")
+  refSeqPos <- alignment2[refSeqPos]
+  refSeqPosStart <- regexpr("[ACTG]", refSeqPos)
+  refSeqPosStart <- as.numeric(refSeqPosStart)
+  refSeqPosEnd <- nchar(dfRefSeq$nucleotides[1]) + refSeqPosStart
+  refSeqPosEnd <- as.numeric(refSeqPosEnd)
+  #Trim sequence
+  alignment2Trimmed <- substr(alignment2, refSeqPosStart, refSeqPosEnd -1)
+  #Convert to DNAStringSet
+  DNAStringSet3 <- DNAStringSet(alignment2Trimmed)
+  #Remove reference sequence 
+  refSeqRm <- which(DNAStringSet3@ranges@NAMES=="Reference")
+  dnaStringSet3 <- subset(DNAStringSet3[-refSeqRm])
+  alignmentOrder <- DNAStringSet3@ranges@NAMES
+  #Reorder based on alignment
+  x <- x[match(alignmentOrder, x$processid), ]
+  #Replace old sequences with new ones 
+  trimmedSeqs <- as.character(DNAStringSet3)
+  x$nucleotides <- trimmedSeqs
+  #Return dataframe with new sequences 
+  return(x)
+}
+
+#Packages and variables by module. 
+#For each module being used, load the recommended packages and variables. 
+#No packages or variables needed for module 1 or 2. 
+
+#Module 3: 
+#install.packages("coil")
+library(coil)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("foreach")
+library(foreach)
+#install.packages("rlist")
+library(rlist)
+#install.packages("stringr")
+library(stringr)
+
+#Set up taxa 
+taxa <- "Diptera"
+
+#Module 4:
+#install.packages("ape")
+library(ape)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("stringr")
+library(stringr)
+#BiocManager::install(c("Biostrings", "DECIPHER"))
+library(Biostrings)
+library(DECIPHER)
+#Reference Sequences and RefSeqTrim function are needed
+
+#Set number of sequences each genera can have. This will be used to sample down the dataset if it is too large. Here a max of 100 sequences is used.
+maxSize <- 100
+
+#Set up region of study
+region <- "Greenland"
+
+#Set the clustering threshold for use in the IDClusters function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is -Inf.   
+clustering_threshold <- 0.04
+
+#Module 5: 
+#install.packages("devtools")
+library(devtools)
+#install_github("r-barnes/dggridR")
+library(dggridR)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("ggplot2")
+library(ggplot2)
+#install.packages("rlist")
+library(rlist)
+#install.packages("tidyr")
+library(tidyr)
+#install.packages("vegan")
+library(vegan)
+
+#Set what size of polygon to be used in the dgconstruct function. You will need to choose the region size that works best for your analysis. For Greenland, a size of 50km across was chosen in order to allow for smaller areas that still contained a suitable number of samples. For Canada, a larger size of 500km was used.No default values is provided in the function. 
+Polygon_Length <- 50
+
+#Set what percent the regions should be sampled to be included in the analysis. For my analysis, regions with an abundance based and incidence based richness of 50% or more are included.
+percent_sampled_abundance <- 0.5
+percent_sampled_incidence <- 0.5
+
+#Module 6:
+#install.packages("foreach")
+library(foreach)
+#install.packages("phylotools")
+library(phylotools)
+#BiocManager::install(c("Biostrings", "DECIPHER"))
+library(Biostrings)
+library(DECIPHER)
+#Reference Sequences and RefSeqTrim function are needed
+
+#set up study region
+region <- "Greenland"
+
+#Module 7: 
+#install.packages("apex")
+library(apex)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("ggplot2")
+library(ggplot2)
+#install.packages("mmod")
+library(mmod)
+#install.packages("plotly")
+library(plotly)
+#install.packages("tibble")
+library(tibble)
+#install.packages("tidyr")
+library(tidyr)
+
+#Module 8:
+#install.packages("poppr")
+library(poppr)
+
+#Module 9:
+#install.packages("ape")
+library(ape)
+#BiocManager::install(c("Biostrings"))
+library(Biostrings)
+#install.packages("diptest")
+library(diptest)
+#install.packages("pegas")
+library(pegas)
+#install.packages("Metrics")
+library(Metrics)
+
+#Module 10:
+#install.packages("ape")
+library(ape)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("foreach")
+library(foreach)
+#install.packages("phangorn")
+library(phangorn)
+#BiocManager::install(c("Biostrings", "DECIPHER"))
+library(Biostrings)
+library(DECIPHER)
+#Reference Sequences and RefSeqTrim function are needed
+
+#Set distance matrix model to be used in the function dist.dna. In this case the model was set to raw, or p-distance. This model takes the number of sites that differ between each sequence pair. The default model for the function is K80.   
+model <- "raw"
+
+#Set up dataframe with Outgroup sequences. In this study, 3 Trichoptera sequences from BOLD were chosen as the outgroups. Substitute these outgroups with those best suited for your study. 
+Outgroups <- data.frame(processid = c("Outgroup1", "Outgroup2", "Outgroup3"),
+                        bin_uri = c("Outgroup1", "Outgroup2", "Outgroup3"),
+                        species_name = c("Outgroup1", "Outgroup2", "Outgroup3"),
+                        nucleotides = c("AACTTTATATTTTATTTTTGGAAGATGAGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATAATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACAGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT","AACTTTATATTTTATTTTTGGAAGATGAGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATAATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACCGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT","AACTTTATATTTTATTTTTGGAAGATGGGCTGGATTACTCGGAACATCATTAAGAGTTCTAATTCGAACAGAACTAGGAACTACTAAGTCTCTAATTAATGATGATCAAATTTATAACGTATTAGTAACTGCCCATGCTTTTATCATGATTTTTTTCATAGTGATACCTATTATAATTGGAGGATTTGGAAATTGACTTGTTCCACTAATACTCGGGGCCCCAGATATAGCATTCCCGCGAATAAATAATATAAGATTTTGACTCCTTCCCCCCTCTTTAAATTTTTTACTTCTTAGAAGGTTAGTAGAAAATGGTACAGGAACCGGTTGAACTGTTTATCCGCCATTAGCGAGAAATATCGGACATATGGGAAGCTCTGTTGATCTTTCAATTTTTTCCTTACATATGGCTGGGATTTCTTCTATTCTAGGAGCTATTAATTTTATTACAACTTGTATAAGAATAAAACCAAAAAGAATACTTTTAGACCAAATACCCTTATTTGTTTGATCAGTATTAATTACAGCTTTACTACTACTTCTATCTTTACCAGTTTTAGCCGGAGCTATCACTATATTACTTACAGACCGAAACCTAAATACATCTTTTTTTGACCCAGCAGGAGGCGGAGACCCCATTTTATACCAACATTTATTT"))
+
+#Set up the model that should be used to select the best model for maximum likelihood tree generation. In our case, BIC was chosen. BIC evaluates models based on posterior probability and maximum likelihood. 
+TreeModel <- "BIC"
+
+#Set up number of intervals of discrete gamma distribution (k-value) for the maximum likelihood tree generation to be used in the function pml. For our study the value was set to 4. 4 is commonly used in studies and a default for many packages, however it is higher than the default used here. The default for this package is 1. 
+K <- 4 
+
+#Module 11:
+#install.packages("ggplot2")
+library(ggplot2)
+
+#Module 12:
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("nlme")
+library(nlme)
+#install.packages("phytools")
+library(phytools)
+#install.packages("tibble")
+library(tibble)
+
+#Module 13: Multiple Regression
+#install_github("r-barnes/dggridR")
+library(dggridR)
+#install.packages("geosphere")
+library(geosphere)
+#install.packages("rgeos")
+library(rgeos)
+#install.packages("sp")
+library(sp)
+#install.packages("visreg")
+library(visreg)
+
+#No packages required for module 14
+
+#Module 15:
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("lwgeom")
+library(lwgeom)
+#install.packages("sf")
+library(sf)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("phytools")
+library(phytools)
+#install.packages("nlme")
+library(nlme)
+#install.packages("tibble")
+library(tibble)
+
+#2.Extract Data from Databases-----
+#This module contains steps to download and read in data from the Barcode of Life Data Systems (BOLD) and the Global Biodiversity Information Facility (GBIF). Other data can be read in based on the researchers needs by changing the file names/paths. 
+
+#Call data from BOLD. Currently calling Diptera (fly) data from Greenland. Data was retrieved on June 24th 2021. 
+#dfTaxa <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?taxon=Diptera&geo=Greenland&format=tsv")
+#Save data to a tsv file 
+#write_tsv(dfTaxa, "GreenlandData")
+#Read in the data
+dfData <- read.csv("GreenlandData", sep = '\t')
+
+#Read in data from GBIF. Greenland data retrieved from GBIF.org (23 June 2021) GBIF Occurrence Download https://doi.org/10.15468/dl.mk52hp
+dfGeoData <- read.csv("GreenlandGeo.csv", sep = '\t')
+
+#3.Filter Data---- 
+#This module contains steps to filter the data. This includes steps to filter out records without nucleotide sequences, species names and coordinates. This code also filters out sequences with high gap content, stop codons, and indels. These steps can be adjusted as needed. 
+
+#Filter the data 
+dfData <- dfData %>%
+  #Filter out records without bin_uri
+  filter(str_detect(bin_uri, ":")) %>%
+  #Filter out records without a sequence 
+  filter(str_detect(nucleotides, "[ACTG]")) %>%
+  #Filter for records with a COI-5P sequence
+  filter(markercode == "COI-5P") %>%
+  #Filter out sequences with fewer than 500 base pairs 
+  filter(nchar(gsub("-", "", nucleotides)) > 499) %>%
+  #Filter out records without a species name
+  filter(!is.na(species_name))
+
+#Filter out high gap/N content. A threshold of 1% was chosen because species often differ by more than 2% divergence. By filtering out records with > 1% N and gap content, we are likely to get a high-quality data set, given typical patterns of variability in COI in animals. 
+startNGap <- sapply(regmatches(dfData$nucleotides, gregexpr("^[-N]", dfData$nucleotides)), length)
+startNGap <- foreach(i=1:nrow(dfData)) %do% 
+  if (startNGap[[i]]>0) { 
+    split <- strsplit(dfData$nucleotides[i], "^[-N]+") 
+    dfData$nucleotides[i] <- split[[1]][2]
+  }
+endNGap <- sapply(regmatches(dfData$nucleotides, gregexpr("[-N]$", dfData$nucleotides)), length)
+endNGap <- foreach(i=1:nrow(dfData)) %do%
+  if (endNGap[[i]]>0) {
+    split <- strsplit(dfData$nucleotides[i], "[-N]+$")
+    dfData$nucleotides[i] <- split[[1]][1]
+  }
+internalNGap <- sapply(regmatches(dfData$nucleotides, gregexpr("[-N]", dfData$nucleotides)), length)
+internalNGap <- foreach(i=1:nrow(dfData)) %do%
+  which((internalNGap[[i]]/nchar(dfData$nucleotides[i]) > 0.01))
+nGapCheck <- sapply(internalNGap, function(x)length(x))
+nGapCheck <- which(nGapCheck>0)
+dfData <- dfData[-nGapCheck, ]
+
+#Remove redundant "BOLD" section from each row in the BIN column 
+dfData$bin_uri <- substr(dfData$bin_uri, 6, 13)
+
+#Filter out sequences without coordinates 
+containLatLon <- grep ("[0-9]", dfData$lat)
+dfData <- dfData[containLatLon, ]
+
+#Sequences can only contain a, c, g, t, -, or n. Use the following code to remove any sequences that contain other characters. 
+dfData <- filter(dfData, !grepl("R", dfData$nucleotides)==TRUE)
+dfData <- filter(dfData, !grepl("K", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("M", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("Y", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("S", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("W", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("D", dfData$nucleotides))
+dfData <- filter(dfData, !grepl("B", dfData$nucleotides))
+
+#Check for stop codons and indels.
+#Save sequences to a list 
+sequences <- as.list(dfData$nucleotides)
+#Save record IDs as list 
+processID <- as.list(dfData$processid)
+#Look up translation table for your taxa
+translation_table <- which_trans_table(taxa)
+#Check for insertions and deletions
+coi5p_object <- lapply(1:length(sequences), function(i){
+  coi5p_pipe(sequences[[i]], trans_table = translation_table, name = processID[[i]], triple_translate = TRUE)
+})
+#See which sequences have indels and stop codons and remove these from the list
+indels <- list.exclude(coi5p_object, indel_likely == "TRUE")
+stop_codon <- list.exclude(coi5p_object, stop_codons == "TRUE")
+#Create a list of processids for remaining sequences
+Ids_Filtered_Indels <- lapply(1:length(indels), function(i){
+  indels[[i]]$name
+})
+Ids_Filtered_Stop <- lapply(1:length(stop_codon), function(i){
+  stop_codon[[i]]$name
+})
+#Remove sequences with indels and stop codons from dataset
+dfData <- dfData[dfData$processid %in% Ids_Filtered_Indels, ]
+dfData <- dfData[dfData$processid %in% Ids_Filtered_Stop, ]
+
+#Run some checks to ensure data is filtered properly
+#Find dimensions of dataset
+dim(dfData)
+#Check that only CO1 is included 
+unique(dfData$markercode)
+#Check that there are no NAs
+sum(is.na(dfData$bin_uri))
+sum(is.na(dfData$species_name))
+sum(is.na(dfData$nucleotides))
+sum(is.na(dfData$lat))
+#Find summary of sequence lengths 
+summary(str_count(dfData$nucleotides))
+#Find length of DNA sequences in the dataset 
+Sequence_lengths <- str_count(dfData$nucleotides)
+#Make a histogram to show the distributions of sequence lengths 
+hist(Sequence_lengths, main = paste("Distribution of Sequence Lengths"), xlab = "Sequence Length")
+
+#Filter the GBIF data
+#Remove occurrences without a species ID
+dfGeoData <- dfGeoData %>%
+  filter(!is.na(species))
+
+#Run some checks
+#Find dimensions of dataset 
+dim(dfGeoData)
+#Check that there are no NAs
+sum(is.na(dfGeoData$species))
+
+#Reduce datasets to only needed columns 
+dfData <- (dfData[, c("processid", "bin_uri", "family_name", "genus_name", "species_name", "nucleotides", "lat", "lon")])
+dfGeoData <- (dfGeoData[, c("gbifID", "species","decimalLatitude", "decimalLongitude")])
+
+#Remove unneeded variables 
+rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequence_lengths, coi5p_object, Ids_Filtered_Indels, Ids_Filtered_Stop, indels, processID, sequences, stop_codon, translation_table)
+
+#4.Organizing Data by Clusters----
+#This module includes steps to cluster the sequences by a distance threshold. If using BINs this code in not needed.If your dataset is very large, your computer may not have the memory to run the following code.The script also provides the option to sample down the dataset, as well as to leave the data separated by genus for the whole step rather than recombine them. If using a large dataset, follow the commented out code.This was done for the Canada case study. If doing analysis on the full set, use the uncommented code. Running the analysis on a larger server or through high performance computing may also be an option for larger datasets. 
+ 
+#Split the dataset by family. Running several smaller alignments is much faster than running a large alignment. 
+Alignment_List <- split(dfData, f = dfData$genus_name)
+
+#Filter out genera with less than 1 record each. Further filtering will occur in a later step. 
+#dfData <- dfData %>%
+#  group_by(genus_name) %>%
+#  filter(n() > 1)
+#Ungroup dataframe
+#dfData <- ungroup(dfData, bin_uri)
+
+#Create dataframe with only large BINs
+#largeBIN <- dfData %>%
+#  group_by(bin_uri) %>%
+#  filter(n() >= maxSize)
+#Ungroup dataframe 
+#largeBIN <- ungroup(largeBIN, bin_uri)
+#Split into list of genera dataframes
+#largeBIN <- split(largeBIN, f = largeBIN$bin_uri)
+#Sample down each dataframe
+#largeBIN <- lapply(1:length(largeBIN), function(i){
+#  sample_n(largeBIN[[i]], maxSize)
+#})
+#Combine dataframes into one
+#largeBIN <- bind_rows(largeBIN)
+#Create dataframe with only small BINs
+#smallBIN <- dfData %>%
+#  group_by(bin_uri) %>%
+#  filter(n() < maxSize)
+#Ungroup dataframe 
+#smallBIN <- ungroup(smallBIN, bin_uri)
+#Combine large and small dataframes
+#dfFull <- rbind(largeBIN, smallBIN)
+#Split into list of dataframes by genus 
+#Alignment_List <- split(dfFull, f = dfFull$genus_name)
+
+#Trim sequences to reference sequence 
+Data_alignment <- lapply(1:length(Alignment_List), function(i){
+  RefSeqTrim(Alignment_List[[i]])
+})
+
+#Remove NAs 
+Data_alignment <- lapply(1:length(Data_alignment), function(i){
+  Data_alignment[[i]][-c(1), ]
+})
+
+#check the length of each alignment 
+lengths <- lapply(1:length(Data_alignment), function(i){
+  nchar(Data_alignment[[i]]$nucleotides)
+})
+#See which are 620  
+length620 <- lapply(1:length(Data_alignment), function(i){
+  Data_alignment[[i]][nchar(Data_alignment[[i]]$nucleotides) == 620, ]
+  })
+
+#Merge Dataframes 
+dfData_alignment <- bind_rows(Data_alignment)
+#Set to dataframe
+dfData_alignment <- as.data.frame(dfData_alignment)
+#dfData_alignment <- lapply(1:length(Data_alignment), function(i){
+#  as.data.frame(Data_alignment[[i]])
+#})
+#Check class of object 
+class(dfData_alignment)
+
+#Convert to DNAStringSet 
+dfData_alignment$nucleotides <- DNAStringSet(dfData_alignment$nucleotides)
+#for(i in 1:length(dfData_alignment)) {
+#  dfData_alignment[[i]]$nucleotides <- DNAStringSet(dfData_alignment[[i]]$nucleotides)
+#}
+
+#Name the Stringset
+names(dfData_alignment$nucleotides) <- dfData_alignment$processid
+#for(i in 1:length(dfData_alignment)) {
+#  names(dfData_alignment[[i]]$nucleotides) <- dfData_alignment[[i]]$processid
+#}
+
+#Set name of alignment file
+AlignmentName <- paste(region, "Alignment")
+#Save alignment to file so it can be viewed in programs such as MEGA. 
+writeXStringSet(dfData_alignment$nucleotides, file = AlignmentName, format = "fasta")
+
+#Convert to dnaBin format 
+dnaBIN <- as.DNAbin(dfData_alignment$nucleotides)
+#dnaBIN <- lapply(1:length(dfData_alignment), function(i){
+#  as.DNAbin(dfData_alignment[[i]]$nucleotides)
+#})
+#Check that the class is correct
+class(dnaBIN)
+
+#Create a distance matrix.
+distanceMatrix <- dist.dna(dnaBIN, model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+#distanceMatrix <- lapply(1:length(dnaBIN), function(i){
+#  dist.dna(dnaBIN[[i]], model = model, as.matrix = TRUE, pairwise.deletion = TRUE)
+#})
+
+#Cluster the sequences 
+Data_clustered <- TreeLine(dfData_alignment$nucleotides, distanceMatrix, method = clustering_method, type = "both", cutoff = clustering_threshold)
+#Data_clustered <- lapply(1:length(dfData_alignment), function(i){
+#  TreeLine(dfData_alignment[[i]]$nucleotides, distanceMatrix[[i]], method = clustering_method, type = "both", cutoff = clustering_threshold)
+#})
+
+#Extract the clustered dataframe
+dfClusters <- Data_clustered[[1]]
+#dfClusters <- lapply(1:length(Data_clustered), function(i){
+#Data_clustered[[i]][[1]]
+#})
+#See how many clusters were created
+length(unique(dfClusters$cluster))
+
+#Add a column with the index of the dataframe within the list
+dfClusters <- Map(cbind, dfClusters, index = seq_along(dfClusters))
+#Combine the cluster and index column 
+#for(i in 1:length(dfClusters)) {
+#  dfClusters[[i]]$cluster <- str_c(dfClusters[[i]]$cluster, "_", #dfClusters[[i]]$index)
+#}
+#Combine all the dataframes into one 
+#dfClusters <- bind_rows(dfClusters)
+
+#Set record IDs to a column instead of row names
+dfClusters$processid <- row.names(dfClusters)
+#Add clusters column to original dataframe
+dfData_Clustered <- merge(dfClusters, dfData, by = "processid")
+
+#Rename the dfData_Clustered in order to run the rest of the pipeline
+dfData <- dfData_Clustered
+#Reduce dataframe to needed columns 
+dfData <- (dfData[, c("processid", "cluster", "species_name", "nucleotides", "lat", "lon")])
+#Rename cluster to bin_uri just for simplicity 
+names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
+
+#Remove any unneeded variables 
+rm(Alignment_List, Data_alignment, Data_clustered, dfData_alignment, distanceMatrix, dnaBIN, length620, lengths, dfFull, largeBIN, smallBIN)
+
+#5.Group by Regions----
+#For this module, the data are sorted into cells/regions. The regions and BINs are then filtered to only include those that meet our size requirements. The filtering steps can be adjusted as needed. Code to create a map showing the regions is also included.  
+#Construct a grid of cells 
+Grid <- dgconstruct(spacing=Polygon_Length, metric= TRUE, resround = 'down')
+
+#Find corresponding grid cells for each record
+dfData$cell <- dgGEO_to_SEQNUM(Grid, dfData$lon, dfData$lat)$seqnum
+
+#Change nucleotide column back to a character string 
+dfData$nucleotides <- as.character(dfData$nucleotides)
+
+#Filter out BINs with less than 20 records and BINs that are only found in one region 
+dfData <- dfData %>%
+  group_by(bin_uri) %>%
+  filter(n() > 19) %>%
+  filter(length(unique(cell)) > 1)
+#Ungroup the data
+dfData <- ungroup(dfData, bin_uri)
+
+#Filter out BINs in a region, if that BIN contains less than 10 records in that region
+dfData <- dfData %>%
+  group_by(cell, bin_uri) %>%
+  filter(n() > 9)
+#Ungroup the data
+dfData <- ungroup(dfData, cell, bin_uri)
+
+#Filter out regions with less than 10 BINs
+dfData <- dfData %>%
+  group_by(cell) %>%
+  filter(length(unique(bin_uri)) > 9)
+#Ungroup the data
+dfData <- ungroup(dfData, cell)
+
+#Filter again for BINs that appear in more than one region, just to ensure that only these are included in the analysis
+dfData <- dfData %>%
+  group_by(bin_uri) %>%
+  filter(length(unique(cell)) > 1)
+#Ungroup the data
+dfData <- ungroup(dfData, bin_uri)
+
+#Calculate the abundance based species richness 
+#Create a new dataframe with bin_uri and cells
+dfRegions <- (dfData[, c("bin_uri", "cell")])
+#Add column with the number of each records of each BIN at each site
+dfRegions <- dfRegions %>%
+  group_by(bin_uri, cell) %>%
+  mutate(count=n())
+#Ungroup
+dfRegions <- ungroup(dfRegions, bin_uri, cell)
+#Filter down to only unique rows 
+dfRegions <- filter(unique(dfRegions))
+#Format the table so the regions are the columns
+dfRegions <- pivot_wider(dfRegions, names_from = cell, values_from = count)
+
+#Replace NAs with 0s 
+dfRegions[is.na(dfRegions)] <- 0 
+
+#set to dataframe
+dfRegions <- as.data.frame(dfRegions)
+#Set bin_uri to rownames 
+rownames(dfRegions) <- dfRegions[,1]
+#Remove first column 
+dfRegions$bin_uri <- NULL
+
+#Find abundance based richness
+abundance_results <- lapply(dfRegions, estimateR)
+#Find incidence based richness
+incidence_results <- lapply(dfRegions, specpool)
+
+#Plot rarefaction curve
+rarefaction_curve <- rarecurve(dfRegions)
+#Plot species accumulation curve 
+accumulation_curve <- specaccum(dfRegions)
+plot(accumulation_curve)
+
+#Filter for regions that do not meet the assigned expected species richness percentage. 
+Sampled_Regions_Abundance <- list.filter(abundance_results,S.obs/S.chao1 >= percent_sampled_abundance)
+Sampled_Regions_Incidence <- list.filter(abundance_results,S.obs/S.chao1 >= percent_sampled_incidence)
+
+#Filter down to regions found in both lists
+Sampled_Regions <- intersect(names(Sampled_Regions_Abundance), names(Sampled_Regions_Incidence))
+
+#Filter dataset to include only well sampled regions
+dfData <- filter(dfData, dfData$cell %in% Sampled_Regions)
+
+#Count how many regions are included in the dataset
+length(unique(dfData$cell))
+#Count how many BINs are included in the dataset
+length(unique(dfData$bin_uri))
+
+#Get the center coordinates of the cells
+SampleCenters  <- dgSEQNUM_to_GEO(Grid, dfData$cell)
+  
+#Get the number of samples in each cell
+SampleCounts <- dfData %>% group_by(cell) %>% summarise(count=n())
+
+#Get the grid cell boundaries
+dfGrid <- dgcellstogrid(Grid, SampleCounts$cell)
+#Rename cell column 
+names(dfGrid)[names(dfGrid) == "seqnum"] <- "cell"
+#Split into a list
+Poly <- split(dfGrid, f = dfGrid$cell)
+#Extract coordinates 
+Coords <- lapply(1:length(Poly), function(i){
+  as.data.frame(st_coordinates(Poly[[i]]))
+})
+#Keep the names for the list
+names(Coords) <- names(Poly)
+#Extract Lat and Lon individually and ensure names are kept
+Lon <- lapply(1:length(Coords), function(i){
+  Coords[[i]]$X
+})
+names(Lon) <- names(Coords)
+Lat <- lapply(1:length(Coords), function(i){
+  Coords[[i]]$Y
+})
+names(Lat) <- names(Coords)
+
+#Convert to dataframe
+Lon <- lapply(1:length(Lon), function(i){
+  as.data.frame(Lon[[i]])
+})
+names(Lon) <- names(Coords)
+Lat <- lapply(1:length(Lat), function(i){
+  as.data.frame(Lat[[i]])
+})
+names(Lat) <- names(Coords)
+#Add column with cell number 
+for (i in 1:length(Lon)) {
+  Lon[[i]]$cell <- names(Lon[i])
+}
+for (i in 1:length(Lat)) {
+  Lat[[i]]$cell <- names(Lat[i])
+}
+#Combine dataframes
+Lon <- bind_rows(Lon)
+Lat <- bind_rows(Lat)
+#Merge lat and lon together
+Lon$Lat <- Lat$`Lat[[i]]`
+#Rename dataframe and column 
+dfCoords <- Lon
+dfCoords$Lon <- dfCoords$`Lon[[i]]`
+#Merge coord and sample count dataframes with dfGrid
+dfGrid <- merge(dfGrid, dfCoords, by.x="cell", by.y="cell")
+dfGrid <- merge(dfGrid, SampleCounts, by.x="cell", by.y="cell")
+#Remove unneeded columns 
+dfGrid <- (dfGrid[, c("cell", "Lon", "Lat", "count")])
+
+#Load map data
+countries <- map_data("world")
+
+#Plot polygons on a flat map. coord_fixed will need to be adjusted to focus in on your area of interest and scale_fill_viridis_c will need to be adjusted to reflect your sample size. Depending on the size of your dataset, the generating the full map may take too much memory, and a simpler version of the map can be used. Coords used for Greenland: c(-22, -18), c(70, 80). Coords used for Canada: c(-160, -20), c(40, 90).Canada: c(200, 80600)
+Map <- ggplot() + 
+  geom_polygon(data=countries, aes(x=long, y=lat, group=group), fill= "white", color="black") +
+  geom_polygon(data=dfGrid, aes(x=Lon, y=Lat, group=cell, fill=count), alpha=0.4) +
+  coord_fixed(xlim = c(-22, -18),  ylim = c(70, 80))+
+  geom_path(data=dfGrid, aes(x=Lon, y=Lat, group=cell), alpha=0.4, color="white") +
+  #geom_point(aes(x=SampleCenters$lon_deg, y=SampleCenters$lat_deg)) +
+  #geom_label(aes(x=SampleCenters$lon_deg, y=SampleCenters$lat_deg, label = dfData$cell), size = 3.7, fontface = "bold", label.padding = unit(0.15, "lines")) +
+  scale_fill_viridis_c(limits = c(200, 8000)) +
+  labs(fill = "Number of\nSpecimens") 
+
+#Plot on a spherical projection
+map_spherical <- Map + 
+  coord_map("ortho", xlim = c(-160, -20), ylim = c(40, 90)) +
+  xlab('')+ylab('')+
+  theme(axis.ticks.x=element_blank())+
+  theme(axis.ticks.y=element_blank())+
+  theme(axis.text.x=element_blank())+
+  theme(axis.text.y=element_blank())
+  
+#Split dataframe based on Bin_uri so each BIN can be analyzed individually
+BIN_List <- split(dfData, f = dfData$bin_uri)
+
+#Remove unneeded variables 
+rm(abundance_results,accumulation_curve, dfRegions, countries, dfGrid, incidence_results, rarefaction_curve, SampleCenters, SampleCounts,Sampled_Regions_Abundance, Sampled_Regions_Incidence, Coords, dfCoords, Lat, Lon, Poly)
+
+#6.Multiple Sequence Alignment----
+#In this module, the sequences are aligned to a reference. 
+
+#Trim sequences to reference sequence 
+Data_Trimmed <- lapply(1:length(BIN_List), function(i){
+  RefSeqTrim(BIN_List[[i]])
+})
+#Remove NAs 
+Data_Trimmed <- lapply(1:length(Data_Trimmed), function(i){
+  Data_Trimmed[[i]][-c(1), ]
+})
+
+#Create final alignment of sequences 
+#Create RefSeq data frame
+dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
+
+#name nucleotide column and set as character 
+colnames(dfRefSeq)[2] <- "nucleotides"
+dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides) 
+#Trim references to standard 620
+dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19) 
+#Check sequence length
+dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
+
+#Extract sequences and process ID
+processID <- lapply(1:length(Data_Trimmed), function(i){
+  Data_Trimmed[[i]]$processid
+})
+Sequences <- lapply(1:length(Data_Trimmed), function(i){
+  Data_Trimmed[[i]]$nucleotides
+})
+SequenceNames <- processID
+
+#Take reference sequences
+alignmentref <- as.character(dfRefSeq$nucleotides)
+dfRefSeq$reference <- "reference"
+#Name reference as a reference
+alignmentRefNames <- dfRefSeq$reference
+#Merge reference with other sequences
+AlignmentSequencePlusRef <-lapply(1:length(Sequences), function(i){
+  append(Sequences[[i]], alignmentref)
+})
+
+#Merge names together
+AlignmentNames <-lapply(1:length(SequenceNames), function(i){
+  append(SequenceNames[[i]], alignmentRefNames)
+})
+
+#Convert sequences to DNAStringSet format 
+dnaStringSet3 <-lapply(1:length(AlignmentSequencePlusRef), function(i){
+  DNAStringSet(AlignmentSequencePlusRef[[i]])
+})
+
+#Name each sequence 
+for(i in 1:length(dnaStringSet3)){
+  names(dnaStringSet3[[i]]) <- AlignmentNames[[i]] 
+}
+
+#Remove gaps
+dnaStringSet3 <- lapply(1:length(dnaStringSet3), function(i){
+  RemoveGaps(dnaStringSet3[[i]])
+})
+
+#Run alignment 
+AlignmentFinal <- lapply(1:length(dnaStringSet3), function(i){
+  AlignSeqs(dnaStringSet3[[i]])
+})
+
+#Convert to dnaStringSet format
+dnaStringSet4 <- lapply(1:length(AlignmentFinal), function(i){
+  DNAStringSet(AlignmentFinal[[i]])
+})
+
+#Create list of BINs
+BINs <- lapply(1:length(BIN_List), function(i){
+  unique(BIN_List[[i]]$bin_uri)
+})
+#Create name of fasta file
+FastaFileNames <- lapply(1:length(BINs), function(i){
+  paste(BINs[[i]], region, ".fas", sep="")
+})
+#Save alignment to fasta file. View in another program such as Mega.
+AlignmentFinalFasta <- lapply(1:length(AlignmentFinal), function(i){
+  DNAStringSet(AlignmentFinal[[i]])
+})
+foreach(i=1:length(AlignmentFinalFasta)) %do%
+  writeXStringSet(AlignmentFinalFasta[[i]], file=FastaFileNames[[i]], format="fasta", width=1500)
+
+#Convert DNAStringSet to dataframes
+Data_Aligned <- lapply(1:length(dnaStringSet4), function(i){
+  data.frame(seq=as.character(dnaStringSet4[[i]]), names=names(dnaStringSet4[[i]]))
+})
+#Rename names column
+for(i in 1:length(Data_Aligned)){
+  Data_Aligned[[i]]$processid <- Data_Aligned[[i]]$names 
+}
+Data_Aligned <- lapply(1:length(Data_Aligned), function(i){
+  Data_Aligned[[i]][, c("processid", "seq")]
+})
+#Remove reference sequences
+Reference_Filter <- lapply(1:length(Data_Aligned), function(i){
+  which(!Data_Aligned[[i]]$processid == "reference")
+})
+for(i in 1:length(Reference_Filter)){
+  Data_Aligned[[i]][Reference_Filter[[i]], ]
+}
+
+#Merge with the full data.
+Data_Full <- lapply(1:length(Data_Aligned), function(i){
+  merge(BIN_List[[i]], Data_Aligned[[i]], by = "processid")
+})
+
+#Remove reference sequence
+for(i in 1:length(FastaFileNames)){
+  rm.sequence.fasta(FastaFileNames[[i]], FastaFileNames[[i]], to.rm = "reference")
+}
+
+#Remove unneeded variables 
+rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef, BINs, Data_Aligned,Data_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, processID, Reference_Filter, SequenceNames, Sequences, alignmentRefNames, alignmentref)
+
+#7.F-Statistics and Multi-allelic Measures----
+#In this module, population genetic structure measures (FST, GST, and Jost's D) are calculated and heat maps are created.This module also contains code to create a map showing the measures between regions. For larger, more complex datasets, the option to calculate global FST, GST and Jost's D is provided. 
+
+#Read in fasta files
+seq_multiFas <- lapply(1:length(FastaFileNames), function(i){
+  read.multiFASTA(FastaFileNames[[i]])
+})
+
+#Plot the alignments
+for(i in 1:length(seq_multiFas)){
+  plot(seq_multiFas[[i]], cex = 0.2)
+}
+
+#Remove .fas from locus name
+for(i in 1:length(seq_multiFas)){
+  (setLocusNames(seq_multiFas[[i]]) <- gsub(".fas", "", getLocusNames(seq_multiFas[[i]])))
+}
+
+#Convert to genind object
+seq_genind <- lapply(1:length(seq_multiFas), function(i){
+  multidna2genind(seq_multiFas[[i]], mlst = TRUE)
+})
+#Check class of object
+class(seq_genind[[1]])
+#Look at summary of object 
+summary(seq_genind[[1]])
+
+#Create dataframe for labels for the genind object. 
+Names <- lapply(1:length(seq_multiFas), function(i){
+  data.frame(processid = seq_multiFas[[i]]@labels, order = 1:length(seq_multiFas[[i]]@labels))
+})
+
+#Create dataframe containing only the record id and population 
+Data_Reduced <- lapply(1:length(Data_Full), function(i){
+  Data_Full[[i]][,c("processid", "cell")]
+})
+
+#Merge the two dataframes by record id
+Data_Reduced <- lapply(1:length(Data_Reduced), function(i){
+  merge(Data_Reduced[[i]], Names[[i]])
+})
+
+#Ensure dataframe is in the same order as the alignment
+Data_Reduced <- lapply(1:length(Data_Reduced), function(i){
+  Data_Reduced[[i]][order(Data_Reduced[[i]]$order), ]
+})
+
+#Create dataframe for regions/cells
+Populations <- lapply(1:length(Data_Reduced), function(i){
+  data.frame(Populations = Data_Reduced[[i]]$cell)
+})
+
+#Assign populations to genind object
+for(i in 1:length(seq_genind)){
+  strata(seq_genind[[i]]) <- Populations[[i]]
+}
+#Check to make sure populations are assigned properly 
+seq_genind[[1]]$strata
+#Specify that we want to compare the populations we inputted
+for(i in 1:length(seq_genind)){
+  setPop(seq_genind[[i]]) <- ~Populations
+}
+
+#Calculate population genetic differentiation. This function finds the expected heterozygosity if there is random mating within sub-populations, the expected heterozygosity if there were random mating across the global population, Nei's Gst, Hedrick's Gst and Jost's D.
+stat_summaries <- lapply(1:length(seq_genind), function(i){
+  diff_stats(seq_genind[[i]])
+})
+
+#Calculate Jost's D
+DPairwise <- lapply(1:length(seq_genind), function(i){
+  as.matrix(pairwise_D(seq_genind[[i]]))
+})
+#Calculate pairwise FST
+NeiPairwise <- lapply(1:length(seq_genind), function(i){
+  as.matrix(pairwise_Gst_Nei(seq_genind[[i]]))
+})
+#Calculate GST
+HedrickPairwise <- lapply(1:length(seq_genind), function(i){
+  as.matrix(pairwise_Gst_Hedrick(seq_genind[[i]]))
+})
+
+#Plot Jost's D as a heat map 
+#Set matrices as dataframes 
+DDataframe <- lapply(1:length(DPairwise), function(i){
+  as.data.frame(DPairwise[[i]])
+})
+#Plot Heat map
+HeatMaps_JD <- lapply(1:length(DDataframe), function(i){
+  DDataframe[[i]] %>% 
+    as.data.frame() %>%
+    as_tibble(rownames = "Populations") %>%
+    pivot_longer(-c(Populations), names_to = "samples", values_to = "JD")%>%
+    ggplot(aes(x=samples, y=Populations, fill=JD)) + 
+    geom_raster() +
+    xlab("Populations") +
+    labs(fill = "Jost's D")
+})
+
+#Plot FST as a heat map 
+#Set matrices as dataframes 
+NeiDataframe <- lapply(1:length(NeiPairwise), function(i){
+  as.data.frame(NeiPairwise[[i]])
+})
+#Plot Heat map
+HeatMaps_FST <- lapply(1:length(NeiDataframe), function(i){
+  NeiDataframe[[i]] %>% 
+    as.data.frame() %>%
+    as_tibble(rownames = "Populations") %>%
+    pivot_longer(-c(Populations), names_to = "samples", values_to = "FST")%>%
+    ggplot(aes(x=samples, y=Populations, fill=FST)) + 
+    geom_raster() +
+    xlab("Populations") +
+    labs(fill = "FST")
+})
+
+#Plot GST as a heat map 
+#Set matrices as dataframes 
+HedrickDataframe <- lapply(1:length(HedrickPairwise), function(i){
+  as.data.frame(HedrickPairwise[[i]])
+})
+#Plot Heat map
+HeatMaps_GST <- lapply(1:length(HedrickDataframe), function(i){
+  HedrickDataframe[[i]] %>% 
+    as.data.frame() %>%
+    as_tibble(rownames = "Populations") %>%
+    pivot_longer(-c(Populations), names_to = "samples", values_to = "GST")%>%
+    ggplot(aes(x=samples, y=Populations, fill=GST)) + 
+    geom_raster() +
+    xlab("Populations") +
+    labs(fill = "GST")
+})
+
+#Create a map showing the population genetic structure measures between different regions for species with differing traits. For this map, only the 10 largest BINs were used. This is to allow the map to be easily read and interpreted. This map was only generated for the Canada dataset. 
+#Combine Data_Full into one dataframe 
+dfData_Full <- bind_rows(Data_Full)
+#Reduce Dataframe to only the 10 largest BINs
+dfData_Full <- dfData_Full %>%
+  add_count(bin_uri) %>%
+  filter(dense_rank(-n) < 11)
+#Check to make sure only 10 BINs are selected 
+length(unique(dfData_Full$bin_uri))
+#Split into separate dataframes 
+top_10 <- split(dfData_Full, f = dfData_Full$bin_uri)
+
+#Extract the most common species name for each BIN
+top10Species <- lapply(1:length(top_10), function(i){data.frame(max(top_10[[i]]$species_name), max(top_10[[i]]$bin_uri))})
+#Combine the dataframes
+top10Species <- bind_rows(top10Species)
+#Save to file. The pathway and file names will need to be updated.Traits, measures and regions will need to manually added. 
+#write.csv(top10Species,".\\top10Species.csv", row.names = FALSE)
+
+#Read in the data for a map
+MapData <- read.csv("MapData_Top10.csv")
+
+#Set up map layout
+mapLayout <- list(
+  showland = TRUE,
+  showlakes = TRUE,
+  showcountries = TRUE,
+  showocean = TRUE,
+  countrywidth = 0.5,
+  landcolor = toRGB("grey90"),
+  lakecolor = toRGB("white"),
+  oceancolor = toRGB("white"),
+  projection = list(type = 'eckert4'),
+  lonaxis = list(
+    showgrid = TRUE,
+    gridcolor = toRGB("gray40"),
+    gridwidth = 0.5
+  ),
+  lataxis = list(
+    showgrid = TRUE,
+    gridcolor = toRGB("gray40"),
+    gridwidth = 0.5
+  )
+)
+
+#Plot the Map
+plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$FST), colors = c("darkorange", "blue"), mode = "markers+lines", type = 'scattergeo') %>%
+  layout(geo = mapLayout)
+plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$GST), colors = c("darkorange", "blue", "deepskyblue"), mode = "markers+lines", type = 'scattergeo') %>%
+  layout(geo = mapLayout)
+plot_ly(MapData, lat = MapData$lat, lon = MapData$lon, color = as.character(MapData$JD), colors = c("darkorange", "blue", "deepskyblue"), mode = "markers+lines", type = 'scattergeo') %>%
+  layout(geo = mapLayout)
+
+#For larger datasets, such as the Canada dataset, you can also calculate global FST, GST and Jost's D. This can be used in further analysis. 
+#Calculate global Jost's D
+DGlobal <- lapply(1:length(seq_genind), function(i){
+  D_Jost(seq_genind[[i]])
+})
+#Calculate global GST
+GSTGlobal <- lapply(1:length(seq_genind), function(i){
+  Gst_Hedrick(seq_genind[[i]])
+})
+#Calculate global FST
+FSTGlobal <- lapply(1:length(seq_genind), function(i){
+  Gst_Nei(seq_genind[[i]])
+})
+
+#Create a histogram showing the spread of global Jost's D values 
+#Extract the values from each list
+DGlobalValue <- lapply(1:length(DGlobal), function(i){
+  DGlobal[[i]]$global.het
+})
+#Convert into vector
+DGlobalValue <- as.numeric(DGlobalValue)
+#Plot histogram 
+hist(DGlobalValue)
+
+#Create a histogram showing the spread of global GST values 
+#Extract the values from each list
+GSTGlobalValue <- lapply(1:length(GSTGlobal), function(i){
+  GSTGlobal[[i]]$global
+})
+#Convert into vector
+GSTGlobalValue <- as.numeric(GSTGlobalValue)
+#Plot histogram 
+hist(GSTGlobalValue)
+
+#Create a histogram showing the spread of global FST values 
+#Extract the values from each list
+FSTGlobalValue <- lapply(1:length(FSTGlobal), function(i){
+  FSTGlobal[[i]]$global
+})
+#Convert into vector
+FSTGlobalValue <- as.numeric(FSTGlobalValue)
+#Plot histogram 
+hist(FSTGlobalValue)
+
+#Remove uneeded variables
+rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
+
+#8.Analysis of Molecular Variance (AMOVA)----
+#This module includes the analysis of molecular variance.
+
+#Calculate Analysis of Molecular Variance 
+AMOVA <- lapply(1:length(seq_genind), function(i){
+  poppr.amova(seq_genind[[i]], ~Populations)
+})
+
+#Determine if AMOVA results are significant.   
+AMOVASig <- lapply(1:length(AMOVA), function(i){
+  randtest(AMOVA[[i]], nrepet = 999)
+})
+
+#Plot histogram showing distribution of AMOVA values 
+PhiValue <- lapply(1:length(AMOVA), function(i){
+ AMOVA[[i]]$statphi$Phi
+})
+AMOVAPValue <- lapply(1:length(AMOVA), function(i){
+  AMOVASig[[i]]$pvalue
+})
+#Convert into vector
+PhiValue <- as.numeric(PhiValue)
+AMOVAPValue <- as.numeric(AMOVAPValue)
+#Plot histogram 
+hist(PhiValue)
+
+#9.Mismatch Distributions----
+#This module includes code to determine and analyze mismatch distributions. 
+
+#Put sequences into DNABin format
+#First convert sequences to a DNAStringSet format
+Data_StringSet <- lapply(1:length(Data_Full), function(i){
+  DNAStringSet(Data_Full[[i]]$seq)
+})
+for(i in 1:length(Data_Full)){
+  names(Data_StringSet[[i]]) <- Data_Full[[i]]$processid
+}
+Data_DNABin <- lapply(1:length(Data_StringSet), function(i){
+  as.DNAbin(Data_StringSet[[i]])
+})
+#Check that the format is correct
+class(Data_DNABin[[1]])
+
+#Load in MMD function from pegas with the invisible line made visible
+MMD <- function(x, xlab = "Distance", main = "", rug = TRUE, legend = TRUE,
+                lcol = c("blue", "red"), lty = c(1, 1), bw = 2, ...)
+{
+  d <- dist.dna(x, "N")
+  h <- hist(d, xlab = xlab, main = main, freq = FALSE, ...)
+  dd <- density(d, bw = bw)
+  lines(dd, col = lcol[1], lty = lty[1])
+  ## by David Winter:
+  theta <- mean(d)
+  upper <- ceiling(max(d))
+  e <- sapply(0:upper, function(i) theta^i / (theta + 1)^(i + 1))
+  lines(e, col = lcol[2], lty = lty[2])
+  if (rug) rug(d)
+  if (legend) {
+    psr <- par("usr")
+    xx <- psr[2]/2
+    yy <- psr[4] * (0.5 + 0.5/par("plt")[4])
+    legend(xx, yy, c("Empirical", "Stable expectation"),
+           lty = lty, col = lcol, bg = "white", bty = "n",
+           xjust = 0.5, yjust = 0.5, horiz = TRUE, xpd = TRUE)
+    #legend("topleft", c("Empirical", "Stable expectation"),
+    #       lty = 1, col = lcol, bg = "white", bty = "n")
+  }
+  list(histogram = h, empirical.density = dd, expected.curve = e)
+}
+
+
+#Calculate mismatch distribution for the sequences and plot a histogram
+MD <- lapply(1:length(Data_DNABin), function(i){
+  MMD(Data_DNABin[[i]], xlab = "Pairwise Distance")
+})
+
+#Get expected values
+expected <- lapply(1:length(MD), function(i){
+  MD[[i]]$expected.curve
+})
+#Get observed values 
+observed <- lapply(1:length(MD), function(i){
+  MD[[i]]$histogram$density
+})
+#Calculate dip test
+dip <- lapply(1:length(observed), function(i){
+  dip.test(observed[[i]])
+})
+
+#Plot histograms showing the distribution of dip.test statistics. 
+#Plot histogram showing distribution of AMOVA values 
+DipValue <- lapply(1:length(dip), function(i){
+  dip[[i]]$statistic
+})
+DipPValue <- lapply(1:length(dip), function(i){
+  dip[[i]]$p.value
+})
+#Convert into vector
+DipValue <- as.numeric(DipValue)
+DipPValue <- as.numeric(DipPValue)
+#Plot histogram 
+hist(DipValue)
+hist(DipPValue)
+
+#10:Phylogenetic Tree----
+#This module outlines code for creating a phylogenetic tree. This maximum likelihood tree can be used in the PGLS analysis instead of a tree from the literature. 
+
+#Find a centroid sequence for each BIN. A centroid is defined as the sequence with the minimum average distance to all others in its BIN and is a representative sequence for each BIN.
+#Find the number of processids in each bin 
+BIN_Size <- sapply(BIN_List, function(x)length(x$processid))
+#Create new data frame with bin_uri and bin size
+dfData_BINs <- data.frame(BIN_Size)
+dfData_BINs$bin_uri <- c(unique(dfData$bin_uri))
+#Merge dfData and dfData_BINs
+dfBIN_List <- merge(dfData, dfData_BINs, by.x="bin_uri", by.y="bin_uri")
+#Reorder dfData_bins by bin_uri
+dfData_BINs <- dfData_BINs[order(dfData_BINs$bin_uri), ]
+
+#Find BINs with more than one member
+largeBin <- which(dfBIN_List$BIN_Size > 1)   
+#Create dataframe with only BINs with more than one member 
+if (length(largeBin) > 0) {
+  dfCentroid <- dfBIN_List[largeBin, ]
+}
+
+#Subset dfData_BINs down to number of BINs in dfCentroid
+dfData_BINs <- subset(dfData_BINs, dfData_BINs$bin_uri %in% dfCentroid$bin_uri)
+
+#Find number of unique bins in dfCentroid 
+binNumberCentroid <- unique(dfCentroid$bin_uri)   
+binNumberCentroid <- length(binNumberCentroid) 
+
+#Create dataframe with bins with only one sequence 
+dfNonCentroid <- dfBIN_List[-largeBin, ]
+
+#Create list from dfCentroid 
+largeBinList <- lapply(unique(dfCentroid$bin_uri), function(x) dfCentroid[dfCentroid$bin_uri == x, ])
+#Extract process Id from each BIN
+largeBinProcessid <- sapply(largeBinList, function(x) (x$processid))
+
+#Convert sequences to dnaStringSet
+dnaStringSet1 <- sapply(largeBinList, function(x) DNAStringSet(x$nucleotides))  
+#Name dnaStringSet with processids   
+for(i in seq(from=1, to=binNumberCentroid, by=1)) {
+  names(dnaStringSet1[[i]]) <- largeBinProcessid[[i]]
+}
+#Check class of dnaStringSet1
+class(dnaStringSet1[[1]])
+#Check names of stringsets 
+names(dnaStringSet1[[1]])
+
+#Remove gaps
+dnaStringSet1 <- lapply(1:length(dnaStringSet1), function(i){
+  RemoveGaps(dnaStringSet1[[i]])
+})
+
+#Run multiple sequence alignment for sequences in each BIN in dnaStringSet1  
+alignment1 <- foreach(i=1:binNumberCentroid) %do%
+  AlignSeqs(dnaStringSet1[[i]])
+
+#Convert to DNAbin format 
+dnaBINCentroid <- foreach(i=1:binNumberCentroid) %do% as.DNAbin(alignment1[[i]])
+#Check class
+class(dnaBINCentroid[[1]])
+
+#Calculate a pairwise distance matrix for each BIN
+geneticDistanceCentroid <- foreach(i=1:binNumberCentroid) %do%
+  dist.dna(dnaBINCentroid[[i]], model= model, as.matrix = TRUE,
+           pairwise.deletion = TRUE)
+
+#Determine centroid sequence; The sequence with the minimum average distance to all other sequences in the BIN.
+centroidSeq <- foreach(i=1:binNumberCentroid) %do% which.min(rowSums(geneticDistanceCentroid[[i]]))
+centroidSeq <- centroidSeq %>%
+  unlist() %>%
+  names()
+
+#Subset dfCentroid by the processid on the list 
+dfCentroid <- subset(dfCentroid, processid %in% centroidSeq)
+
+#Merge with dfNonCentroid
+dfAllSeq <- rbind(dfCentroid, dfNonCentroid)
+#Merge with the original data set 
+dfAllSeq <- merge(dfAllSeq, dfData, by.x="processid", by.y="processid")
+#Reorganize and clean up 
+dfAllSeq <- (dfAllSeq[, c("processid", "bin_uri.x", "BIN_Size", "species_name.x", "nucleotides.x", "lat.x", "lon.x", "cell.x")])
+colnames(dfAllSeq)[2] <- "bin_uri"
+colnames(dfAllSeq)[4] <- "species_name"
+colnames(dfAllSeq)[5] <- "nucleotides"
+colnames(dfAllSeq)[6] <- "lat"
+colnames(dfAllSeq)[7] <- "lon"
+colnames(dfAllSeq)[8] <- "cell"
+
+#Rerun alignment with centroid sequences, outgroup and a reference
+#Create RefSeq data frame
+dfRefSeq <- data.frame(taxa= taxa, nucleotides= reference_sequence$Diptera)
+
+#name nucleotide column and set as character 
+colnames(dfRefSeq)[2] <- "nucleotides"
+dfRefSeq$nucleotides <- as.character(dfRefSeq$nucleotides) 
+#Trim references to standard 620
+dfRefSeq$nucleotides <- substr(dfRefSeq$nucleotides, 20, nchar(dfRefSeq$nucleotides)-19) 
+#Check sequence length
+dfRefSeq$seqLength <- nchar(dfRefSeq$nucleotides)
+
+#Ensure bin_uri is a character
+dfAllSeq$bin_uri <- as.character(dfAllSeq$bin_uri)
+#Add outgroup sequences to the dataframe 
+dfAllSeq <- full_join(dfAllSeq, Outgroups)
+
+#Align and trim sequences 
+dfAligned <- RefSeqTrim(dfAllSeq)
+
+#Remove NAs 
+dfAligned <- dfAligned[-c(1), ]
+
+#Convert sequences to DNAStringSet format 
+dnaStringSet2 <- DNAStringSet(dfAligned$nucleotides)
+#Name the stringset. If you wish to create a tree with species names as tip.labels, set the names to species names. A species tree will be needed if included GBIF data for range size analysis. 
+names(dnaStringSet2) <- dfAligned$bin_uri 
+#For clustering, name by species name
+#names(dnaStringSet2) <- dfAligned$species_name 
+#Check names are assigned properly 
+names(dnaStringSet2)
+
+#Export alignment to check it in another program such as MEGA. 
+writeXStringSet(dnaStringSet2, file = "CentroidAlignment.fas", format = "fasta")
+
+#Set up the data in the correct format and generate the maximum liklihood tree
+#Read in alignment in phyDat format
+phylo_dat <- read.phyDat("CentroidAlignment.fas", format="fasta", type="DNA")
+#Check format
+class(phylo_dat)
+
+#create a distance matrix
+dm <- dist.ml(phylo_dat)
+
+#creating NJ tree
+tree <- NJ(dm)
+
+#Run a model test to determine which model to use when creating the maximum liklihood tree 
+model_test <- modelTest(phylo_dat, tree)
+
+#create the environment 
+env <- attr(model_test, "env")
+
+#create function to find best model 
+get_best_model = function(model_df){
+  best_model = model_df['Model'][model_df[TreeModel] == min(model_df[TreeModel]) ]
+  return(best_model)
+}
+#Determine best model for the data
+Best_Model <- get_best_model(model_test)
+
+#Get parameters for the model 
+model_fit <- eval(get(Best_Model, env), env)
+
+#Pull out inv value 
+inv_values <- model_fit$inv
+
+#Compute likelihood. 
+ml_out = pml(tree, phylo_dat, k=K, inv = model_fit$inv)
+
+#Drop the suffix from the model name
+Best_Model2 = unlist(strsplit(Best_Model, "\\+"))[[1]]
+
+#Compute likelihood and optimize parameters. For our study, optNni, optGamma and optInv are all set to TRUE.  
+ml_tree = optim.pml(ml_out, optNni = TRUE, optGamma = TRUE, optInv = TRUE, model = Best_Model2)
+
+#Root the tree using the outgroups
+Tree_Rooted <- root(ml_tree$tree, outgroup = Outgroups$processid, resolve.root = TRUE)
+#Plot the tree
+plot(Tree_Rooted)
+
+#Remove the outgroups
+PGLStree <- drop.tip(Tree_Rooted, Outgroups$processid)
+#Plot the tree. This tree can be used in the following steps instead of a tree from the literature. 
+plot(PGLStree)
+
+#Remove unneeded variables
+rm(alignment1, dfBIN_List, dfCentroid, dfAllSeq, dfData_BINs, dfNonCentroid, dfRefSeq, dnaBINCentroid, dnaStringSet1, dnaStringSet2, env, geneticDistanceCentroid, largeBinList, largeBinProcessid, ml_out, ml_tree, model_fit, model_test, phylo_dat, tree, Tree_Rooted, Best_Model, Best_Model2, BIN_Size, binNumberCentroid, centroidSeq, dm, inv_values, largeBin)
+
+
+#11.Analysis of Variance (ANOVA)----
+#This module includes code to perform an analysis of variance. The file names/paths will have to be adjusted to those required for your analysis. This module and module 12 work well for smaller datasets, but for larger sets, the multiple regression model could be considered.
+
+#Read in csv file containing trait information and population genetic structure measures. If using clustered data, read in the second commented out dataframe.
+Trait_Data <- read.csv("Traits_Greenland_BIN.csv")
+#Trait_Data <- read.csv("Traits_Greenland_Cluster.csv")
+
+#Run ANOVAs for all traits compared to FST. 
+ANOVA_Feeding_Adult_FST <- aov(FST ~ adult_diet, data = Trait_Data)
+ANOVA_Feeding_Larval_FST <- aov(FST ~ larval_diet, data = Trait_Data)
+ANOVA_Habitat_FST <- aov(FST ~ habitat, data = Trait_Data)
+#Get ANOVA summary 
+summary(ANOVA_Habitat_FST)
+summary(ANOVA_Feeding_Adult_FST)
+summary(ANOVA_Feeding_Larval_FST)
+
+#Run ANOVAs for all traits compared to GST
+ANOVA_Feeding_Adult_GST <- aov(GST ~ adult_diet, data = Trait_Data)
+ANOVA_Feeding_Larval_GST <- aov(GST ~ larval_diet, data = Trait_Data)
+ANOVA_Habitat_GST <- aov(GST ~ habitat, data = Trait_Data)
+#Get ANOVA summary 
+summary(ANOVA_Habitat_GST)
+summary(ANOVA_Feeding_Adult_GST)
+summary(ANOVA_Feeding_Larval_GST)
+
+#Run ANOVAs for all traits compared to JD
+ANOVA_Feeding_Adult_JD <- aov(JD ~ adult_diet, data = Trait_Data)
+ANOVA_Feeding_Larval_JD <- aov(JD ~ larval_diet, data = Trait_Data)
+ANOVA_Habitat_JD <- aov(JD ~ habitat, data = Trait_Data)
+#Get ANOVA summary 
+summary(ANOVA_Habitat_JD)
+summary(ANOVA_Feeding_Adult_JD)
+summary(ANOVA_Feeding_Larval_JD)
+
+#Plot results as violin plots
+#FST and adult diet
+p <- ggplot(Trait_Data, aes(x=adult_diet, y=FST, fill=adult_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+#FST and larval diet
+p <- ggplot(Trait_Data, aes(x=larval_diet, y=FST, fill=larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+#FST and habitat
+p <- ggplot(Trait_Data, aes(x=habitat, y=FST, fill=habitat)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+
+#GST and adult diet
+p <- ggplot(Trait_Data, aes(x=adult_diet, y=GST, fill=adult_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+#GST and larval diet
+p <- ggplot(Trait_Data, aes(x=larval_diet, y=GST, fill=larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+#GST and habitat
+p <- ggplot(Trait_Data, aes(x=habitat, y=GST, fill=habitat)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+
+#Jost's D and adult diet
+p <- ggplot(Trait_Data, aes(x=adult_diet, y=JD, fill=adult_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+#Jost's D and larval diet
+p <- ggplot(Trait_Data, aes(x=larval_diet, y=JD, fill=larval_diet)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+#Jost's D and habitat
+p <- ggplot(Trait_Data, aes(x=habitat, y=JD, fill=habitat)) + 
+  geom_violin(trim=FALSE, legend = NULL) + theme_bw()
+p + scale_color_brewer(palette = "Dark2")
+
+#Check assumptions of the ANOVA
+#Check for outliers
+Outliers <- Trait_Data %>%
+              group_by(habitat) %>%
+              identify_outliers(JD)
+
+#12.Phylogenetic Generalized Least Squares Analysis (PGLS)----
+#This module includes code to run a phylogenetic generalized least squares analysis. A phylogenetic tree will be needed. This can be obtained from the literature, using module 10, or from another source. 
+
+#Read in csv file containing trait information and population genetic structure measures. If using clustered data, read in the second commented out dataframe.
+Trait_Data <- read.csv("Traits_Greenland_BIN.csv")
+#Trait_Data <- read.csv("Traits_Greenland_Cluster.csv")
+
+#Read in phylogenetic tree. This tree was created based on the literature and assembled by hand using the program Mesquite. If using the clustered data, read in the second tree. 
+PGLStree <- read.nexus("Tree_Greenland_BIN")
+#PGLStree <- read.nexus("Tree_Greenland_Cluster")
+#Set branch lengths to one
+PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
+PGLStree <- force.ultrametric(PGLStree, method="extend")
+
+#Run PGLS for FST
+#Set the row names to BINs. If using clustered data, use the commented code and set row names to species names, as the tip labels of the tree cannot be numeric.
+Trait_Data <- Trait_Data %>%
+  column_to_rownames(var = 'BIN')
+#Trait_Data <- Trait_Data %>%
+#  column_to_rownames(var = 'Species')
+#Make sure tree and dataframe are in the same order
+Trait_Data <- Trait_Data[match(PGLStree$tip.label, rownames(Trait_Data)), ]
+#Run PGLS analysis 
+pglsModel_Habitat_FST <- gls(FST ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+pglsModel_Adult_Diet_FST <- gls(FST ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+pglsModel_Larval_Diet_FST <- gls(FST ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+summary(pglsModel_Habitat_FST)
+summary(pglsModel_Adult_Diet_FST)
+summary(pglsModel_Larval_Diet_FST)
+
+#Create boxplots for traits vs. population genetic structure measures 
+plot_Habitat_FST<- boxplot(Trait_Data$FST ~ Trait_Data$habitat)
+plot_Adult_Diet_FST <- boxplot(Trait_Data$FST ~ Trait_Data$adult_diet)
+plot_Larval_Diet_FST <- boxplot(Trait_Data$FST ~ Trait_Data$larval_diet)
+
+#Run PGLS for GST
+pglsModel_Habitat_GST <- gls(GST ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+pglsModel_Adult_Diet_GST <- gls(GST ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+pglsModel_Larval_Diet_GST <- gls(GST ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+#Get PGLS summary 
+summary(pglsModel_Habitat_GST)
+summary(pglsModel_Adult_Diet_GST)
+summary(pglsModel_Larval_Diet_GST)
+
+#Create boxplots for traits vs. population genetic structure measures 
+plot_Habitat_GST<- boxplot(Trait_Data$GST ~ Trait_Data$habitat)
+plot_Adult_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$adult_diet)
+plot_Larval_Diet_GST <- boxplot(Trait_Data$GST ~ Trait_Data$larval_diet)
+
+#Run PGLS for JD
+#Run PGLS analysis 
+pglsModel_Habitat_JD <- gls(JD ~ habitat, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+pglsModel_Adult_Diet_JD <- gls(JD ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+pglsModel_Larval_Diet_JD <- gls(JD ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Trait_Data, method = "ML")
+#Get PGLS summary 
+summary(pglsModel_Habitat_JD)
+summary(pglsModel_Adult_Diet_JD)
+summary(pglsModel_Larval_Diet_JD)
+
+#Create boxplots for traits vs. population genetic structure measures
+plot_Habitat_JD<- boxplot(Trait_Data$JD ~ Trait_Data$habitat)
+plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
+plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
+
+#13: Multiple Regression----
+#This module includes steps to run a multiple regression comparing population genetic structure measures to biological traits and other important variables. This module was used for the Canada data set and performed using the global measures. 
+
+#Set up dataframe containing all the needed information
+#Find number of cells for each species 
+number_of_cells <-  lapply(1:length(Data_Full), function(i){
+  length(unique(Data_Full[[i]]$cell))
+})
+#Set to numeric 
+number_of_cells <- as.numeric(number_of_cells)
+
+#Find center coordinate for each cell
+SampleCenters  <- lapply(1:length(Data_Full), function(i){
+  dgSEQNUM_to_GEO(Grid, Data_Full[[i]]$cell)
+})
+#Convert to Dataframes 
+SampleCenters <- lapply(1:length(SampleCenters), function(i){
+  as.data.frame(SampleCenters[[i]])
+})
+#Find distance between cells
+CellDistances <- lapply(1:length(SampleCenters), function(i){
+  distm(SampleCenters[[i]])
+})
+#Pull out the max distance 
+MaxDist <- lapply(1:length(CellDistances), function(i){
+  max(CellDistances[[i]])
+})
+#Set to numeric 
+MaxDist <- as.numeric(MaxDist)
+
+#Find Center point of each set of coordinates for each species 
+#Convert to Spatial Points Object 
+PolygonList <- lapply(1:length(SampleCenters), function(i){
+  SpatialPoints(coords = SampleCenters[[i]][, c("lon_deg", "lat_deg")], proj4string = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
+})
+#Find centroid 
+CentroidList <- lapply(1:length(PolygonList), function(i){
+  gCentroid(PolygonList[[i]])
+})
+#convert SpatialPoints to dataframes
+CentroidList <- lapply(1:length(CentroidList), function(i){
+  as.data.frame(CentroidList[[i]])
+})
+#Pull out Lon coordinates 
+LonCoord <- lapply(1:length(CentroidList), function(i){
+  CentroidList[[i]]$x
+})
+#Set to numeric 
+LonCoord <- as.numeric(LonCoord)
+#Pull out Lat coordinates
+LatCoord <- lapply(1:length(CentroidList), function(i){
+  CentroidList[[i]]$y
+})
+#Set to numeric 
+LatCoord <- as.numeric(LatCoord)
+
+#Find number of record for each species 
+NumberofRecords <- lapply(1:length(Data_Full), function(i){
+  nrow(Data_Full[[i]])
+})
+#Set to numeric 
+NumberofRecords <- as.numeric(NumberofRecords)
+
+#For comparing measures to distance, create a linearized measure
+LinearizedFST <- lapply(1:length(FSTGlobalValue), function(i) {
+  FSTGlobalValue[[i]]/(1 - FSTGlobalValue[[i]])
+})
+LinearizedFST <- unlist(LinearizedFST)
+LinearizedGST <- lapply(1:length(GSTGlobalValue), function(i) {
+  GSTGlobalValue[[i]]/(1 - GSTGlobalValue[[i]])
+})
+LinearizedGST <- unlist(LinearizedGST)
+LinearizedD <- lapply(1:length(DGlobalValue), function(i) {
+  DGlobalValue[[i]]/(1 - DGlobalValue[[i]])
+})
+LinearizedD <- unlist(LinearizedD)
+
+#Merge information into a dataframe 
+RegData <- data.frame(DGlobalValue, GSTGlobalValue, FSTGlobalValue, number_of_cells, NumberofRecords, MaxDist, LonCoord, LatCoord, LinearizedD, LinearizedFST, LinearizedGST)
+
+#Extract the most common species name for each BIN. These names are needed in order to manually assign traits from the literature.
+#CanadaSpecies <- lapply(1:length(BIN_List), function(i){data.frame(max(BIN_List[[i]]$species_name), max(BIN_List[[i]]$bin_uri))})
+#Combine the dataframes
+#CanadaSpecies <- bind_rows(CanadaSpecies)
+#Save to file. The pathway and file names will need to be updated.
+#write.csv(CanadaSpecies,"C:/Users/sammi/OneDrive/Documents\\CanadaSpecies500.csv", row.names = FALSE)
+
+#Load in completed trait data
+Trait_Data <- read.csv("Traits_Canada_BIN.csv")
+#Trait_Data <- read.csv("Traits_Canada_Cluster.csv")
+
+#Merge the dataframes 
+RegData <- cbind(Trait_Data, RegData)
+#This dataset can be saved to your computer for future analysis and comparisions. 
+#write.csv(RegData, "C:/Users/sammi/OneDrive/Documents\\RegData500.csv")
+
+#Check the traits to ensure that labels are correct
+unique(RegData$Habitat)
+unique(RegData$Adult.Diet)
+unique(RegData$Larval.Diet)
+#Find count of each trait 
+table(RegData['Habitat'])
+table(RegData['Adult.Diet'])
+table(RegData['Larval.Diet'])
+#Plot histograms for continuous variables
+hist(RegData$number_of_cells)
+hist(RegData$NumberofRecords)
+hist(RegData$MaxDist)
+hist(LonCoord)
+hist(LatCoord)
+
+#Run multiple regressions 
+MulRegJD <- lm(DGlobalValue ~ Habitat + Adult.Diet + Larval.Diet + number_of_cells + NumberofRecords + MaxDist + LonCoord + LatCoord, RegData)
+MulRegGST <- lm(GSTGlobalValue ~ Habitat + Adult.Diet + Larval.Diet + number_of_cells + NumberofRecords + MaxDist + LonCoord + LatCoord, RegData)
+MulRegFST <- lm(FSTGlobalValue ~ Habitat + Adult.Diet + Larval.Diet + number_of_cells + NumberofRecords + MaxDist + LonCoord + LatCoord, RegData)
+#Get summary
+summary(MulRegJD)
+summary(MulRegGST)
+summary(MulRegFST)
+
+#Run regression comparing linearized measures to distance
+#Replace inf with NA
+RegLinData <- do.call(data.frame,                      
+                   lapply(RegData,
+                          function(x) replace(x, is.infinite(x), NA)))
+#Remove NAs
+RegLinData <- na.omit(RegLinData)
+#Run regressions
+LinRegJD <- lm(LinearizedD ~ MaxDist + LonCoord + LatCoord, RegLinData)
+LinRegFST <- lm(LinearizedFST ~ MaxDist + LonCoord +LatCoord, RegLinData)
+LinRegGST <- lm(LinearizedGST ~ MaxDist + LonCoord +LatCoord, RegLinData)
+#Get summary
+summary(LinRegJD)
+summary(LinRegGST)
+summary(LinRegFST)
+
+#Plot the response variable vs each predictor 
+visreg(MulRegJD, "Habitat", gg = TRUE) + theme_bw() + scale_x_discrete(limits = c("Omnivore", "Fungivore", "Saprophagous & Phytophagous", "Saprophagous","Phytophagous","Fungivore & Phytophagous", "Predaceous", "Parasitic"))
+visreg(MulRegJD, "Adult.Diet", gg = TRUE)
+visreg(MulRegJD, "Larval.Diet", gg = TRUE) + theme_bw()
+visreg(MulRegJD, "number_of_cells", gg = TRUE)
+visreg(MulRegJD, "NumberofRecords", gg = TRUE)
+visreg(MulRegJD, "MaxDist", gg = TRUE) + theme_bw()
+visreg(MulRegJD, "LonCoord", gg = TRUE)
+visreg(MulRegJD, "LatCoord", gg = TRUE)
+
+visreg(MulRegGST, "Habitat", gg = TRUE)
+visreg(MulRegGST, "Adult.Diet", gg = TRUE)
+visreg(MulRegGST, "Larval.Diet", gg = TRUE)
+visreg(MulRegGST, "number_of_cells", gg = TRUE)
+visreg(MulRegGST, "NumberofRecords", gg = TRUE)
+visreg(MulRegGST, "MaxDist", gg = TRUE)
+visreg(MulRegGST, "LonCoord", gg = TRUE)
+visreg(MulRegGST, "LatCoord", gg = TRUE)
+
+visreg(MulRegFST, "Habitat", gg = TRUE) + theme_bw()
+visreg(MulRegFST, "Adult.Diet", gg = TRUE)
+visreg(MulRegFST, "Larval.Diet", gg = TRUE) + theme_bw()
+visreg(MulRegFST, "number_of_cells", gg = TRUE)
+visreg(MulRegFST, "NumberofRecords", gg = TRUE)
+visreg(MulRegFST, "MaxDist", gg = TRUE)
+visreg(MulRegFST, "LonCoord", gg = TRUE) + theme_bw()
+visreg(MulRegFST, "LatCoord", gg = TRUE) + theme_bw()
+
+visreg(LinRegFST, "MaxDist", gg = TRUE) + theme_bw()
+visreg(LinRegFST, "LonCoord", gg = TRUE) + theme_bw()
+visreg(LinRegFST, "LatCoord", gg = TRUE) + theme_bw()
+
+visreg(LinRegGST, "MaxDist", gg = TRUE) + theme_bw()
+visreg(LinRegGST, "LonCoord", gg = TRUE) + theme_bw()
+visreg(LinRegGST, "LatCoord", gg = TRUE) + theme_bw()
+
+visreg(LinRegJD, "MaxDist", gg = TRUE) + theme_bw()
+visreg(LinRegJD, "LonCoord", gg = TRUE) + theme_bw()
+visreg(LinRegJD, "LatCoord", gg = TRUE) + theme_bw()
+
+#Remove unneeded variables
+rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, RangeCenters, PolygonList, Grid, CentroidList)
+
+#14.Sensitivity Analysis: Comparing Datasets----
+#This module includes steps to load in datasets for comparison and run a paired t-test. For my analysis, datasets generated using different polygons lengths in Canada are compared. 
+
+#Read in the original datasets
+RegData500 <- read.csv("RegData500")
+#Read in the comparision set
+RegDataCompare <- read.csv("RegData50")
+#RegDataCompare <- read.csv("RegData250")
+
+#Reduce dataframes to only species found in both
+#Find species found in both
+SharedBINs <- intersect(RegData500$bin_uri, RegDataCompare$bin_uri)
+#Reduce both dataframes
+Data_Filter <- which(RegData500$bin_uri %in% SharedBINs)
+RegData500 <- RegData500[Data_Filter, ]
+Data_Filter <- which(RegDataCompare$bin_uri %in% SharedBINs)
+RegDataCompare <- RegDataCompare[Data_Filter, ]
+
+#Ensure dataframes are in the same order
+RegData500 <- RegData500[order(RegData500$bin_uri),]
+RegDataCompare <- RegDataCompare[order(RegDataCompare$bin_uri),]
+
+#Run t-test comparing each measure
+t.test(RegData500$DGlobalValue, RegDataCompare$DGlobalValue, paired=TRUE)
+t.test(RegData500$FSTGlobalValue, RegDataCompare$FSTGlobalValue, paired=TRUE)
+t.test(RegData500$GSTGlobalValue, RegDataCompare$GSTGlobalValue, paired=TRUE)
+
+#Remove unneeded variables 
+rm(Data_Filter)
+
+#15.Range Size Analysis ----
+#This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area.The range size is the compared the population genetic structure measures and biological traits using an ANOVA and PGLS. This analysis was only run using the Greenland dataset. 
+
+#Reduce dataframes to needed columns
+dfData <- (dfData[, c("processid", "species_name", "lat", "lon")])
+
+#Rename the columns so that they are consistent across both dataframes {
+names(dfData)[names(dfData) == "processid"] <- "ID"
+names(dfGeoData)[names(dfGeoData) == "gbifID"] <- "ID"
+names(dfGeoData)[names(dfGeoData) == "species"] <- "species_name"
+names(dfGeoData)[names(dfGeoData) == "decimalLatitude"] <- "lat"
+names(dfGeoData)[names(dfGeoData) == "decimalLongitude"] <- "lon"
+
+#Reduce dfGeoData to only species found in dfData
+Data_Filter <- which(dfGeoData$species_name %in% dfData$species_name)
+dfGeoData <- dfGeoData[Data_Filter, ]
+
+#Combine dataframes
+dfRange_Data <- rbind(dfData, dfGeoData)
+
+#Split into list of dataframes by species
+Species_List <- split(dfRange_Data, f = dfRange_Data$species_name)
+
+#set sf use s2 to FALSE
+sf_use_s2(FALSE)
+
+#To form a polygon you need at least 3 points. Remove dataframes with less than 3 rows. 
+Species_List <- Species_List[lapply(Species_List, nrow) > 4]
+
+#Find the range size.Code adapted from https://stackoverflow.com/questions/48383990/convert-sequence-of-longitude-and-latitude-to-polygon-via-sf-in-r
+Area <- lapply(1:length(Species_List), function(i){
+  Species_List[[i]] %>%
+    #Covert coordinates to point geometries
+    st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
+    #Combine points into a multipoint
+    summarise(geometry = st_combine(geometry)) %>%
+    #convert to a polygon
+    st_cast("POLYGON") %>%
+    #Calculate area 
+    st_area()
+})
+
+#Read in range size data. If using clustered data, read in the second file. 
+Range_Data <- read.csv("Traits_Greenland_BIN_Range.csv")
+#Range_Data <- read.csv("Traits_Greenland_Cluster_Range.csv")
+
+#Run an ANOVA and PGLS to compare range size to traits and population genetic structure 
+#Run ANOVA comparing range size to population genetic structure measures 
+ANOVA_Range_FST <- aov(range_size ~ FST, data = Range_Data)
+ANOVA_Range_GST <- aov(range_size ~ GST, data = Range_Data)
+ANOVA_Range_JD <- aov(range_size ~ JD, data = Range_Data)
+#Get ANOVA summary 
+summary(ANOVA_Range_FST)
+summary(ANOVA_Range_GST)
+summary(ANOVA_Range_JD)
+
+#Run ANOVA comparing range size to traits 
+ANOVA_Range_Adult <- aov(range_size ~ adult_diet, data = Range_Data)
+ANOVA_Range_Larval <- aov(range_size ~ larval_diet, data = Range_Data)
+ANOVA_Range_Habitat<- aov(range_size ~ habitat, data = Range_Data)
+#Get ANOVA summary 
+summary(ANOVA_Range_Habitat)
+summary(ANOVA_Range_Adult)
+summary(ANOVA_Range_Larval)
+
+#Load in tree. This is the same as the other phylogenetic tree, but with species names as tip labels instead of BINS. 
+PGLStree <- read.nexus("Tree_Greenland_BIN_Range")
+#Clustered Tree
+#PGLStree <- read.nexus("Tree_Greenland_Cluster_Range")
+#Set branch lengths to one
+PGLStree$edge.length <- replicate((length(PGLStree$edge[, 1])), 1)
+PGLStree <- force.ultrametric(PGLStree, method="extend")
+
+#Set the row names to species names 
+Range_Data <- Range_Data %>%
+  column_to_rownames(var = 'Species')
+#Make sure tree and dataframe are in the same order
+Range_Data <- Range_Data[match(PGLStree$tip.label, rownames(Range_Data)), ]
+
+#Run PGLS comparing measures of population genetic structure to range size
+pglsModel_Range_FST <- gls(range_size ~ FST, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
+pglsModel_Range_GST <- gls(range_size ~ GST, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
+pglsModel_Range_JD <- gls(range_size ~ JD, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
+#Get PGLS summary 
+summary(pglsModel_Range_FST)
+summary(pglsModel_Range_GST)
+summary(pglsModel_Range_JD)
+
+#Run PGLS analysis comparing range size to traits 
+pglsModel_Range_Habitat <- gls(range_size ~ habitat, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
+pglsModel_Range_Adult <- gls(range_size ~ adult_diet, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
+pglsModel_Range_Larval <- gls(range_size ~ larval_diet, correlation = corBrownian(phy = PGLStree), data = Range_Data, method = "ML")
+#Get PGLS summary 
+summary(pglsModel_Range_Habitat)
+summary(pglsModel_Range_Adult)
+summary(pglsModel_Range_Larval)
+
+#Remove unneeded variables
+rm(Data_Filter)
+
+
