@@ -7,6 +7,8 @@
 #Code to calculate populaton genetic structure was adapted from a vignette written by Margarita M. López-Uribe and edited by Zhian N. Kamvar, available from: https://popgen.nescent.org/PopDiffSequenceData.html. 
 
 # Module 1: Loading Packages and Setting up Variables----
+---------------------------------------------------------
+---------------------------------------------------------
 #This first module contains steps to install the needed packages for each additional module, as well as several important adjustable variables. Packages and variables are sorted by module. For each variable, the default parameters and those used in the test analyses are outlined. If running the entire pipeline, install all packages and set up each variable. If using a subset of modules, set up only the packages and variables required for those modules. 
 
 #Reference Sequences and RefSeqTrim function
@@ -101,7 +103,8 @@ RefSeqTrim <- function(x) {
 #For each module being used, load the recommended packages and variables. 
 #No packages or variables needed for module 1 or 2. 
 
-## Module 3: 
+## Module 3:
+------------
 #install.packages("coil")
 library(coil)
 #install.packages("dplyr")
@@ -117,6 +120,7 @@ library(stringr)
 taxa <- "Diptera"
 
 ## Module 4:
+------------
 #install.packages("ape")
 library(ape)
 #install.packages("dplyr")
@@ -143,7 +147,8 @@ clustering_threshold <- 0.04
 #Set the clustering method to be used in the IdClusters function. Single linkage is used here. Refined single linkage was used in the BIN paper, so in order to provide a comparison, regular single linkage is used. The default method for the function is UPGMA.   
 clustering_method <- "single"
 
-## Module 5: 
+## Module 5:
+------------
 #install.packages("devtools")
 library(devtools)
 #install_github("r-barnes/dggridR")
@@ -167,6 +172,7 @@ percent_sampled_abundance <- 0.5
 percent_sampled_incidence <- 0.5
 
 ## Module 6:
+------------
 #install.packages("foreach")
 library(foreach)
 #install.packages("phylotools")
@@ -179,7 +185,8 @@ library(DECIPHER)
 #Set up study region. Here Greenland and Canada are used. 
 region <- "Greenland"
 
-## Module 7: 
+## Module 7:
+------------
 #install.packages("apex")
 library(apex)
 #install.packages("dplyr")
@@ -196,10 +203,12 @@ library(tibble)
 library(tidyr)
 
 ## Module 8:
+------------
 #install.packages("poppr")
 library(poppr)
 
 ## Module 9:
+------------
 #install.packages("ape")
 library(ape)
 #BiocManager::install(c("Biostrings"))
@@ -212,6 +221,7 @@ library(pegas)
 library(Metrics)
 
 ## Module 10:
+-------------
 #install.packages("ape")
 library(ape)
 #install.packages("dplyr")
@@ -241,10 +251,12 @@ TreeModel <- "BIC"
 K <- 4 
 
 ## Module 11:
+-------------
 #install.packages("ggplot2")
 library(ggplot2)
 
 ## Module 12:
+-------------
 #install.packages("dplyr")
 library(dplyr)
 #install.packages("nlme")
@@ -254,7 +266,8 @@ library(phytools)
 #install.packages("tibble")
 library(tibble)
 
-## Module 13: Multiple Regression
+## Module 13:
+-------------
 #install_github("r-barnes/dggridR")
 library(dggridR)
 #install.packages("geosphere")
@@ -269,6 +282,7 @@ library(visreg)
 #No packages required for module 14
 
 ## Module 15:
+-------------
 #install.packages("dplyr")
 library(dplyr)
 #install.packages("lwgeom")
@@ -285,6 +299,8 @@ library(nlme)
 library(tibble)
 
 # Module 2: Extract Data from Databases-----
+--------------------------------------------
+--------------------------------------------
 #This module contains steps to download and read in data from the Barcode of Life Data Systems (BOLD) and the Global Biodiversity Information Facility (GBIF). Other data can be read in based on the researchers needs by changing the file names/paths. If running the Canada dataset, load in the Canada data instead. Due to the file size, the Canada data cannot be shared on Github. If you would like these files, please feel free to contact me. 
 
 #Call data from BOLD. Currently calling Diptera (fly) data from Greenland. Data was retrieved on June 24th 2021. 
@@ -301,6 +317,8 @@ dfData <- read.csv("GreenlandData", sep = '\t')
 dfGeoData <- read.csv("GreenlandGeo.csv", sep = '\t')
 
 # Module 3: Filter Data----
+---------------------------
+---------------------------
 #This module contains steps to filter the data. This includes steps to filter out records without nucleotide sequences, species names and coordinates. This code also filters out sequences with high gap content, stop codons, and indels. These steps can be adjusted as needed.
 
 #Filter the data 
@@ -413,6 +431,8 @@ dfGeoData <- (dfGeoData[, c("gbifID", "species","decimalLatitude", "decimalLongi
 rm(endNGap, internalNGap, split, startNGap, containLatLon, i, nGapCheck, Sequence_lengths, coi5p_object, Ids_Filtered_Indels, Ids_Filtered_Stop, indels, processID, sequences, stop_codon, translation_table)
 
 # Module 4: Organizing Data by Clusters----
+-------------------------------------------
+-------------------------------------------
 #This module includes steps to cluster the sequences by a distance threshold. If using BINs this code in not needed. If your dataset is very large, your computer may not have the memory to run the following code.The script also provides the option to sample down the dataset, as well as to leave the data separated by genus for the whole step rather than recombine them. If using a large dataset, follow the commented out code. If doing analysis on the full set, use the uncommented code. Running the analysis on a larger server or through high performance computing may also be an option for larger datasets.
 
 #Split the dataset by family. Running several smaller alignments is much faster than running a large alignment. 
@@ -548,6 +568,8 @@ names(dfData)[names(dfData) == "cluster"] <- "bin_uri"
 rm(Alignment_List, Data_alignment, Data_clustered, dfData_alignment, dfClusters, distanceMatrix, dnaBIN, length620, lengths, dfFull, largeBIN, smallBIN)
 
 # Module 5: Group by Regions----
+--------------------------------
+--------------------------------
 #For this module, the data are sorted into cells/regions. The regions and BINs are then filtered to only include those that meet our size requirements. The filtering steps can be adjusted as needed. Code to create a map showing the geographic regions is also included.  
 
 #Construct a grid of cells 
@@ -724,6 +746,8 @@ BIN_List <- split(dfData, f = dfData$bin_uri)
 rm(abundance_results,accumulation_curve, dfRegions, countries, dfGrid, incidence_results, rarefaction_curve, SampleCenters, SampleCounts,Sampled_Regions_Abundance, Sampled_Regions_Incidence, Coords, dfCoords, Lat, Lon, Poly)
 
 # Module 6: Multiple Sequence Alignment----
+-------------------------------------------
+-------------------------------------------
 #In this module, the sequences are aligned to a reference.
 
 #Trim sequences to reference sequence 
@@ -846,6 +870,8 @@ for(i in 1:length(FastaFileNames)){
 rm(AlignmentFinal, AlignmentFinalFasta, AlignmentNames, AlignmentSequencePlusRef, BINs, Data_Aligned,Data_Trimmed, dfRefSeq, dnaStringSet3, dnaStringSet4, processID, Reference_Filter, SequenceNames, Sequences, alignmentRefNames, alignmentref)
 
 # Module 7: F-Statistics and Multi-allelic Measures----
+-------------------------------------------------------
+-------------------------------------------------------
 #In this module, population genetic structure measures (FST, GST, and Jost's D) are calculated and heat maps are created. This module also contains code to create a map showing the measures between polygons in Canada. For larger, more complex datasets, the option to calculate global FST, GST and Jost's D is provided. 
 
 #Read in fasta files
@@ -1078,6 +1104,8 @@ hist(FSTGlobalValue)
 rm(Data_Reduced, FastaFileNames, Names, Populations, seq_multiFas)
 
 # Module 8: Analysis of Molecular Variance (AMOVA)----
+------------------------------------------------------
+------------------------------------------------------
 #This module includes the analysis of molecular variance.
 
 #Calculate Analysis of Molecular Variance 
@@ -1100,6 +1128,8 @@ PhiValue <- as.numeric(PhiValue)
 hist(PhiValue)
 
 # Module 9: Mismatch Distributions----
+--------------------------------------
+--------------------------------------
 #This module includes code to determine and analyze mismatch distributions.
 
 #Put sequences into DNABin format
@@ -1176,6 +1206,8 @@ hist(DipValue)
 hist(DipPValue)
 
 # Module 10:Phylogenetic Tree----
+---------------------------------
+---------------------------------
 #This module outlines code for creating a phylogenetic tree. This maximum likelihood tree can be used in the PGLS analysis instead of a tree from the literature. 
 
 #Find a centroid sequence for each BIN. A centroid is defined as the sequence with the minimum average distance to all others in its BIN and is a representative sequence for each BIN.
@@ -1353,6 +1385,8 @@ plot(PGLStree)
 rm(alignment1, dfBIN_List, dfCentroid, dfAllSeq, dfData_BINs, dfNonCentroid, dfRefSeq, dnaBINCentroid, dnaStringSet1, dnaStringSet2, env, geneticDistanceCentroid, largeBinList, largeBinProcessid, ml_out, ml_tree, model_fit, model_test, phylo_dat, tree, Tree_Rooted, Best_Model, Best_Model2, BIN_Size, binNumberCentroid, centroidSeq, dm, inv_values, largeBin)
 
 # Module 11: Analysis of Variance (ANOVA)----
+---------------------------------------------
+---------------------------------------------
 #This module includes code to perform an analysis of variance. The file names/paths will have to be adjusted to those required for your analysis. This module and module 12 work well for smaller datasets, but for larger sets, the multiple regression model could be considered.
 
 #Read in csv file containing trait information and FST values. If using clustered data, read in the second commented out dataframe.
@@ -1427,6 +1461,8 @@ p <- ggplot(Trait_Data, aes(x=habitat, y=JD, fill=habitat)) +
 p + scale_color_brewer(palette = "Dark2")
 
 # Module 12: Phylogenetic Generalized Least Squares Analysis (PGLS)----
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
 #This module includes code to run a phylogenetic generalized least squares analysis. A phylogenetic tree will be needed. This can be obtained from the literature, using module 10, or from another source. This module and module 11 work well for smaller datasets, but for larger sets, the multiple regression model could be considered.
 
 #Read in csv file containing trait information and population genetic structure measures. If using clustered data, read in the second commented out dataframe.
@@ -1492,6 +1528,8 @@ plot_Adult_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$adult_diet)
 plot_Larval_Diet_JD <- boxplot(Trait_Data$JD ~ Trait_Data$larval_diet)
 
 # 13: Multiple Regression----
+-----------------------------
+-----------------------------
 #This module includes steps to run a multiple regression comparing population genetic structure measures to biological traits and other important variables. This module was used for the Canada data set and performed using the global measures. 
 
 #Set up dataframe containing all the needed information
@@ -1671,6 +1709,8 @@ visreg(LinRegJD, "LatCoord", gg = TRUE) + theme_bw()
 rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, RangeCenters, PolygonList, Grid, CentroidList)
 
 # 14.Sensitivity Analysis: Comparing Datasets----
+-------------------------------------------------
+-------------------------------------------------
 #This module includes steps to load in datasets for comparison and run a paired t-test. For my analysis, datasets generated using different polygons lengths are compared. 
 
 #Read in the original datasets original 
@@ -1701,6 +1741,8 @@ t.test(DataOriginal$GSTGlobalValue, DataCompare$GSTGlobalValue, paired=TRUE)
 rm(Data_Filter)
 
 # Module 15: Range Size Analysis ----
+-------------------------------------
+-------------------------------------
 #This module includes calculating the range size for each species/BIN/cluster. This is done by creating a polygon of the occurrence points and calculating the area. The range size is the compared the population genetic structure measures and biological traits using an ANOVA and PGLS. This analysis was only run using the Greenland dataset. 
 
 #Reduce dfData_Full to needed columns
