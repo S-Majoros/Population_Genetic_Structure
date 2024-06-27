@@ -140,6 +140,7 @@ region <- "Greenland"
 
 #Set the clustering threshold for use in the IDClusters function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is -Inf.   
 clustering_threshold <- 0.04
+clustering_method <- "single"
 
 #Module 5: 
 #install.packages("devtools")
@@ -521,7 +522,7 @@ dfClusters <- Data_clustered[[1]]
 length(unique(dfClusters$cluster))
 
 #Add a column with the index of the dataframe within the list
-dfClusters <- Map(cbind, dfClusters, index = seq_along(dfClusters))
+#dfClusters <- Map(cbind, dfClusters, index = seq_along(dfClusters))
 #Combine the cluster and index column 
 #for(i in 1:length(dfClusters)) {
 #  dfClusters[[i]]$cluster <- str_c(dfClusters[[i]]$cluster, "_", #dfClusters[[i]]$index)
