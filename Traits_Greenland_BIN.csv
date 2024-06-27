@@ -1,0 +1,21 @@
+BIN ,Species,FST,GST,JD,habitat,adult_diet,larval_diet
+AAB0080,Corynoneura_arctica,0.007806708,0.3100548,0.2991976,Aquatic,NonFeeding,Detritus and Algae Feeding
+AAB7912,Limnophyes_brachytomus,0.002540066,0.1507594,0.1464341,SemiAquatic,NonFeeding,Saprophagous
+AAC4201,Paraphaenocladius_impensus,0.006099281,0.195196,0.1853183,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+AAC8434,Nephrotoma_lundbecki,0.02882039,0.3796758,0.3428588,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+AAC9614,Protophormia_terraenovae,0.04424108,0.8374168,0.8223652,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitic
+AAD7061,Diamesa_arctica,0.01088903,0.7814539,0.776642,Aquatic,NonFeeding,Detritus and Algae Feeding
+AAE8704,Smittia_extrema,0.01580975,0.470475,0.4534627,Terrestrial,NonFeeding,Detritus and Algae Feeding
+AAL7378,Cricotopus_patens,0.04980843,0.7498992,0.7236789,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+AAL7869,Lycoriella_flavipeda,0.002656152,0.158952,0.1544722,Terrestrial,NonFeeding,Mycophagous and Saprophagous
+AAL9235,Limnophyes_pumilio,0.0250694,0.892001,0.8864469,SemiAquatic,NonFeeding,Saprophagous
+AAL9801,Drymeia_groenlandica,0.04150267,0.4282828,0.3787724,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+AAM0255,Diamesa_chorea,0.01367758,0.2251189,0.2036279,Aquatic,NonFeeding,Detritus and Algae Feeding
+AAM9109,Spilogona_sanctipauli,0.01115458,0.1775858,0.1590315,Aquatic,Predaceous,Predaceous
+AAP8779,Camptochaeta_delicata,0.008071877,0.248389,0.2361564,Terrestrial,NonFeeding,Saprophagous
+AAU3704,Limnophyes_ninae,0.006194672,0.3590072,0.3510163,SemiAquatic,NonFeeding,Saprophagous
+AAZ6073,Lycoriella_riparia,0.00841739,0.2315696,0.2185234,Terrestrial,NonFeeding,Mycophagous and Saprophagous
+AAZ6184,Megaselia_cirriventris,0.02317544,0.6942872,0.6797809,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+ACA8845,Phytomyza_puccinelliae,0.009812669,0.2816259,0.2673879,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+ACI8602,Limnophyes_brachytomus,0.03350955,0.7139865,0.6941536,SemiAquatic,NonFeeding,Saprophagous
+ACM4349,Limnophyes_brachytomus,0.006481457,0.1431574,0.1319778,SemiAquatic,NonFeeding,Saprophagous
