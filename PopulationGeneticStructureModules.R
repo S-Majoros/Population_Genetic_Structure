@@ -138,8 +138,10 @@ maxSize <- 100
 #Set up region of study
 region <- "Greenland"
 
-#Set the clustering threshold for use in the IDClusters function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is -Inf.   
+#Set the clustering threshold for use in the Treeline function. A clustering threshold of 0.04 is used in order to group closely related sequences together into clusters, while excluding more distantly related sequences. The default for the function is -INF.   
 clustering_threshold <- 0.04
+
+#Set the clustering method to be used in the Treeline function. Single linkage is used here. Refined single linkage was used in the BIN paper, so in order to provide a comparison, regular single linkage is used. The default method for the function is ML.   
 clustering_method <- "single"
 
 #Module 5: 
@@ -258,8 +260,8 @@ library(tibble)
 library(dggridR)
 #install.packages("geosphere")
 library(geosphere)
-#install.packages("rgeos")
-library(rgeos)
+#install.packages("sf")
+library(sf)
 #install.packages("sp")
 library(sp)
 #install.packages("visreg")
@@ -1530,28 +1532,27 @@ MaxDist <- lapply(1:length(CellDistances), function(i){
 #Set to numeric 
 MaxDist <- as.numeric(MaxDist)
 
-#Find Center point of each set of coordinates for each species 
-#Convert to Spatial Points Object 
-PolygonList <- lapply(1:length(SampleCenters), function(i){
-  SpatialPoints(coords = SampleCenters[[i]][, c("lon_deg", "lat_deg")], proj4string = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
+#Convert to sf object
+SampleCenters_sf <- lapply(1:length(SampleCenters), function(i){
+  st_as_sf(SampleCenters[[i]], coords = c("lon_deg", "lat_deg"))
 })
-#Find centroid 
-CentroidList <- lapply(1:length(PolygonList), function(i){
-  gCentroid(PolygonList[[i]])
+#Find centroids
+CentroidList <- lapply(1: length(SampleCenters_sf), function(i){
+  SampleCenters_sf[[i]] %>%
+  summarize(geometry = st_union(geometry)) %>%
+  st_centroid() %>%
+  st_coordinates()
 })
-#convert SpatialPoints to dataframes
-CentroidList <- lapply(1:length(CentroidList), function(i){
-  as.data.frame(CentroidList[[i]])
-})
+
 #Pull out Lon coordinates 
 LonCoord <- lapply(1:length(CentroidList), function(i){
-  CentroidList[[i]]$x
+  CentroidList[[i]][[1]]
 })
 #Set to numeric 
 LonCoord <- as.numeric(LonCoord)
 #Pull out Lat coordinates
 LatCoord <- lapply(1:length(CentroidList), function(i){
-  CentroidList[[i]]$y
+  CentroidList[[i]][[2]]
 })
 #Set to numeric 
 LatCoord <- as.numeric(LatCoord)
