@@ -1678,7 +1678,7 @@ visreg(LinRegJD, "LonCoord", gg = TRUE) + theme_bw()
 visreg(LinRegJD, "LatCoord", gg = TRUE) + theme_bw()
 
 #Remove unneeded variables
-rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, RangeCenters, PolygonList, Grid, CentroidList)
+rm(NumberofRecords, number_of_cells, MaxDist, LonCoord, LatCoord, GSTGlobalValue, FSTGlobalValue, DGlobalValue, SampleCenters, PolygonList, Grid, CentroidList)
 
 #14.Sensitivity Analysis: Comparing Datasets----
 #This module includes steps to load in datasets for comparison and run a paired t-test. For my analysis, datasets generated using different polygons lengths in Canada are compared. 
