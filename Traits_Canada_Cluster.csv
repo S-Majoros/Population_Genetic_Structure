@@ -1,0 +1,603 @@
+species_name,bin_uri,Habitat,Adult Diet,Larval Diet
+Ablabesmyia illinoensis,1_1,Aquatic,NonFeeding,Predaceous
+Boettcheria bisetosa,1_104,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous or Parasitoid
+Boreophorbia hirtipes,1_110,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding or Saprophagous
+Brachicoma devia,1_113,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitoid
+Bradysia moestula,1_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Calliphora vomitoria,1_124,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Aedes cinereus,1_14,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Chaetochlorops inquilinus,1_156,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Cheilotrichia cinerascens,1_168,Aquatic,NonFeeding,Saprophagous
+Chelipoda elongata,1_170,Aquatic,Nectar/Pollen/Honeydew Feeding and Predaceous,Predaceous
+Chrysotoxum ventricosum,1_181,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Clistoabdominalis sp. TX4,1_192,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Clusiodes johnsoni,1_195,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Unclear
+Acartophthalmus nigrinus,1_2,Terrestrial,Unclear,Saprophagous
+Coenosia transiens,1_204,Terrestrial,Predaceous,Predaceous
+Coquillettidia perturbans,1_218,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Allocotocera pulchella,1_22,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Cosmetopus longus,1_226,Terrestrial,Predaceous,Leaf/Root/Stem Feeding
+Cryptotendipes darbyi,1_235,Aquatic,NonFeeding,Detritus and Algae Feeding
+Ctenosciara hyalipennis,1_237,Terrestrial,NonFeeding,Saprophagous
+Cynomya cadaverina,1_247,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Derotanypus alaskensis,1_264,Aquatic,NonFeeding,Predaceous
+Dinera grisescens,1_281,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Discobola annulata,1_288,Aquatic,NonFeeding,Saprophagous
+Dorylomorpha borealis,1_299,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Elephantomyia westwoodi,1_310,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Epalpus signifer,1_316,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Epichlorops scaber,1_318,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Eristalis brousii,1_327,Aquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Euhybus triplex,1_337,Terrestrial,Predaceous,Predaceous
+Amblypsilopus scintillans,1_35,SemiAquatic,Predaceous,Predaceous
+Eutrichota tunicata,1_356,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding or Saprophagous
+Eutrixa exilis,1_357,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Fletcherimyia fletcheri,1_368,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Kleptoparasitic
+Geomyza tripunctata,1_374,Terrestrial,Unclear,Leaf/Root/Stem Feeding
+Graphomya minuta,1_386,SemiAquatic,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Hercostomus unicolor,1_416,SemiAquatic,Predaceous,Predaceous
+Herina nigribasis,1_417,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Heterogenella hybrida,1_421,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Heteromyza oculata,1_422,Terrestrial,Unclear,Saprophagous
+Hybos reversus,1_435,Terrestrial,Predaceous,Predaceous
+Hydrobaenus conformis,1_437,Aquatic,NonFeeding,Detritus and Algae Feeding
+Hydrophoria lancifer,1_438,Aquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Hylemyza partita,1_443,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding or Saprophagous
+Hyperlasion wasmanni,1_444,Terrestrial,NonFeeding,Saprophagous
+Lauterborniella agrayloides,1_473,Aquatic,NonFeeding,Detritus and Algae Feeding
+Lecanocerus compressiceps,1_475,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Parasitoid
+Leiomyza curvinervis,1_477,Terrestrial,Unclear,Mycophagous
+Leptocera neofinalis,1_480,Terrestrial,Saprophagous,Saprophagous
+Leucophenga varia,1_491,Terrestrial,Saprophagous,Mycophagous
+Mayetiola destructor,1_531,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Megaphthalma pallida,1_535,Terrestrial,Predaceous,Leaf/Root/Stem Feeding
+Melangyna lasiophthalma,1_541,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Melanostoma mellinum,1_546,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Meligramma triangulifera,1_548,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Meliscaeva cinctella,1_549,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Aphanotrigonum trilineatum,1_55,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Micropsectra insignilobus,1_571,Aquatic,NonFeeding,Detritus and Algae Feeding
+Monoclona rufilatera,1_580,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Monopelopia tenuicalcar,1_582,Aquatic,NonFeeding,Predaceous
+Morellia podagrica,1_583,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Mumetopia occipitalis,1_585,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Myospila meditabunda,1_598,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Aptilotus parvipennis,1_61,Terrestrial,Saprophagous,Saprophagous
+Neomyia cornicina,1_614,Terrestrial,Saprophagous,Saprophagous
+Nephrotoma ferruginea,1_622,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Nilotanypus fimbriatus,1_627,Aquatic,NonFeeding,Predaceous
+Arctopelopia melanosoma,1_63,Aquatic,NonFeeding,Predaceous
+Oedalea lanceolata,1_635,Terrestrial,Predaceous,Predaceous
+Opalimosina mirabilis,1_642,Terrestrial,Saprophagous,Saprophagous
+Paralauterborniella nigrohalteralis,1_674,Aquatic,NonFeeding,Detritus and Algae Feeding
+Parametriocnemus boreoalpinus,1_675,Aquatic,NonFeeding,Detritus and Algae Feeding
+Parasyrphus vockerothi,1_682,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Parochlus kiefferi,1_688,Aquatic,NonFeeding,Detritus and Algae Feeding
+Asteromyia carbonifera,1_70,Terrestrial,NonFeeding,Mycophagous
+Pentacricia aldrichii,1_700,Terrestrial,Predaceous,Predaceous
+Penthetria heteroptera,1_701,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Phormia regina,1_719,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitic
+Platycheirus rosarum,1_739,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Platymya confusionis,1_740,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Pogonota barbata,1_747,Terrestrial,Predaceous,Leaf/Root/Stem Feeding
+Pollenia vagabunda,1_749,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitoid
+Prosciara prosciaroides,1_762,Terrestrial,NonFeeding,Saprophagous
+Protophormia terraenovae,1_766,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitic
+Psectrotanypus sp. ES01,1_769,Aquatic,NonFeeding,Predaceous
+Pseudacteon onyx,1_770,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Pseudopachychaeta ruficeps,1_780,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Pseudorthocladius curtistylus,1_782,Aquatic,NonFeeding,Detritus and Algae Feeding
+Ravinia stimulans,1_799,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Rhagio gracilis,1_802,Terrestrial,Predaceous,Predaceous
+Rheosmittia spinicornis,1_808,Aquatic,NonFeeding,Detritus and Algae Feeding
+Rhingia nasica,1_810,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Rhopalopterum soror,1_814,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Rondaniella dimidiata,1_817,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Saigusaia cincta,1_822,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Saltella sphondylii,1_823,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Schizohelea leucopeza,1_836,SemiAquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Predaceous
+Schoenomyza litorella,1_837,Terrestrial,Predaceous,Predaceous
+Azelia cilipes,1_84,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Shannonomyia lenta,1_852,Aquatic,NonFeeding,Saprophagous
+Siphonella oscinina,1_855,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Smidtia fumiferanae,1_858,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Stomoxys calcitrans,1_889,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Belida chaetoneura,1_89,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Suillia longipennis,1_896,Terrestrial,Unclear,Mycophagous
+Sylvicola fuscatus,1_897,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Symphoromyia fulvipes,1_899,Terrestrial,Parasitic,Saprophagous
+Tachina marklini,1_916,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Terrilimosina schmitzi,1_930,Terrestrial,Saprophagous,Saprophagous
+Thaumatomyia glabra,1_935,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Tipulogaster glabrata,1_945,Terrestrial,Predaceous,Predaceous
+Trichocera regelationis,1_954,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Trichopalpus punctipes,1_957,Aquatic,Predaceous,Predaceous
+Trophithauma rostratum,1_968,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Parasitoid
+Ula sylvatica,1_975,Terrestrial,NonFeeding,Saprophagous
+Zaphne zetterstedtii,1_998,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding or Saprophagous
+Boletina nitiduloides,10_106,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Cladotanytarsus amandus,10_186,Aquatic,NonFeeding,Detritus and Algae Feeding
+Coenosia conforma,10_204,Terrestrial,Predaceous,Predaceous
+Cratyna uliginosoides,10_227,Terrestrial,NonFeeding,Saprophagous
+Cricotopus intersectus,10_228,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Dasyhelea arenivaga,10_256,Aquatic,Nectar/Pollen/Honeydew Feeding,Detritus and Algae Feeding
+Laphria scorpio,10_466,Terrestrial,Predaceous,Predaceous
+Limnophyes ninae,10_500,SemiAquatic,NonFeeding,Saprophagous
+Metriocnemus eurynotus,10_561,Aquatic,NonFeeding,Leaf/Root/Stem Feeding
+Micropsectra polita,10_571,Aquatic,NonFeeding,Detritus and Algae Feeding
+Mydaea furtiva,10_593,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Paraphaenocladius impensus,10_677,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+Phaonia tuguriorum,10_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Platypalpus trivialis,10_741,Terrestrial,Predaceous,Predaceous
+Psectrocladius schlienzi,10_768,Aquatic,NonFeeding,Detritus and Algae Feeding
+Siphona intrudens,10_854,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Aedes canadensis,11_14,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Corynoneura sp. 1ES,11_223,Aquatic,NonFeeding,Detritus and Algae Feeding
+Corynoptera cuniculata,11_225,Terrestrial,NonFeeding,Saprophagous
+Limnophyes ninae,11_500,SemiAquatic,NonFeeding,Saprophagous
+Metriocnemus brusti,11_561,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Paraphaenocladius impensus,11_677,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+Psectrocladius limbatellus,11_768,Aquatic,NonFeeding,Detritus and Algae Feeding
+Scatopsciara fera,11_832,Terrestrial,NonFeeding,Saprophagous
+Smittia edwardsi,11_859,Terrestrial,NonFeeding,Detritus and Algae Feeding
+Chalarus sp. OR1,12_163,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Helina laxifrons,12_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Medetera vittata,12_532,Terrestrial,Predaceous,Predaceous
+Mycetophila caudata,12_590,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Procladius denticulatus,12_759,Aquatic,NonFeeding,Predaceous
+Psectrocladius barbimanus,12_768,Aquatic,NonFeeding,Detritus and Algae Feeding
+Boletina populina,13_106,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Chironomus sp. TE11,13_173,Aquatic,NonFeeding,Detritus and Algae Feeding
+Dasineura mali,13_254,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Helina subvittata,13_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Hydrotaea militaris,13_441,Terrestrial,Parasitic,Predaceous or Saprophagous
+Liriomyza fricki,13_507,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Medetera vittata,13_532,Terrestrial,Predaceous,Predaceous
+Metriocnemus sp. 1ES,13_561,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Mycomya shermani,13_592,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Paraphaenocladius impensus,13_677,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+Phaonia pallidosa,13_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Pipunculus luteicornis,13_738,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Tanytarsus gracilentus,13_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Bradysia strigata,14_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Cerodontha capitata,14_151,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Chalarus decorus,14_163,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Chironomus acidophilus,14_173,Aquatic,NonFeeding,Detritus and Algae Feeding
+Corynoptera praeforcipata,14_225,Terrestrial,NonFeeding,Saprophagous
+Cricotopus trifascia,14_228,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Helina spinosa,14_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Hydrotaea scambus,14_441,Terrestrial,Parasitic,Predaceous or Saprophagous
+Medetera vittata,14_532,Terrestrial,Predaceous,Predaceous
+Mycomya nitida,14_592,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Phaonia subfuscinervis,14_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Smittia sp. 14ES,14_859,Terrestrial,NonFeeding,Detritus and Algae Feeding
+Bradysia hilaris,15_118,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Coenosia campestris,15_204,Terrestrial,Predaceous,Predaceous
+Corynoptera bicuspidata,15_225,Terrestrial,NonFeeding,Saprophagous
+Culicoides obsoletus,15_239,SemiAquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Delia albula,15_260,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Drosophila affinis,15_302,Terrestrial,Saprophagous,Saprophagous
+Exechia subfrigida,15_360,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Helina troene,15_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Limnophyes minimus,15_500,SemiAquatic,NonFeeding,Saprophagous
+Megaselia sulphurizona,15_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Orthocladius sp. TE13,15_651,Aquatic,NonFeeding,Detritus and Algae Feeding
+Phaonia rugia,15_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Procladius sp. ES04,15_759,Aquatic,NonFeeding,Predaceous
+Scatopsciara neglecta,15_832,Terrestrial,NonFeeding,Saprophagous
+Cerodontha dorsalis,16_151,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Limnophyes schnelli,16_500,SemiAquatic,NonFeeding,Saprophagous
+Lycoriella flavipeda,16_520,Terrestrial,NonFeeding,Mycophagous and Saprophagous
+Paratanytarsus laccophilus,16_683,Aquatic,NonFeeding,Detritus and Algae Feeding
+Phronia tenuis,16_722,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Coenosia intacta,17_204,Terrestrial,Predaceous,Predaceous
+Gymnopternus subulatus,17_395,SemiAquatic,Predaceous,Predaceous
+Liriomyza brassicae,17_507,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Megaselia tecticauda,17_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Mydaea affinis,17_593,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Phronia cinerascens,17_722,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Platypalpus xanthopodus,17_741,Terrestrial,Predaceous,Predaceous
+Scatopsciara atomaria,17_832,Terrestrial,NonFeeding,Mycophagous and Saprophagous
+Boletina groenlandica,18_106,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Coenosia laeta,18_204,Terrestrial,Predaceous,Predaceous
+Corynoptera melanochaeta,18_225,Terrestrial,NonFeeding,Saprophagous
+Cricotopus perniger,18_228,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Limnophyes pumilio,18_500,SemiAquatic,NonFeeding,Saprophagous
+Paratanytarsus austriacus,18_683,Aquatic,NonFeeding,Detritus and Algae Feeding
+Spilogona obscuripennis,18_875,Aquatic,Predaceous,Predaceous
+Bradysia nitidicollis,19_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Aedes ventrovittis,19_14,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Chironomus harpi,19_173,Aquatic,NonFeeding,Detritus and Algae Feeding
+Corynoptera cursor,19_225,Terrestrial,NonFeeding,Saprophagous
+Megaselia ilca,19_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Mycetophila luctuosa,19_590,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Scatopsciara atomaria,19_832,Terrestrial,NonFeeding,Mycophagous and Saprophagous
+Simulium silvestre,19_853,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Botanophila varicolor,2_112,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding and Mycophagous
+Camptocladius stercorarius,2_137,Terrestrial,NonFeeding,Detritus and Algae Feeding
+Cerodontha muscina,2_151,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Chaoborus flavicans,2_166,Aquatic,NonFeeding,Predaceous
+Chelipoda truncata,2_170,Aquatic,NonFeeding,Predaceous
+Chrysops cuclux,2_177,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Predaceous or Saprophagous
+Chrysotus sp. SEB1,2_182,SemiAquatic,Predaceous,Predaceous
+Chymomyza costata,2_184,Terrestrial,Saprophagous,Saprophagous
+Coenosia pumila,2_204,Terrestrial,Predaceous,Predaceous
+Allocladius sp. 1ES,2_21,Aquatic,NonFeeding,Detritus and Algae Feeding
+Conioscinella sp. TAW2,2_211,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Coquillettidia perturbans,2_218,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Dasyhelea modesta,2_256,Aquatic,Nectar/Pollen/Honeydew Feeding,Detritus and Algae Feeding
+Dasyopa triangulata,2_257,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Dasyphora sp.,2_258,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Dasysyrphus venustus,2_259,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Diamesa nr. hyperborea,2_266,Aquatic,NonFeeding,Detritus and Algae Feeding
+Dicrotendipes modestus,2_276,Aquatic,NonFeeding,Detritus and Algae Feeding
+Dryomyza setosa,2_304,Terrestrial,Saprophagous,Saprophagous
+Eupeodes montivagus,2_345,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Eutrichota tarsata,2_356,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding or Saprophagous
+Forcipomyia bipunctata,2_369,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Anasimyia perfidiosa,2_39,Aquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Gymnometriocnemus brumalis,2_392,Terrestrial,NonFeeding,Detritus and Algae Feeding
+Helophilus sp. nov.,2_412,Aquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Heterotrissocladius sp. ES01,2_423,Aquatic,NonFeeding,Detritus and Algae Feeding
+Hybomitra zonalis,2_434,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Predaceous
+Incertella minor,2_455,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Lauxania shewelli,2_474,Terrestrial,Nectar/Pollen/Honeydew Feeding and Mycophagous,Saprophagous
+Leptocera caenosa,2_480,SemiAquatic,Saprophagous,Saprophagous
+Leptogaster flavipes,2_481,Terrestrial,Predaceous,Predaceous
+Leptopeza flavipes,2_484,Terrestrial,Predaceous,Predaceous
+Anthomyia mimetica,2_49,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Limnophyes sp. 11ES,2_500,SemiAquatic,NonFeeding,Saprophagous
+Lucilia silvarum,2_517,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Mesembrina latreillii,2_553,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Metacnephia borealis,2_557,Aquatic,Nectar/Pollen/Honeydew Feeding,Detritus and Algae Feeding
+Musca autumnalis,2_586,Terrestrial,"Nectar/Pollen/Honeydew Feeding, Saprophagous and Parasitic",Saprophagous
+Mycetophila sordida,2_590,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Mydaea pseudonubila,2_593,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Apteromyia claviventris,2_60,Terrestrial,Saprophagous,Leaf/Root/Stem Feeding or Saprophagous
+Neoascia tenur,2_608,Aquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Neodexiopsis calopyga,2_609,Terrestrial,Predaceous,Predaceous
+Neurigona ciliata,2_624,SemiAquatic,Predaceous,Predaceous
+Olcella parva,2_638,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Paratanytarsus natvigi,2_683,Aquatic,NonFeeding,Detritus and Algae Feeding
+Peleteria iterans,2_695,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Phaonia apicalis,2_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Philygria vittipennis,2_716,Aquatic,Detritus and Algae Feeding,Detritus and Algae Feeding
+Pipiza quadrimaculata,2_737,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Poecilolycia aspinosa,2_745,Terrestrial,Nectar/Pollen/Honeydew Feeding and Mycophagous,Saprophagous
+Pollenia labialis,2_749,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitoid
+Aulacigaster neoleucopeza,2_79,Aquatic,Unclear,Saprophagous
+Ptilodexia conjuncta,2_790,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Rhopalopterum soror,2_814,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Rivellia pallida,2_815,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Sapromyza brachysoma,2_824,Terrestrial,Nectar/Pollen/Honeydew Feeding and Mycophagous,Saprophagous
+Scatopsciara vitripennis,2_832,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Stempellinella edwardsi,2_880,Aquatic,NonFeeding,Detritus and Algae Feeding
+Stenopogon inquinatus,2_883,Terrestrial,Predaceous,Predaceous
+Stilpon curvipes,2_887,Terrestrial,Predaceous,Predaceous
+Suillia sororcula,2_896,Terrestrial,Unclear,Mycophagous
+Sylvicola punctatus,2_897,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Actia interrupta,2_9,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Beris fuscipes,2_91,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Syrphus vitripennis,2_911,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Tachinomyia variata,2_917,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Thaumatomyia pulla,2_935,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Bibio fumipennis,2_94,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding and Saprophagous
+Thricops villicrus,2_943,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Tokunagaia obriaini,2_947,Aquatic,NonFeeding,Detritus and Algae Feeding
+Toxomerus marginatus,2_949,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Bicellaria lugubris,2_95,Terrestrial,Predaceous,Predaceous
+Tricimba melancholica,2_962,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Trixoscelis fumipennis,2_966,Terrestrial,Unclear,Saprophagous
+Tvetenia paucunca,2_973,Aquatic,NonFeeding,Detritus and Algae Feeding
+Boletina sp. CJB02,20_106,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Chironomus sp. 8TE,20_173,Aquatic,NonFeeding,Detritus and Algae Feeding
+Coenosia sp. 1 AKR,20_204,Terrestrial,Predaceous,Predaceous
+Corynoptera subtrivialis,20_225,Terrestrial,NonFeeding,Saprophagous
+Limnophyes brachytomus,20_500,SemiAquatic,NonFeeding,Saprophagous
+Megaselia fungivora,20_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Mycetophila stricklandi,20_590,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Smittia sp. 16ES,20_859,Terrestrial,NonFeeding,Detritus and Algae Feeding
+Tanytarsus allicis,20_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Corynoptera barbata,21_225,Terrestrial,NonFeeding,Saprophagous
+Delia platura,21_260,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Limnophyes minimus,21_500,SemiAquatic,NonFeeding,Saprophagous
+Simulium furculatum,21_853,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Tanytarsus recurvatus,21_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Limnophyes natalensis,22_500,SemiAquatic,NonFeeding,Saprophagous
+Bradysia impatiens,23_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Drosophila falleni,23_302,Terrestrial,Saprophagous,Saprophagous
+Eudorylas sp. ON6,23_334,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Fannia spathiophora,23_365,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Limnophyes minimus,23_500,SemiAquatic,NonFeeding,Saprophagous
+Mycetophila perpallida,23_590,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Phaonia pallidisquama,23_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Pipunculus hertzogi,23_738,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Simulium vittatum complex,23_853,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Tetanocera plumosa,23_931,Aquatic,Nectar/Pollen/Honeydew Feeding,Predaceous
+Aedes melanimon,24_14,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Chironomus atrella,24_173,Aquatic,NonFeeding,Detritus and Algae Feeding
+Coenosia octopunctata,24_204,Terrestrial,Predaceous,Predaceous
+Corynoptera trepida,24_225,Terrestrial,NonFeeding,Saprophagous
+Dolichopus diversipennis,24_296,SemiAquatic,Predaceous,Predaceous
+Eudorylas subopacus,24_334,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Fannia brooksi,24_365,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Phaonia luteva,24_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Spilogona zaitzevi,24_875,Aquatic,Predaceous,Predaceous
+Coenosia tigrina,25_204,Terrestrial,Predaceous,Predaceous
+Drosophila subquinaria,25_302,Terrestrial,Saprophagous,Mycophagous
+Platypalpus nr. hyaenoides,25_741,Terrestrial,Predaceous,Predaceous
+Chironomus sp. 9TE,26_173,Aquatic,NonFeeding,Detritus and Algae Feeding
+Cricotopus sp. 18ES,26_228,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Orthocladius mallochi,26_651,Aquatic,NonFeeding,Detritus and Algae Feeding
+Rhamphomyia laevigata,26_804,Terrestrial,Nectar/Pollen/Honeydew Feeding and Predaceous,Predaceous
+Cricotopus vierriensis,27_228,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Dolichopus comatus,27_296,SemiAquatic,Predaceous,Predaceous
+Megaselia pleuralis,28_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Ablabesmyia aspera,3_1,Aquatic,NonFeeding,Predaceous
+Boettcheria latisterna,3_104,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous or Parasitoid
+Botanophila striolata,3_112,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding and Mycophagous
+Bradysia inusitata,3_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Bradysiopsis vittigera,3_119,Terrestrial,NonFeeding,Saprophagous
+Camptochaeta hirtula,3_136,Terrestrial,NonFeeding,Saprophagous
+Campylocheta townsendi,3_139,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Campylomyza dilatata,3_140,Terrestrial,NonFeeding,Mycophagous
+Cerodontha muscina,3_151,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Conchapelopia pallens,3_208,Aquatic,NonFeeding,Predaceous
+Condylostylus patibulatus,3_209,SemiAquatic,Predaceous,Predaceous
+Cordilura atrata,3_219,Terrestrial,Predaceous,Leaf/Root/Stem Feeding
+Cratyna fulvicauda,3_227,Terrestrial,NonFeeding,Saprophagous
+Dicrotendipes modestus,3_276,Aquatic,NonFeeding,Detritus and Algae Feeding
+Dorylomorpha simplex,3_299,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Dryomyza anilis,3_304,Terrestrial,Saprophagous,Saprophagous
+Gymnophora subarcuata,3_394,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Leptocera erythrocera,3_480,Terrestrial,Saprophagous,Saprophagous
+Anthomyia pluvialis,3_49,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Limnophila rufibasis,3_498,Aquatic,NonFeeding,Saprophagous
+Limnophora sp. 2 AKR,3_499,Aquatic,Predaceous,Predaceous
+Anthomyza vockerothi,3_50,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Limonia immatura,3_502,Terrestrial,NonFeeding,Saprophagous
+Liriomyza baptisiae,3_507,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Lispe uliginosa,3_508,Aquatic,Predaceous,Predaceous
+Apallates coxendix,3_54,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Metalimnobia immatura,3_558,Terrestrial,NonFeeding,Mycophagous
+Metriocnemus sp. 4ES,3_561,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Mycetophila ocellus,3_590,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Mydaea occidentalis,3_593,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Neophyllomyza quadricornis,3_616,Terrestrial,Nectar/Pollen/Honeydew Feeding and Kleptoparasitic,Saprophagous
+Orfelia nemoralis,3_648,Terrestrial,Unclear,Predaceous
+Ormosia rubella,3_649,SemiAquatic,NonFeeding,Saprophagous
+Paracladopelma winnelli,3_667,Aquatic,NonFeeding,Detritus and Algae Feeding
+Paramyia silvestris,3_676,Terrestrial,Nectar/Pollen/Honeydew Feeding and Kleptoparasitic,Saprophagous
+Pegoplata nigroscutellata,3_693,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Peyerimhoffia vagabunda,3_705,Terrestrial,NonFeeding,Saprophagous
+Phaonia bysia,3_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Phytosciara plusiochaeta,3_734,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Psectrocladius fennicus,3_768,Aquatic,NonFeeding,Detritus and Algae Feeding
+Pseudocoenosia solitaria,3_774,Terrestrial,Predaceous,Predaceous
+Pseudolycoriella brunnea,3_778,Terrestrial,NonFeeding,Saprophagous
+Pullimosina pullula,3_793,Terrestrial,Saprophagous,Leaf/Root/Stem Feeding
+Ravinia planifrons,3_799,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Sarcophaga caerulescens,3_825,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Scaptomyza adusta,3_828,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Scathophaga stercoraria,3_830,Terrestrial,Nectar/Pollen/Honeydew Feeding and Predaceous,Saprophagous
+Sciara humeralis,3_840,Terrestrial,NonFeeding,Saprophagous
+Sericomyia militaris,3_851,Aquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Spilogona novemmaculata,3_875,Aquatic,Predaceous,Predaceous
+Stegopterna sp.,3_879,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Suillia loewi,3_896,Terrestrial,Unclear,Mycophagous
+Sylvicola punctatus,3_897,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Temnostoma venustum,3_926,SemiAquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Thaumatomyia trifasciata,3_935,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Thricops tarsalis,3_943,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Bicellaria furcifer,3_95,Terrestrial,Predaceous,Predaceous
+Trachyopella nuda,3_951,Terrestrial,Saprophagous,Saprophagous
+Xylophagus reflectens,3_992,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia spinigera,30_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Rhamphomyia nigrita,30_804,Terrestrial,Nectar/Pollen/Honeydew Feeding and Predaceous,Predaceous
+Bradysia placida,31_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Bradysia browni,32_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Fannia corvina,33_365,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Tanytarsus dendyi,33_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Dolichopus sp. nr. remus,34_296,SemiAquatic,Predaceous,Predaceous
+Megaselia agarici,34_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Cricotopus tibialis,35_228,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Megaselia hirtiventris,35_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Simulium defoliarti,35_853,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Tanytarsus inaequalis,35_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Bradysia urticae,36_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Fannia subpellucens,36_365,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Simulium tuberosum complex,36_853,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Tanytarsus herrmanni,36_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Dolichopus hastatus,37_296,SemiAquatic,Predaceous,Predaceous
+Fannia ungulata,37_365,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Rhamphomyia debilis grp. sp. BJS7,37_804,Terrestrial,Nectar/Pollen/Honeydew Feeding and Predaceous,Predaceous
+Simulium verecundum complex,37_853,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Tanytarsus lugens,37_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Bradysia cellarum,38_118,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding and Mycophagous
+Tanytarsus wirthi,38_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Dolichopus stenhammari,39_296,SemiAquatic,Predaceous,Predaceous
+Fannia armata,39_365,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Megaselia lombardorum,39_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Tanytarsus mendax,39_921,Aquatic,NonFeeding,Detritus and Algae Feeding
+Boettcheria cimbicis,4_104,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous or Parasitoid
+Calycomyza majuscula,4_131,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Camptochaeta uniformis,4_136,Terrestrial,NonFeeding,Saprophagous
+Cephalops sp. CAN2,4_145,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Coelosia gracilis,4_201,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Coenosia mollicula,4_204,Terrestrial,Predaceous,Predaceous
+Conioscinella triorbiculata,4_211,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Drosophila tripunctata,4_302,Terrestrial,Saprophagous,Mycophagous
+Elachiptera nigriceps,4_309,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Fucellia tergina,4_371,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding or Saprophagous
+Gimnomera tibialis,4_375,Terrestrial,Predaceous,Leaf/Root/Stem Feeding
+Heleodromia pullata,4_406,Terrestrial,Nectar/Pollen/Honeydew Feeding and Predaceous,Predaceous
+Helina reversio,4_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Hydrellia notata,4_436,Aquatic,Polyphagous,Leaf/Root/Stem Feeding
+Iteaphila orchestris,4_458,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Lasiomma latipenne,4_469,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Limnophora uniseta,4_499,Aquatic,Predaceous,Predaceous
+Lispe albitarsis,4_508,Aquatic,Predaceous,Predaceous
+Lispocephala erythrocera,4_509,Terrestrial,Predaceous,Predaceous
+Metalimnobia triocellata,4_558,Terrestrial,NonFeeding,Mycophagous
+Minettia lupulina,4_575,Terrestrial,Nectar/Pollen/Honeydew Feeding and Mycophagous,Saprophagous
+Mycetophila sp. CJB4,4_590,Terrestrial,Nectar/Pollen/Honeydew Feeding,Mycophagous
+Mydaea detrita,4_593,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Parachironomus tenuicaudatus,4_665,Aquatic,NonFeeding,Detritus and Algae Feeding
+Paraphaenocladius impensus,4_677,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+Paratanytarsus sp. 1ES,4_683,Aquatic,NonFeeding,Detritus and Algae Feeding
+Phora carlina,4_718,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Predaceous
+Pollenia griseotomentosa,4_749,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitoid
+Procladius sp. 1ES,4_759,Aquatic,NonFeeding,Predaceous
+Psila lateralis,4_783,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Rachispoda limosa,4_796,SemiAquatic,Saprophagous,Saprophagous
+Ravinia querula,4_799,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Scaptomyza montana,4_828,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Schwenckfeldina quadrispinosa,4_838,Terrestrial,NonFeeding,Saprophagous
+Sepsis neocynipsea,4_849,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Smittia sp. ES11,4_859,Terrestrial,NonFeeding,Detritus and Algae Feeding
+Stempellinella fimbriata,4_880,Aquatic,NonFeeding,Detritus and Algae Feeding
+Suillia nemorum,4_896,Terrestrial,Unclear,Mycophagous
+Actia diffidens,4_9,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Symplecta cana,4_900,Aquatic,NonFeeding,Saprophagous
+Sympycnus lineatus,4_901,SemiAquatic,Predaceous,Predaceous
+Syrphus torvus,4_911,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Tipula hewitti,4_944,Aquatic,NonFeeding,Detritus and Algae Feeding
+Bicellaria bisetosa,4_95,Terrestrial,Predaceous,Predaceous
+Vitisiella brevicauda,4_981,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Bradysia trivittata,40_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Fannia sociella,40_365,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Bradysia fungicola,41_118,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Dolichopus sp. SEB13 nr. boreus,41_296,SemiAquatic,Predaceous,Predaceous
+Megaselia pongsaiae,41_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Bradysia excelsa,42_118,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding
+Megaselia wiegmanae,43_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia hirticrus,44_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia variana,45_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Dolichopus sp. SEB01,46_296,SemiAquatic,Predaceous,Predaceous
+Megaselia nigriceps,48_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia pulicaria complex,49_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Blera scitula,5_102,SemiAquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Clusiodes melanostomus,5_195,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Unclear
+Coenosia frisoni,5_204,Terrestrial,Predaceous,Predaceous
+Cratyna keilini,5_227,Terrestrial,NonFeeding,Saprophagous
+Culex territans,5_238,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Dichopygina duplicis,5_271,Terrestrial,NonFeeding,Saprophagous
+Elachiptera decipiens,5_309,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Forcipomyia sp. 2ES,5_369,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Lasiomma nr. picipes,5_469,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Lispe tentaculata,5_508,Aquatic,Predaceous,Predaceous and Saprophagous
+Lispocephala alma,5_509,Terrestrial,Predaceous,Predaceous
+Lonchoptera bifurcata,5_513,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Microtendipes pedellus,5_573,Aquatic,NonFeeding,Detritus and Algae Feeding
+Mydaea nr. winnemana,5_593,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Nanocladius anderseni,5_601,Aquatic,NonFeeding,Detritus and Algae Feeding
+Ophiomyia quinta,5_643,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Oscinella sp. TAW6,5_653,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Paraphaenocladius cf. nasthecus,5_677,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+Paratanytarsus sp. TE04,5_683,Aquatic,NonFeeding,Detritus and Algae Feeding
+Asteromyia tumifica,5_70,Terrestrial,NonFeeding,Mycophagous
+Phaonia apicata,5_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Platycheirus yukonensis,5_739,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Pollenia rudis,5_749,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitoid
+Rhagio mystaceus,5_802,Terrestrial,Predaceous,Predaceous
+Sarcophaga sinuata,5_825,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Scaptomyza pallida,5_828,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Simulium sp. BOLDAAB1114,5_853,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Suillia barberi,5_896,Terrestrial,Unclear,Mycophagous
+Sylvicola alternatus,5_897,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Bibio slossonae,5_94,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding and Saprophagous
+Tomosvaryella sp. SK1,5_948,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Xylota subfasciata,5_994,SemiAquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Dolichopus brevipennis,51_296,SemiAquatic,Predaceous,Predaceous
+Megaselia lucifrons,51_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia berndseni,52_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Rhamphomyia pendens,52_804,Terrestrial,Nectar/Pollen/Honeydew Feeding and Predaceous,Predaceous
+Megaselia lucifrons,53_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Claustropyga acanthostyla,54_190,Terrestrial,NonFeeding,Saprophagous
+Megaselia arcticae,54_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Rhamphomyia latilobata,54_804,Terrestrial,Nectar/Pollen/Honeydew Feeding and Predaceous,Predaceous
+Megaselia largifrontalis,55_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia lutea,58_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia pulicaria complex,59_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Ablabesmyia americana,6_1,Aquatic,NonFeeding,Predaceous
+Blaesoxipha hunteri,6_100,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Parasitoid
+Blera nigra,6_102,SemiAquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Bradysia flavipila,6_118,Terrestrial,NonFeeding,"Leaf/Root/Stem Feeding, Mycophagous and Saprophagous"
+Chrysops vittatus,6_177,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Predaceous or Saprophagous
+Cladotanytarsus atridorsum,6_186,Aquatic,NonFeeding,Detritus and Algae Feeding
+Conioscinella triorbiculata,6_211,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Corynoptera subparvula,6_225,Terrestrial,NonFeeding,Saprophagous
+Cratyna nobilis,6_227,Terrestrial,NonFeeding,Saprophagous
+Dasyhelea incisurata,6_256,Aquatic,Nectar/Pollen/Honeydew Feeding,Detritus and Algae Feeding
+Delia extensa,6_260,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Dichopygina aculeata,6_271,Terrestrial,NonFeeding,Saprophagous
+Eristalis rupium,6_327,Aquatic,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Forcipomyia cf. acidicola,6_369,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Iteaphila macquarti,6_458,Terrestrial,Nectar/Pollen/Honeydew Feeding,Predaceous
+Micropsectra logani,6_571,Aquatic,NonFeeding,Detritus and Algae Feeding
+Muscina sp. 1 AKR,6_587,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Ormosia affinis,6_649,SemiAquatic,NonFeeding,Saprophagous
+Phaonia fuscana,6_710,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Phytoliriomyza dorsata,6_731,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Prosimulium travisi,6_763,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding and Predaceous
+Psychoda phalaenoides,6_786,SemiAquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Sargus decorus,6_826,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Scatopsciara geophila,6_832,Terrestrial,NonFeeding,Saprophagous
+Sepsis punctum,6_849,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Suillia apicalis,6_896,Terrestrial,Unclear,Mycophagous
+Sylvicola cinctus,6_897,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Bibio nervosus,6_94,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding and Saprophagous
+Megaselia longicostalis,61_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia shatesae,62_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia eccoptomera,64_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Megaselia subpalpalis,65_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Tipula serta,65_944,Aquatic,NonFeeding,Detritus and Algae Feeding
+Tipula paludosa,67_944,Terrestrial,NonFeeding,Leaf/Root/Stem Feeding and Saprophagous
+Boletina dissipata,7_106,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Camptochaeta flagellifera,7_136,Terrestrial,NonFeeding,Saprophagous
+Cricotopus sp. 13ES,7_228,Aquatic,NonFeeding,Leaf/Root/Stem Feeding and Detritus and Algae Feeding
+Culicoides travisi,7_239,SemiAquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Culiseta inornata,7_240,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Dicrotendipes tritomus,7_276,Aquatic,NonFeeding,Detritus and Algae Feeding
+Helina pectinata,7_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Limonia nubeculosa,7_502,Terrestrial,NonFeeding,Saprophagous
+Megaselia infraposita,7_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Metalimnobia solitaria,7_558,Terrestrial,NonFeeding,Mycophagous
+Molophilus oligacanthus,7_578,SemiAquatic,NonFeeding,Saprophagous
+Parakiefferiella scandica,7_673,Aquatic,NonFeeding,Detritus and Algae Feeding
+Pegomya winthemi,7_692,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Pherbellia tenuipes,7_713,Aquatic,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Prosimulium mixtum,7_763,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding and Predaceous
+Psectrocladius sordidellus,7_768,Aquatic,NonFeeding,Detritus and Algae Feeding
+Tomosvaryella sp. ON16,7_948,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Camptochaeta delicata,8_136,Terrestrial,NonFeeding,Saprophagous
+Cheilosia latrans,8_167,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Forcipomyia glauca,8_369,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Helina rufitibia,8_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Micropsectra recurvata,8_571,Aquatic,NonFeeding,Detritus and Algae Feeding
+Paraphaenocladius impensus,8_677,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+Peromyia perpusilla,8_704,Terrestrial,NonFeeding,Mycophagous
+Procladius cf. fuscus,8_759,Aquatic,NonFeeding,Predaceous
+Prosimulium arvum,8_763,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding and Predaceous
+Psychoda alternata,8_786,SemiAquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Sarcophaga aldrichi,8_825,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Spelobia tufta,8_866,Terrestrial,Saprophagous,Saprophagous
+Bibio fraternus,8_94,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding and Saprophagous
+Boletina onegensis,9_106,Terrestrial,Nectar/Pollen/Honeydew Feeding,Leaf/Root/Stem Feeding
+Aedes vexans,9_14,Aquatic,Nectar/Pollen/Honeydew Feeding and Parasitic,Detritus and Algae Feeding
+Chalarus latifrons,9_163,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Coenosia verralli,9_204,Terrestrial,Predaceous,Predaceous
+Cratyna longispina,9_227,Terrestrial,NonFeeding,Saprophagous
+Forcipomyia titillans,9_369,Terrestrial,Nectar/Pollen/Honeydew Feeding and Parasitic,Saprophagous
+Helina cinerella,9_409,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Predaceous
+Liriomyza helianthi,9_507,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Megaselia giraudii,9_537,Terrestrial,Nectar/Pollen/Honeydew Feeding,Saprophagous
+Micropsectra nigripila,9_571,Aquatic,NonFeeding,Detritus and Algae Feeding
+Paraphaenocladius brevinervis,9_677,SemiAquatic,NonFeeding,Detritus and Algae Feeding
+Paratanytarsus sp. TE03,9_683,Aquatic,NonFeeding,Detritus and Algae Feeding
+Phyllomyza sp. VLB6,9_727,Terrestrial,Kleptoparasitic,Saprophagous
+Phytomyza periclymeni,9_733,Terrestrial,Leaf/Root/Stem Feeding,Leaf/Root/Stem Feeding
+Polypedilum aviceps,9_751,Aquatic,NonFeeding,Leaf/Root/Stem Feeding or Detritus and Algae Feeding
+Sarcophaga polistensis,9_825,Terrestrial,Nectar/Pollen/Honeydew Feeding and Saprophagous,Saprophagous
+Siphona subarctica,9_854,Terrestrial,Nectar/Pollen/Honeydew Feeding,Parasitoid
+Trichosia townesi,9_960,Terrestrial,NonFeeding,Saprophagous
